@@ -1,0 +1,145 @@
+<%/**************************************************************************/
+/* 파일이름   : login.jsp                                                   */
+/* 최근변경일 : 2020-09-23                                                  */
+/**************************************************************************/%>
+<%@ page language="java"%>
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="java.io.*" %>
+<%@ page import="java.util.*" %>
+<%@ page import="tmax.webt.*" %>
+<%@ page import="com.initech.eam.api.*"%>
+<%@ page import="com.initech.eam.nls.*"%>
+<%@ page import="com.initech.eam.smartenforcer.*"%>
+
+<!-- 2014 SSO 암호화 관련 변경 START -->
+<%@ page import="com.initech.provider.crypto.InitechProvider"%>
+<%@ page import="com.initech.provider.crypto.Provider"%>
+<%@ page import="com.initech.cryptox.util.Base64Util"%>
+<%@ page import="java.net.URLEncoder"%>
+<%@ page import="java.security.SecureRandom"%>
+
+<%@ include file="cutCarriageReturn.jsp" %>
+<%
+  String noCacheNonce = Ticket.generateNonce();
+
+	SecureRandom random = new SecureRandom();
+	byte[] nonce = new byte[8];
+	random.nextBytes(nonce);
+	
+	String nonceStr = cutCarriageReturn(new String(Base64Util.encode(nonce)));
+	System.out.println("nonceStr:"+nonceStr);
+	session.setAttribute("nexess.nls.resession.nonce", nonceStr);
+
+%>
+<!-- 2014 SSO 암호화 관련 변경 END -->
+
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="/css/main.css" type="text/css">
+</head>
+
+<script language="javascript">
+	  document.write("<OBJECT ID=\"NEXESS_API\" CLASSID=\"CLSID:D4F62B67-8BA3-4A8D-94F6-777A015DB612\" width=0 height=0></OBJECT>");
+</script> 
+
+    <script src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/wp.js"></script>
+<script type="text/javascript" src="/js/default.js"></script>
+<script language='JavaScript' type='text/javascript'>
+	function SSO_checker() {
+		var result = -1;
+		var f = document.frm;
+
+		var nc_ver = null;
+		var temp = null;
+		try{
+		    nc_ver = NEXESS_API.getNCVersion(2);
+		    temp = nc_ver.split(".");
+		}catch(error){
+			  alert('통합로그인이 되지 않았습니다.');
+			  document.location.href = "/Jsp.do?path=login_proc";
+			  //return;
+		}
+	    
+		if(temp==null || temp[2] >= 1405) { // NC버전비교 4.6.1405.3
+			// Ticket방식으로 로그인
+			var ticket = NEXESS_API._GetTicket("<%=nonceStr%>");
+			if(ticket.length == 1 || ticket == ""){
+				alert('통합로그인이 되지 않았습니다.');
+				document.location.href = '/Jsp.do?path=login_proc';
+			}else{
+				while(ticket.indexOf("+") != -1) {
+					ticket= ticket.replace("+", "%2b");
+				}
+	          
+				self.location.replace("./encVerifyTicket.jsp?ticket=" + escape(ticket));
+			}
+		} else {
+			// 기존 방식으로 로그인
+			var ressesion = NEXESS_API.IsLogin3();
+			var UID = NEXESS_API.GetLoginID();
+		//alert(UID);	
+			if ( UID.length > 0 ){
+				f.userid.value = UID;
+				//f.submit();
+	  			  
+				WP.clearParameters();
+				WP.setForm(f); 
+				
+				var url = "/login.do";
+				var inputData = WP.getParams();
+				
+				//alert(inputData);
+	  				
+	  			WP.load(url, inputData,{
+	  				success: function(result){
+	  					if(result!='undefined'){
+	  						if(result.message=="success"){
+	  							var f = document.frm;
+	  							f.action = "/main.do";
+	  							f.target = "_self";
+	  							f.submit();
+	  						}else{
+	  							alert(result.message);
+	  						}
+	  					}else{
+//	  						alert("처리할 수 없습니다.");
+	  						alert('통합로그인이 되지 않았습니다.');
+	  						document.location.href = '/Jsp.do?path=login_proc';
+	  					}
+	  				},
+	  					  
+	  				complete: function(statusText,status) {
+	  				},
+	  					  
+	  				error: function(rtnMsg) {
+	  					alert(JSON.stringify(rtnMsg));
+	  				}
+	  			});
+	  			  
+			}else{
+				alert('통합로그인이 되지 않았습니다.');
+				document.location.href = '/Jsp.do?path=login_proc';
+			}
+	  		  
+			if ( ressesion < 0 )
+				result = -1;
+			else if ( ressesion == 0 )
+				result = 0;
+			else
+				result = 1;
+		}
+		  
+		return result;
+	}
+</script>
+<body bgcolor="#FFFFFF" text="#000000" onLoad="SSO_checker();">
+<form name="frm" action="/login.do" method="post">
+<input type="hidden" name="grp_org_c" value="01" />
+<input type="hidden" name="userid" value="">
+<input type="hidden" name="login_type" value="1">
+</form>
+</body>
+</html>

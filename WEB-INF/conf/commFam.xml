@@ -1,0 +1,1403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com_servlet id="fam" name="ORMS FAM" commkind="fam">
+	<lib id="lib" name="라이브러리정의" value="com.shbank.orms.comm.util"/>
+
+	<process id="ORFM010101" name="평판지표 조회 화면" forward="/fam/ORFM0101" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="RKP_TPC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+					
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010102" name="평판 지표 조회" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_sup_brc" name="주관부서" parmid="sch_sup_brc" attr="S" default_value=""/>
+		<parm id="sch_kri_yn" name="기존KRI여부" parmid="sch_kri_yn" attr="S" default_value=""/>
+		<parm id="sch_psb_yn" name="기존KRI여부" parmid="sch_psb_yn" attr="S" default_value=""/>
+		<parm id="sch_typ_dscd" name="지표유형" parmid="sch_typ_dscd" attr="S" default_value=""/>
+		<parm id="sch_rkinm" name="지표명" parmid="sch_rkinm" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A.GRP_ORG_C
+							  ,A.REP_RKI_ID RKI_ID
+							  ,A.REP_RKI_ID AS RKI_ID2
+							  ,A.REP_RKINM RKINM
+							  ,A.IDX_FML_CNTN FML_CNTN
+							  ,NVL2(C.OPRK_RKI_ID, 'Y', 'N') AS KRI_YN
+							  ,D.OPRK_RKINM OPRK_RKINM
+							  ,B4.INTG_IDVD_CNM AS COL_FQ_NM
+							  ,B3.INTG_IDVD_CNM AS FQ_DSC
+							  ,A.SUP_BRC BRC
+							  ,DECODE(A.COM_COL_PSB_YN,'Y','전산','N','수기') AS PSB_YN
+							  ,B1.INTG_IDVD_CNM AS TYPNM
+                              ,B2.INTG_IDVD_CNM AS BRNM
+                              ,SUBSTR(A.LSCHG_DTM,1,10) LSCHG_DTM
+						  FROM TB_OR_FM_REPRKI A
+					    LEFT JOIN TB_OR_OM_CODE B1
+							    ON A.GRP_ORG_C = B1.GRP_ORG_C
+                                AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+                                AND B1.C_UYN = 'Y'
+							    AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B2
+                                ON A.GRP_ORG_C = B2.GRP_ORG_C
+                                AND B2.INTG_GRP_C = 'SUP_BRC'
+                                AND B2.C_UYN = 'Y'
+                                AND A.SUP_BRC = B2.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B3
+                                ON A.GRP_ORG_C = B3.GRP_ORG_C
+                                AND B3.INTG_GRP_C = 'RPT_FQ_DSC'
+                                AND B3.C_UYN = 'Y'
+                                AND A.RPT_FQ_DSC = B3.IDVDC_VAL
+                        LEFT JOIN TB_OR_FH_REL_RKI C
+                                ON A.GRP_ORG_C = C.GRP_ORG_C
+                                AND C.REP_RKI_ID = A.REP_RKI_ID
+                        LEFT JOIN TB_OR_KM_RKI D
+                        		ON A.GRP_ORG_C = D.GRP_ORG_C
+                                AND D.OPRK_RKI_ID = C.OPRK_RKI_ID
+                        LEFT JOIN TB_OR_OM_CODE B4
+                                ON A.GRP_ORG_C = B4.GRP_ORG_C
+	                             AND B4.INTG_GRP_C = 'COL_FQ'
+	                             AND B4.C_UYN = 'Y'
+	                             AND D.RPT_FQ_DSC = B4.IDVDC_VAL
+                          WHERE A.VLD_YN = 'Y' 
+                          
+					</data>
+				</sql>
+				<sql id="sql12" name="SQL12">
+					<condition id="cond111" name="sch_sup_brc != null" variable="#sch_sup_brc#" comparison="ne" value="" />
+					<data id="data11" name="">
+						   AND A.SUP_BRC  = TRIM(#sch_sup_brc#) 
+					</data>
+				</sql>
+				<sql id="sql13" name="SQL13">
+					<condition id="cond111" name="sch_kri_yn != null" variable="#sch_kri_yn#" comparison="ne" value="" />
+					<data id="data11" name="">
+						  AND NVL2(C.OPRK_RKI_ID, 'Y', 'N') = TRIM(#sch_kri_yn#)
+					</data>
+				</sql>
+				<sql id="sql14" name="SQL14">
+					<condition id="cond111" name="sch_psb_yn != null" variable="#sch_psb_yn#" comparison="ne" value="" />
+					<data id="data11" name="">
+						   AND A.COM_COL_PSB_YN  = TRIM(#sch_psb_yn#) 
+					</data>
+				</sql>
+				<sql id="sql14" name="SQL14">
+					<condition id="cond111" name="sch_typ_dscd != null" variable="#sch_typ_dscd#" comparison="ne" value="" />
+					<data id="data11" name="">
+						   AND A.REP_TYP_DSCD  = TRIM(#sch_typ_dscd#) 
+					</data>
+				</sql>
+				<sql id="sql15" name="SQL15">
+					<condition id="cond111" name="sch_rkinm != null" variable="#sch_rkinm#" comparison="ne" value="" />
+					<data id="data11" name="">
+						   AND A.REP_RKINM LIKE '%' || TRIM(#sch_rkinm#) || '%' 
+				   	</data>
+				</sql>
+				<sql id="sql16" name="SQL16">
+					<data id="data11" name="">
+						   ORDER BY A.REP_RKI_ID				   	
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010103" name="평판지표삭제" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_rki_id" name="KRI지표ID" parmid="sch_rki_id" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="업무프로세스삭제" type="M" mode="update" multiid="sch_rki_id">
+				<multivalue id="sch_rki_id" name="ID" multiid="sch_rki_id"/>
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						UPDATE TB_OR_FM_REPRKI
+						   SET VLD_YN = 'N'
+						      ,LSCHG_DTM = SYSDATE
+						      ,LS_WKR_ENO = TRIM(#userid#)
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+						   AND REP_RKI_ID = TRIM(#sch_rki_id#)						 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010201" name="평판지표 신규등록팝업" forward="/fam/ORFM0102" forwardng="/comm/jsonErr" resource="fam" grid_process_id="">
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="평판리스크 지표 상세조회" type="S">
+ 				<sql id="sql1" name="SQL1">
+ 					<data id="data1" name="">
+ 						  SELECT CONCAT('REP_',LPAD(MAX(SUBSTR(REP_RKI_ID,5,3))+1,3,0)) AS RKI_ID
+ 						    FROM TB_OR_FM_REPRKI
+ 					</data>
+				</sql>
+ 				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group> 
+	</process>
+	<process id="ORFM010202" name="평판지표 신규등록" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_oprk_rki_id" name="KRI지표ID" parmid="sch_oprk_rki_id" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit11" name="변경" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE FROM TB_OR_FH_REL_RKI
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+						   AND REP_RKI_ID = TRIM(#sch_rki_id#)
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit12" name="변경" type="M" mode="update" multiid="sch_oprk_rki_id">
+			<multivalue id="sch_oprk_rki_id" name="ID" multiid="sch_oprk_rki_id"/>
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+					<sql id="sql15" name="SQL15">
+						<condition id="cond111" name="sch_oprk_rki_id != null" variable="#sch_oprk_rki_id#" comparison="ne" value="" />
+						<data id="data11" name="">
+							INSERT INTO TB_OR_FH_REL_RKI (
+							GRP_ORG_C, REP_RKI_ID, OPRK_RKI_ID, FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO)
+							VALUES (TRIM(#grp_org_c#), TRIM(#sch_rki_id#), TRIM(#sch_oprk_rki_id#), SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#))
+					   	</data>
+					</sql>
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit99" name="입력" type="S" mode="update" multiid="">
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						INSERT INTO TB_OR_FM_REPRKI
+						(
+						    GRP_ORG_C, REP_RKI_ID, REP_RKINM, REP_TYP_DSCD, IDX_FML_CNTN, RPT_FQ_DSC, SUP_BRC
+						   ,COM_COL_PSB_YN, VLD_YN, VLD_ST_DT, VLD_ED_DT, FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						)
+						VALUES (
+						    TRIM(#grp_org_c#), TRIM(#sch_rki_id#), #sch_rkinm#, TRIM(#sch_typnm#), #sch_fml_idx_cntn#, TRIM(#sch_fq_dsc#)
+						   ,TRIM(#sch_sup_brc#), TRIM(#sch_psb_yn#), 'Y', '20000101', '99990101', SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						)
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010301" name="평판지표 상세 팝업" forward="/fam/ORFM0103" forwardng="/comm/jsonErr" resource="fam" grid_process_id="">
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="평판리스크 지표 상세조회" type="S">
+ 				<sql id="sql11" name="SQL11">
+ 					<data id="data111" name="">
+ 						SELECT A.REP_RKI_ID AS RKI_ID
+ 							  ,A.REP_RKINM AS RKINM
+ 							  ,B1.INTG_IDVD_CNM AS TYPNM
+ 							  ,A.REP_TYP_DSCD AS REP_TYP_DSCD
+ 							  ,B2.INTG_IDVD_CNM AS BR_NM
+ 							  ,A.SUP_BRC AS SUP_BRC
+ 							  ,A.IDX_FML_CNTN AS FML_CNTN
+ 							  ,B3.INTG_IDVD_CNM AS FQ_DSNM
+ 							  ,B3.IDVDC_VAL AS FQ_DSC
+ 							  ,TRIM(DECODE(A.COM_COL_PSB_YN,'Y','전산','N','수기')) AS PSB_YN
+ 							  ,NVL2(C.OPRK_RKI_ID, 'Y', 'N') AS KRI_YN
+ 						  FROM TB_OR_FM_REPRKI A
+ 						LEFT JOIN TB_OR_OM_CODE B1
+							    ON A.GRP_ORG_C = B1.GRP_ORG_C
+                                AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+                                AND B1.C_UYN = 'Y'
+							    AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B2
+                                ON A.GRP_ORG_C = B2.GRP_ORG_C
+                                AND B2.INTG_GRP_C = 'SUP_BRC'
+                                AND B2.C_UYN = 'Y'
+                                AND A.SUP_BRC = B2.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B3
+                                ON A.GRP_ORG_C = B3.GRP_ORG_C
+                                AND B3.INTG_GRP_C = 'RPT_FQ_DSC'
+                                AND B3.C_UYN = 'Y'
+                                AND A.RPT_FQ_DSC = B3.IDVDC_VAL
+                        LEFT JOIN TB_OR_FH_REL_RKI C
+                                 ON A.GRP_ORG_C = C.GRP_ORG_C
+                                AND C.REP_RKI_ID = A.REP_RKI_ID
+ 						 WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+ 						   AND A.REP_RKI_ID = TRIM(#rki_id#)
+ 					</data>
+				</sql>
+ 				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010302" name="평판지표 상세 연관 KRI등록" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="평판리스크 지표 상세조회" type="S">
+ 				<sql id="sql11" name="SQL11">
+ 					<data id="data111" name="">
+ 						SELECT A.OPRK_RKI_ID OPRK_RKI_ID, B.OPRK_RKINM RKI_NM, B.IDX_FML_CNTN IDX_FML_CNTN, B.RKI_OBV_CNTN, B2.INTG_IDVD_CNM AS COL_FQ_NM, B3.INTG_IDVD_CNM AS BR_NM
+						   FROM TB_OR_FH_REL_RKI A 
+						  INNER JOIN TB_OR_KM_RKI B 
+						     ON A.GRP_ORG_C = B.GRP_ORG_C 
+						    AND A.OPRK_RKI_ID = B.OPRK_RKI_ID
+						  LEFT JOIN TB_OR_FM_REPRKI A2
+                             ON A2.GRP_ORG_C = A.GRP_ORG_C
+                            AND A2.REP_RKI_ID = A.REP_RKI_ID 
+					  	  LEFT JOIN TB_OR_OM_CODE B2
+                              ON A.GRP_ORG_C = B2.GRP_ORG_C
+                             AND B2.INTG_GRP_C = 'COL_FQ'
+                             AND B2.C_UYN = 'Y'
+                             AND B.RPT_FQ_DSC = B2.IDVDC_VAL
+                          LEFT JOIN TB_OR_OM_CODE B3
+                              ON B3.GRP_ORG_C = A2.GRP_ORG_C
+                             AND B3.INTG_GRP_C = 'SUP_BRC'
+                             AND B3.C_UYN = 'Y'
+                             AND A2.SUP_BRC = B3.IDVDC_VAL
+						  WHERE A.GRP_ORG_C = TRIM(#grp_org_c#) 
+						    AND A.REP_RKI_ID = TRIM(#sch_rki_id#)
+						    AND B.VLD_YN = 'Y' 
+						  ORDER BY A.OPRK_RKI_ID 
+ 					</data>
+				</sql>
+ 				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010303" name="평판지표 상세조회 변경" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_oprk_rki_id" name="KRI지표ID" parmid="sch_oprk_rki_id" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit11" name="변경" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE FROM TB_OR_FH_REL_RKI
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+						   AND REP_RKI_ID = TRIM(#sch_rki_id#)
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit12" name="변경" type="M" mode="update" multiid="sch_oprk_rki_id">
+			<multivalue id="sch_oprk_rki_id" name="ID" multiid="sch_oprk_rki_id"/>
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						INSERT INTO TB_OR_FH_REL_RKI (
+						GRP_ORG_C, REP_RKI_ID, OPRK_RKI_ID, FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO)
+						VALUES (TRIM(#grp_org_c#), TRIM(#sch_rki_id#), TRIM(#sch_oprk_rki_id#), SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#))
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit13" name="변경" type="S" mode="update" multiid="">
+				<sql id="sql13" name="SQL13">
+					<data id="data111" name="">
+						UPDATE TB_OR_FM_REPRKI
+						   SET REP_RKINM = #sch_rkinm#
+						      ,REP_TYP_DSCD = TRIM(#sch_typnm#)
+						      ,SUP_BRC = TRIM(#sch_sup_brc#)
+						      ,IDX_FML_CNTN = #sch_fml_cntn#
+						      ,RPT_FQ_DSC = TRIM(#sch_fq_dsc#)
+						      ,COM_COL_PSB_YN = TRIM(#sch_psb_yn#)
+						   WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+						     AND REP_RKI_ID = TRIM(#sch_rki_id#)
+						     AND VLD_YN = 'Y'
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010401" name="평판지표 평가 관리" forward="/fam/ORFM0104" forwardng="/comm/jsonErr" resource="fam" grid_process_id="">
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="평판리스크 지표 상세조회" type="S">
+ 				<sql id="sql11" name="SQL11">
+ 					<data id="data111" name="">
+ 						SELECT BAS_YM
+ 						  FROM TB_OR_OM_SCHD
+ 						 WHERE REP_EVL_TGT_YN = 'Y'
+ 						ORDER BY BAS_YM ASC
+ 					</data>
+				</sql>
+ 				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010402" name="평판지표 평가관리 조회" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+ 		<parm id="sch_bas_y_a" name="기간설정" parmid="sch_bas_y_a" attr="S" default_value=""/>
+ 		<parm id="sch_bas_m_a" name="기간설정" parmid="sch_bas_m_a" attr="S" default_value=""/>
+ 		<parm id="sch_bas_y_b" name="기간설정" parmid="sch_bas_y_b" attr="S" default_value=""/>
+ 		<parm id="sch_bas_m_b" name="기간설정" parmid="sch_bas_m_b" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A.BAS_YM
+						      ,A.RK_EVL_TGT_YN
+						      ,B1.INTG_IDVD_CNM AS INTG_IDVD_CNM
+						      ,(SELECT COUNT(*) FROM TB_OR_FH_NVL WHERE BAS_YM = A.BAS_YM) AS CNT
+						  	  ,A.REP_RKI_ST_DT 
+      					      ,A.REP_RKI_ED_DT 
+      					      ,'상세' AS BTN
+						  FROM TB_OR_OM_SCHD A
+						  LEFT JOIN TB_OR_OM_CODE B1
+						    ON B1.INTG_GRP_C = 'FAM_PRG_STSC'
+						   AND B1.IDVDC_VAL = A.RKI_PRG_STSC
+					 	 WHERE A.REP_EVL_TGT_YN = 'Y'
+						   AND A.BAS_YM BETWEEN CONCAT(TRIM(#sch_bas_y_a#),TRIM(#sch_bas_m_a#)) AND CONCAT(TRIM(#sch_bas_y_b#),TRIM(#sch_bas_m_b#))
+						 ORDER BY BAS_YM DESC
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010403" name="평판지표 평가관리 조회" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A.GRP_ORG_C
+							  ,A.REP_RKI_ID RKI_ID
+							  ,A.REP_RKI_ID AS RKI_ID2
+							  ,A.REP_RKINM RKINM
+							  ,A.IDX_FML_CNTN FML_CNTN
+							  ,NVL2(C.OPRK_RKI_ID, 'Y', 'N') AS KRI_YN
+							  ,D.OPRK_RKINM OPRK_RKINM
+							  ,B4.INTG_IDVD_CNM AS COL_FQ_NM
+							  ,B3.INTG_IDVD_CNM AS FQ_DSC
+							  ,A.SUP_BRC BRC
+							  ,DECODE(A.COM_COL_PSB_YN,'Y','전산','N','수기') AS PSB_YN
+							  ,B1.INTG_IDVD_CNM AS TYPNM
+                              ,B2.INTG_IDVD_CNM AS BRNM
+                              ,SUBSTR(A.LSCHG_DTM,1,10) LSCHG_DTM
+						  FROM TB_OR_FM_REPRKI A
+					    LEFT JOIN TB_OR_OM_CODE B1
+							    ON A.GRP_ORG_C = B1.GRP_ORG_C
+                                AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+                                AND B1.C_UYN = 'Y'
+							    AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B2
+                                ON A.GRP_ORG_C = B2.GRP_ORG_C
+                                AND B2.INTG_GRP_C = 'SUP_BRC'
+                                AND B2.C_UYN = 'Y'
+                                AND A.SUP_BRC = B2.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B3
+                                ON A.GRP_ORG_C = B3.GRP_ORG_C
+                                AND B3.INTG_GRP_C = 'RPT_FQ_DSC'
+                                AND B3.C_UYN = 'Y'
+                                AND A.RPT_FQ_DSC = B3.IDVDC_VAL
+                        LEFT JOIN TB_OR_FH_REL_RKI C
+                                ON A.GRP_ORG_C = C.GRP_ORG_C
+                                AND C.REP_RKI_ID = A.REP_RKI_ID
+                        LEFT JOIN TB_OR_KM_RKI D
+                        		ON A.GRP_ORG_C = D.GRP_ORG_C
+                                AND D.OPRK_RKI_ID = C.OPRK_RKI_ID
+                        LEFT JOIN TB_OR_OM_CODE B4
+                                ON A.GRP_ORG_C = B4.GRP_ORG_C
+	                             AND B4.INTG_GRP_C = 'COL_FQ'
+	                             AND B4.C_UYN = 'Y'
+	                             AND D.RPT_FQ_DSC = B4.IDVDC_VAL
+                          WHERE A.VLD_YN = 'Y' 
+                          ORDER BY A.REP_RKI_ID
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010601" name="평판지표 평가일정수정 팝업" forward="/fam/ORFM0106" forwardng="/comm/jsonErr" resource="fam" grid_process_id="">
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="평판리스크 지표 상세조회" type="S">
+ 				<sql id="sql11" name="SQL11">
+ 					<data id="data111" name="">
+ 					</data>
+				</sql>
+ 				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010701" name="평판지표 결과 입력 및 조회" forward="/fam/ORFM0107" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT DISTINCT BAS_YM
+ 						  FROM TB_OR_FH_NVL
+ 						ORDER BY BAS_YM ASC
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010702" name="평판지표 결과 좌측 그리드" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="brc" sessionid="brc" object="String"/>
+ 		<parm id="sch_bas_y" name="기간설정" parmid="sch_bas_y" attr="S" default_value=""/>
+ 		<parm id="sch_bas_m" name="기간설정" parmid="sch_bas_m" attr="S" default_value=""/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A1.BAS_YM
+						       ,A1.BRNM
+						       ,DECODE(SUM(A1.CNT),SUM(A1.INP_CNT),'입력완료','미입력') AS COMP
+						       ,SUM(A1.CNT) CNT
+						       ,SUM(A1.INP_CNT) INP_CNT
+						FROM (
+						SELECT A.BAS_YM
+						      ,A.REP_RKI_ID
+						      ,1 AS CNT
+						      ,DECODE(A.INPDT,NULL,0,1) AS INP_CNT
+						      ,C.INTG_IDVD_CNM BRNM
+						      ,A.GRP_ORG_C
+						  FROM TB_OR_FH_NVL A
+						      ,TB_OR_FM_REPRKI B
+						      ,TB_OR_OM_CODE C
+						      ,TB_OR_OM_ORGZ D
+						 WHERE A.GRP_ORG_C = B.GRP_ORG_C
+						   AND A.REP_RKI_ID = B.REP_RKI_ID
+						   AND A.GRP_ORG_C = TRIM(#grp_org_c#)
+						   AND A.BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						   AND C.IDVDC_VAL = B.SUP_BRC
+						   AND C.INTG_GRP_C = 'SUP_BRC'
+						   AND C.INTG_IDVD_CNM = D.BRNM
+						   AND D.BRC = TRIM(#brc#)
+						 ORDER BY REP_RKI_ID ASC
+						 ) A1
+						 GROUP BY A1.BAS_YM, A1.BRNM, A1.GRP_ORG_C
+						 ORDER BY COMP
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010703" name="평판지표 결과 우측 그리드" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="brc" sessionid="brc" object="String"/>
+		<parm id="sch_brnm" name="기간설정" parmid="brnm" attr="S" default_value=""/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+                       SELECT A.REP_RKI_ID AS RKI_ID, A.INTG_IDVD_CNM AS BRNM, A.REP_RKINM AS RKINM
+                              ,DECODE(A.COM_COL_PSB_YN, 'Y', '전산', 'N', '수기') AS PSB_YN
+                              ,A.REP_KRI_NVL, B.INTG_IDVD_CNM INP ,A.RTN_CNTN,'상세' AS BTN, A.BAS_YM, B.IDVDC_VAL
+                          FROM 
+                        (
+						 SELECT A.REP_RKI_ID, B1.INTG_IDVD_CNM, A.REP_RKINM, A.COM_COL_PSB_YN, C.REP_KRI_NVL, D.REP_RKI_DCZ_STSC, D.RTN_CNTN, C.BAS_YM
+						   FROM TB_OR_FM_REPRKI A
+						   LEFT JOIN TB_OR_OM_CODE B1
+						    ON A.GRP_ORG_C = B1.GRP_ORG_C
+						    AND B1.INTG_GRP_C = 'SUP_BRC'
+						    AND B1.C_UYN = 'Y'
+						    AND A.SUP_BRC = B1.IDVDC_VAL
+						   LEFT JOIN TB_OR_FH_NVL C
+						    ON C.GRP_ORG_C = A.GRP_ORG_C
+						    AND C.REP_RKI_ID = A.REP_RKI_ID
+						    AND C.BAS_YM = CONCAT(TRIM(#sch_bas_y#),TRIM(#sch_bas_m#))
+						   LEFT JOIN TB_OR_FH_NVL_DCZ D
+						    ON D.GRP_ORG_C = A.GRP_ORG_C
+						    AND C.REP_RKI_ID = D.REP_RKI_ID
+						    AND C.BAS_YM = D.BAS_YM
+						    AND D.DCZ_SQNO = (SELECT MAX(DCZ_SQNO) FROM TB_OR_FH_NVL_DCZ WHERE BAS_YM = C.BAS_YM AND REP_RKI_ID = C.REP_RKI_ID)
+						   WHERE A.VLD_YN = 'Y'
+						    ) A
+						     LEFT JOIN TB_OR_OM_CODE B
+						    ON B.INTG_GRP_C = 'REP_RKI_DCZ_STSC'
+						    AND B.C_UYN = 'Y'
+						    AND B.IDVDC_VAL = A.REP_RKI_DCZ_STSC
+						     LEFT JOIN TB_OR_OM_ORGZ C
+						    ON B.GRP_ORG_C = C.GRP_ORG_C
+						   AND C.BRC = TRIM(#brc#)
+						WHERE 1=1
+						AND A.INTG_IDVD_CNM = C.BRNM
+                        </data>
+                </sql>
+                <sql id="sql12" name="SQL12">
+					<condition id="cond111" name="sch_brnm != null" variable="#sch_brnm#" comparison="ne" value="" />
+					<data id="data11" name="">
+						AND A.INTG_IDVD_CNM = TRIM(#sch_brnm#)
+					</data>
+				</sql>
+				<sql>
+					<data>
+						ORDER BY RKI_ID
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010704" name="평판지표 결재" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_rki_id" name="KRI지표ID" parmid="sch_rki_id" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit10" name="결재" type="M" mode="update" multiid="sch_rki_id">
+				<multivalue id="sch_rki_id" name="ID" multiid="sch_rki_id"/>
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						UPDATE TB_OR_FH_NVL
+						SET DCZ_SQNO = DCZ_SQNO+1
+						   ,LSCHG_DTM = SYSDATE
+						   ,LS_WKR_ENO = TRIM(#userid#)
+						WHERE REP_RKI_ID = TRIM(#sch_rki_id#)
+						  AND BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))				 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit11" name="결재" type="M" mode="update" multiid="sch_rki_id">
+				<multivalue id="sch_rki_id" name="ID" multiid="sch_rki_id"/>
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						INSERT 
+						  INTO TB_OR_FH_NVL_DCZ 
+						  (
+							  GRP_ORG_C, BAS_YM, REP_RKI_ID, DCZ_SQNO, DCZMN_ENO, DCZ_DT, REP_RKI_DCZ_STSC, RTN_CNTN,
+							  FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						  )
+						  VALUES 
+						  (
+						  TRIM(#grp_org_c#), CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#)), TRIM(#sch_rki_id#), 
+						   	  (
+							   SELECT (DCZ_SQNO) AS DCZ_SQNO
+							     FROM TB_OR_FH_NVL 
+							    WHERE REP_RKI_ID = TRIM(#sch_rki_id#) 
+						  		  AND BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						  		),
+						  TRIM(#userid#), TO_CHAR(SYSDATE,'YYYYMMDD')
+						  , TRIM(#chk_auth#)
+						  , #sch_rtn_cntn#
+						  , SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						  )				 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010705" name="평판지표 반려" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_rki_id" name="KRI지표ID" parmid="sch_rki_id" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit10" name="반려" type="M" mode="update" multiid="sch_rki_id">
+				<multivalue id="sch_rki_id" name="ID" multiid="sch_rki_id"/>
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						UPDATE TB_OR_FH_NVL
+						   SET DCZ_SQNO = DCZ_SQNO+1
+						       ,LSCHG_DTM = SYSDATE
+				     		   ,LS_WKR_ENO = TRIM(#userid#)
+						 WHERE REP_RKI_ID = TRIM(#sch_rki_id#)
+						   AND BAS_YM =CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))				 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit11" name="반려" type="M" mode="update" multiid="sch_rki_id">
+				<multivalue id="sch_rki_id" name="ID" multiid="sch_rki_id"/>
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						INSERT 
+						  INTO TB_OR_FH_NVL_DCZ 
+						  (
+							  GRP_ORG_C, BAS_YM, REP_RKI_ID, DCZ_SQNO, DCZMN_ENO, DCZ_DT, REP_RKI_DCZ_STSC, RTN_CNTN,
+							  FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						  )
+						  VALUES 
+						  (
+						  TRIM(#grp_org_c#), CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#)), TRIM(#sch_rki_id#), 
+						   	  (
+							   SELECT (DCZ_SQNO) AS DCZ_SQNO
+							     FROM TB_OR_FH_NVL 
+							    WHERE REP_RKI_ID = TRIM(#sch_rki_id#) 
+						  		  AND BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						  		),
+						  TRIM(#userid#), TO_CHAR(SYSDATE,'YYYYMMDD'), 
+						  '03'
+						  , #sch_rtn_cntn#
+						  , SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						  )							 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010706" name="평판지표 결재취소" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="취소" type="S" mode="update">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE FROM TB_OR_FH_NVL_DCZ
+						 WHERE BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+					       AND REP_RKI_ID = TRIM(#rki_id#)
+						   AND DCZ_SQNO = (SELECT MAX(DCZ_SQNO) 
+						                     FROM TB_OR_FH_NVL_DCZ
+						                    WHERE BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						                      AND REP_RKI_ID = TRIM(#rki_id#))
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010801" name="평판지표 수기데이터 입력 팝업" forward="/fam/ORFM0108" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="RKP_TPC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A.REP_RKI_ID AS RKI_ID
+ 							  ,A.REP_RKINM AS RKINM
+ 							  ,B1.INTG_IDVD_CNM AS TYPNM
+ 							  ,B2.INTG_IDVD_CNM AS BRNM
+ 							  ,A.IDX_FML_CNTN AS FML_CNTN
+ 							  ,B3.INTG_IDVD_CNM AS FQ_DSNM
+ 							  ,B3.IDVDC_VAL AS FQ_DSC
+ 							  ,TRIM(DECODE(A.COM_COL_PSB_YN,'Y','전산','N','수기')) AS PSB_YN
+ 							  ,C.BAS_YM BAS_YM
+ 						  FROM TB_OR_FM_REPRKI A
+ 						LEFT JOIN TB_OR_OM_CODE B1
+							    ON A.GRP_ORG_C = B1.GRP_ORG_C
+                                AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+                                AND B1.C_UYN = 'Y'
+							    AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B2
+                                ON A.GRP_ORG_C = B2.GRP_ORG_C
+                                AND B2.INTG_GRP_C = 'SUP_BRC'
+                                AND B2.C_UYN = 'Y'
+                                AND A.SUP_BRC = B2.IDVDC_VAL
+                        LEFT JOIN TB_OR_OM_CODE B3
+                                ON A.GRP_ORG_C = B3.GRP_ORG_C
+                                AND B3.INTG_GRP_C = 'RPT_FQ_DSC'
+                                AND B3.C_UYN = 'Y'
+                                AND A.RPT_FQ_DSC = B3.IDVDC_VAL
+                        LEFT JOIN TB_OR_FH_NVL C
+                        		ON A.GRP_ORG_C = C.GRP_ORG_C
+                        		AND C.REP_RKI_ID = A.REP_RKI_ID
+                        		AND C.BAS_YM = TRIM(#sch_bas_ym#)
+ 						 WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+ 						   AND A.REP_RKI_ID = TRIM(#rki_id#)
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010802" name="수기 지표 값 등록" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>		
+		<parm id="sch_bas_ym" name="기간" parmid="sch_bas_ym" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit10" name="값" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						UPDATE TB_OR_FH_NVL
+						   SET DCZ_SQNO = DCZ_SQNO+1
+						   	  ,REP_KRI_NVL = TRIM(#sch_rep_kri_nvl#)
+						      ,LSCHG_DTM = SYSDATE
+						      ,LS_WKR_ENO = TRIM(#userid#)
+						      ,INPDT = TO_CHAR(SYSDATE,'YYYYMMDD')
+					   	 WHERE REP_RKI_ID = TRIM(#sch_rki_id#)
+						   AND BAS_YM = TRIM(#sch_bas_ym#)	 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit99" name="값" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						INSERT 
+						  INTO TB_OR_FH_NVL_DCZ
+						 (
+							  GRP_ORG_C, BAS_YM, REP_RKI_ID, DCZ_SQNO, DCZMN_ENO, DCZ_DT, REP_RKI_DCZ_STSC,
+							  FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						 )
+						VALUES 
+						  (
+						  TRIM(#grp_org_c#), TRIM(#sch_bas_ym#), TRIM(#sch_rki_id#), 
+						   	  (
+							   SELECT (DCZ_SQNO) AS DCZ_SQNO
+							     FROM TB_OR_FH_NVL 
+							    WHERE REP_RKI_ID = TRIM(#sch_rki_id#) 
+						  		  AND BAS_YM = TRIM(#sch_bas_ym#)
+						  	   ),
+						  TRIM(#userid#), TO_CHAR(SYSDATE,'YYYYMMDD')
+						  , '03'
+						  , SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						  )		
+						   
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM010901" name="평판지표 결과 상세 팝업" forward="/fam/ORFM0109" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="RKP_TPC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+					SELECT RKI_ID, RKINM, TYPNM, BRNM, FML_CNTN, FQ_DSNM, FQ_DSC, PSB_YN, BAS_YM_0, BAS_YM_1, BAS_YM_2, BAS_YM_3, BAS_YM_4, BAS_YM_5
+						  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = RKI_ID AND BAS_YM = BAS_YM_0)), '-') AS REP_KRI_NVL_0
+						  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = RKI_ID AND BAS_YM = BAS_YM_1)), '-') AS REP_KRI_NVL_1
+						  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = RKI_ID AND BAS_YM = BAS_YM_2)), '-') AS REP_KRI_NVL_2
+						  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = RKI_ID AND BAS_YM = BAS_YM_3)), '-') AS REP_KRI_NVL_3
+						  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = RKI_ID AND BAS_YM = BAS_YM_4)), '-') AS REP_KRI_NVL_4
+						  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = RKI_ID AND BAS_YM = BAS_YM_5)), '-') AS REP_KRI_NVL_5
+					  FROM(
+							SELECT A.REP_RKI_ID AS RKI_ID
+	 							  ,A.REP_RKINM AS RKINM
+	 							  ,B1.INTG_IDVD_CNM AS TYPNM
+	 							  ,B2.INTG_IDVD_CNM AS BRNM
+	 							  ,A.IDX_FML_CNTN AS FML_CNTN
+	 							  ,B3.INTG_IDVD_CNM AS FQ_DSNM
+	 							  ,B3.IDVDC_VAL AS FQ_DSC
+	 							  ,TRIM(DECODE(A.COM_COL_PSB_YN,'Y','전산','N','수기')) AS PSB_YN
+	 							  ,C.BAS_YM BAS_YM_0
+	 							  ,TO_CHAR(ADD_MONTHS(TO_DATE(C.BAS_YM,'YYYYMM'),-1),'YYYYMM') AS BAS_YM_1
+	 							  ,TO_CHAR(ADD_MONTHS(TO_DATE(C.BAS_YM,'YYYYMM'),-2),'YYYYMM') AS BAS_YM_2
+	 							  ,TO_CHAR(ADD_MONTHS(TO_DATE(C.BAS_YM,'YYYYMM'),-3),'YYYYMM') AS BAS_YM_3
+	 							  ,TO_CHAR(ADD_MONTHS(TO_DATE(C.BAS_YM,'YYYYMM'),-4),'YYYYMM') AS BAS_YM_4
+	 							  ,TO_CHAR(ADD_MONTHS(TO_DATE(C.BAS_YM,'YYYYMM'),-5),'YYYYMM') AS BAS_YM_5
+	 						  FROM TB_OR_FM_REPRKI A
+	 						LEFT JOIN TB_OR_OM_CODE B1
+								    ON A.GRP_ORG_C = B1.GRP_ORG_C
+	                                AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+	                                AND B1.C_UYN = 'Y'
+								    AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+	                        LEFT JOIN TB_OR_OM_CODE B2
+	                                ON A.GRP_ORG_C = B2.GRP_ORG_C
+	                                AND B2.INTG_GRP_C = 'SUP_BRC'
+	                                AND B2.C_UYN = 'Y'
+	                                AND A.SUP_BRC = B2.IDVDC_VAL
+	                        LEFT JOIN TB_OR_OM_CODE B3
+	                                ON A.GRP_ORG_C = B3.GRP_ORG_C
+	                                AND B3.INTG_GRP_C = 'RPT_FQ_DSC'
+	                                AND B3.C_UYN = 'Y'
+	                                AND A.RPT_FQ_DSC = B3.IDVDC_VAL
+	                        LEFT JOIN TB_OR_FH_NVL C
+	                        		ON A.GRP_ORG_C = C.GRP_ORG_C
+	                        		AND C.REP_RKI_ID = A.REP_RKI_ID
+	                        		AND C.BAS_YM = TRIM(#sch_bas_ym#)
+	 						 WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+	 						   AND A.REP_RKI_ID = TRIM(#rki_id#)
+	 						)
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011001" name="평판지수 결과 조회" forward="/fam/ORFM0110" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT DISTINCT BAS_YM
+ 						  FROM TB_OR_FH_NVL
+ 						ORDER BY BAS_YM ASC
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT DISTINCT BAS_YM BAS_YM_D
+ 						  FROM TB_OR_FH_NVL
+ 						ORDER BY BAS_YM DESC
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="날짜" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT DISTINCT BAS_YM
+ 						  FROM TB_OR_FH_NVL
+ 						 WHERE BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011002" name="평판지수 1년간 결과 조회" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A.REP_IDX INDEX0, B.REP_IDX INDEX1, ROUND(A.IDX_INDC_RT,4) INDEX_RATE, A.REP_IDX INDEX00, B.REP_IDX INDEX11,
+						       C.REP_IDX INDEX2, D.REP_IDX INDEX3, A.BAS_YM BAS_YM_0, B.BAS_YM BAS_YM_1, C.BAS_YM BAS_YM_2, D.BAS_YM BAS_YM_3
+						  FROM 
+						  (
+						    SELECT * 
+						      FROM TB_OR_FH_INDEX
+						     WHERE BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						  ) A,
+						  (
+						    SELECT *
+						      FROM TB_OR_FH_INDEX 
+						     WHERE BAS_YM = TO_CHAR(ADD_MONTHS(TO_DATE(CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#)),'YYYYMM'),-3),'YYYYMM')
+						  ) B,
+						  (
+						    SELECT *
+						      FROM TB_OR_FH_INDEX
+						     WHERE BAS_YM = TO_CHAR(ADD_MONTHS(TO_DATE(CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#)),'YYYYMM'),-6),'YYYYMM')
+						  ) C,
+						  (
+						    SELECT *
+						      FROM TB_OR_FH_INDEX
+						     WHERE BAS_YM = TO_CHAR(ADD_MONTHS(TO_DATE(CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#)),'YYYYMM'),-9),'YYYYMM')
+						  ) D
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011003" name="당분기 기준 평판지표 결과" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+ 		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+		SELECT * FROM (
+		    SELECT * FROM (
+		   	 	SELECT  E.RKI_ID, E.RKINM, E.TYPNM, E.REP_RKI_NVL_0, E.REP_RKI_NVL_1
+						,(E.REP_RKI_NVL_0 - E.REP_RKI_NVL_1) AS PER
+						,(E.REP_RKI_NVL_0 + 100) AS REP_RKI_NVL_00
+						,E.REP_RKI_NVL_00_AVG, E.REP_RKI_NVL_00_STD, F.STD0, F.STD0_SUM_D
+					  FROM(
+							SELECT A.REP_RKI_ID RKI_ID
+                                  ,A.REP_RKINM AS RKINM
+	 							  ,B1.INTG_IDVD_CNM AS TYPNM
+	 							  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM = C.BAS_YM)), '') AS REP_RKI_NVL_0
+	 							  ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM = TO_CHAR(ADD_MONTHS(TO_DATE(C.BAS_YM,'YYYYMM'),-3),'YYYYMM'))), '') AS REP_RKI_NVL_1
+	 						  	  ,ROUND(NVL(TO_CHAR((SELECT SUM(REP_KRI_NVL+100)/COUNT(REP_KRI_NVL) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)), ''),2) AS REP_RKI_NVL_00_AVG
+	 						  	  ,ROUND(NVL(TO_CHAR((SELECT STDDEV_POP(REP_KRI_NVL+100) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)), ''),2) AS REP_RKI_NVL_00_STD
+	 						  FROM TB_OR_FM_REPRKI A
+	 						LEFT JOIN TB_OR_OM_CODE B1
+								    ON A.GRP_ORG_C = B1.GRP_ORG_C
+	                                AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+	                                AND B1.C_UYN = 'Y'
+								    AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+	                        LEFT JOIN TB_OR_OM_CODE B2
+	                                ON A.GRP_ORG_C = B2.GRP_ORG_C
+	                                AND B2.INTG_GRP_C = 'SUP_BRC'
+	                                AND B2.C_UYN = 'Y'
+	                                AND A.SUP_BRC = B2.IDVDC_VAL
+	                        LEFT JOIN TB_OR_OM_CODE B3
+	                                ON A.GRP_ORG_C = B3.GRP_ORG_C
+	                                AND B3.INTG_GRP_C = 'RPT_FQ_DSC'
+	                                AND B3.C_UYN = 'Y'
+	                                AND A.RPT_FQ_DSC = B3.IDVDC_VAL
+	                        LEFT JOIN TB_OR_FH_NVL C
+	                        		ON A.GRP_ORG_C = C.GRP_ORG_C
+	                        		AND C.REP_RKI_ID = A.REP_RKI_ID
+	                        		AND BAS_YM =CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+	 						 WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+	 						   AND A.VLD_YN = 'Y'
+	 						 ORDER BY RKI_ID
+	 						) E
+                            
+                            LEFT JOIN (
+                             SELECT A.RKI_ID, A.TYPNM, A.STD0, B.STD0_SUM STD0_SUM_D FROM (
+						SELECT TYPNM
+							,ROUND((REP_RKI_NVL_0 + 100 - REP_RKI_NVL_00_AVG)/REP_RKI_NVL_00_STD, 2) AS STD0
+							,BAS_YM, RKI_ID
+						FROM(
+						    SELECT A.REP_RKI_ID AS RKI_ID
+						          ,B1.INTG_IDVD_CNM AS TYPNM
+						          ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM = C.BAS_YM)), '') AS REP_RKI_NVL_0
+						          ,ROUND(NVL(TO_CHAR((SELECT SUM(REP_KRI_NVL+100)/COUNT(REP_KRI_NVL) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)), ''),2) AS REP_RKI_NVL_00_AVG
+						          ,NULLIF(ROUND(TO_CHAR((SELECT STDDEV_POP(REP_KRI_NVL+100) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)),2),0) AS REP_RKI_NVL_00_STD 
+						          ,C.BAS_YM BAS_YM
+						    FROM TB_OR_FM_REPRKI A
+						    LEFT JOIN TB_OR_OM_CODE B1
+						            ON A.GRP_ORG_C = B1.GRP_ORG_C
+						            AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+						            AND B1.C_UYN = 'Y'
+						            AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+						    LEFT JOIN TB_OR_FH_NVL C
+						            ON A.GRP_ORG_C = C.GRP_ORG_C
+						            AND C.REP_RKI_ID = A.REP_RKI_ID
+						            AND BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						     WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+						       AND A.VLD_YN = 'Y'
+						     ORDER BY RKI_ID
+						    ) 
+                            ) A
+                            INNER JOIN 
+                            (
+						SELECT TYPNM
+							,ROUND(AVG((REP_RKI_NVL_0 + 100 - REP_RKI_NVL_00_AVG)/REP_RKI_NVL_00_STD),5) AS STD0_SUM
+						FROM(
+						    SELECT A.REP_RKI_ID AS RKI_ID
+						          ,B1.INTG_IDVD_CNM AS TYPNM
+						          ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM = C.BAS_YM)), '') AS REP_RKI_NVL_0
+						          ,ROUND(NVL(TO_CHAR((SELECT SUM(REP_KRI_NVL+100)/COUNT(REP_KRI_NVL) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)), ''),2) AS REP_RKI_NVL_00_AVG
+						          ,NULLIF(ROUND(TO_CHAR((SELECT STDDEV_POP(REP_KRI_NVL+100) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)),2),0) AS REP_RKI_NVL_00_STD 
+						          ,C.BAS_YM BAS_YM
+						    FROM TB_OR_FM_REPRKI A
+						    LEFT JOIN TB_OR_OM_CODE B1
+						            ON A.GRP_ORG_C = B1.GRP_ORG_C
+						            AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+						            AND B1.C_UYN = 'Y'
+						            AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+						    LEFT JOIN TB_OR_FH_NVL C
+						            ON A.GRP_ORG_C = C.GRP_ORG_C
+						            AND C.REP_RKI_ID = A.REP_RKI_ID
+						            AND BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						     WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+						       AND A.VLD_YN = 'Y'
+						     ORDER BY RKI_ID
+						    ) 
+                            GROUP BY TYPNM
+                            ) B
+                            ON A.TYPNM = B.TYPNM
+                            ) F
+                            ON E.RKI_ID = F.RKI_ID
+                            
+                            )
+                            LEFT OUTER JOIN 
+                            (
+							SELECT SUM(STD0_SUM) STD0_SUM_E FROM (
+							    SELECT TYPNM
+							        ,ROUND(AVG((REP_RKI_NVL_0 + 100 - REP_RKI_NVL_00_AVG)/REP_RKI_NVL_00_STD),2) AS STD0_SUM
+							    FROM(
+							        SELECT A.REP_RKI_ID AS RKI_ID
+							              ,B1.INTG_IDVD_CNM AS TYPNM
+							              ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM = C.BAS_YM)), '') AS REP_RKI_NVL_0
+							              ,ROUND(NVL(TO_CHAR((SELECT SUM(REP_KRI_NVL+100)/COUNT(REP_KRI_NVL) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)), ''),2) AS REP_RKI_NVL_00_AVG
+							              ,NULLIF(ROUND(TO_CHAR((SELECT STDDEV_POP(REP_KRI_NVL+100) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)),2),0) AS REP_RKI_NVL_00_STD 
+							              ,C.BAS_YM BAS_YM
+							        FROM TB_OR_FM_REPRKI A
+							        LEFT JOIN TB_OR_OM_CODE B1
+							                ON A.GRP_ORG_C = B1.GRP_ORG_C
+							                AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+							                AND B1.C_UYN = 'Y'
+							                AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+							        LEFT JOIN TB_OR_FH_NVL C
+							                ON A.GRP_ORG_C = C.GRP_ORG_C
+							                AND C.REP_RKI_ID = A.REP_RKI_ID
+							                AND BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+							         WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+							           AND A.VLD_YN = 'Y'
+							         ORDER BY RKI_ID
+							        ) 
+							        GROUP BY TYPNM
+							)
+							)ON 1=1
+							)
+							LEFT OUTER JOIN (
+							SELECT STD0 STD0_E, AVG0 AVG0_E, ROUND((STD0_SUM-AVG0)/STD0*10+100,2) AS INDEX0_E
+						  FROM (
+							SELECT * FROM (
+							SELECT ROUND(AVG(STD0),2) AS AVG0, NULLIF(ROUND(STDDEV_POP(STD0),2),0) AS STD0
+							  FROM(
+							SELECT ROUND(SUM(STD0),2) AS STD0, BAS_YM FROM(
+							SELECT ROUND(AVG(STD0),2) AS STD0, TYPNM, BAS_YM FROM (
+							SELECT TYPNM, ROUND((REP_RKI_NVL_0 + 100 - REP_RKI_NVL_00_AVG)/REP_RKI_NVL_00_STD, 2) AS STD0, BAS_YM
+						  	  FROM(
+						    SELECT A.REP_RKI_ID AS RKI_ID
+						          ,B1.INTG_IDVD_CNM AS TYPNM
+						          ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM = C.BAS_YM)), '') AS REP_RKI_NVL_0
+						          ,ROUND(NVL(TO_CHAR((SELECT SUM(REP_KRI_NVL+100)/COUNT(REP_KRI_NVL) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)), ''),2) AS REP_RKI_NVL_00_AVG
+						          ,NULLIF(ROUND(TO_CHAR((SELECT STDDEV_POP(REP_KRI_NVL+100) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)),2),0) AS REP_RKI_NVL_00_STD 
+						          ,C.BAS_YM AS BAS_YM
+						      FROM TB_OR_FM_REPRKI A
+						    LEFT JOIN TB_OR_OM_CODE B1
+						            ON A.GRP_ORG_C = B1.GRP_ORG_C
+						            AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+						            AND B1.C_UYN = 'Y'
+						            AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+						    LEFT JOIN TB_OR_FH_NVL C
+						            ON A.GRP_ORG_C = C.GRP_ORG_C
+						            AND C.REP_RKI_ID = A.REP_RKI_ID
+						            AND C.BAS_YM &lt; CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						    LEFT JOIN TB_OR_FH_NVL C1
+						            ON A.GRP_ORG_C = C1.GRP_ORG_C
+						            AND C1.REP_RKI_ID = A.REP_RKI_ID
+						            AND C1.BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						     WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+						       AND A.VLD_YN = 'Y'
+						     ORDER BY RKI_ID
+						    )
+						 )
+						 GROUP BY TYPNM, BAS_YM
+						)GROUP BY BAS_YM 
+						 ORDER BY BAS_YM
+						)
+						)
+						LEFT JOIN
+						(
+						SELECT SUM(STD_AVG0) AS STD0_SUM, MAX(BAS_YM) AS BAS_YM FROM (
+						SELECT ROUND(AVG(STD0),2) AS STD_AVG0, TYPNM, BAS_YM FROM (
+						SELECT TYPNM
+							,ROUND((REP_RKI_NVL_0 + 100 - REP_RKI_NVL_00_AVG)/REP_RKI_NVL_00_STD, 2) AS STD0
+							,BAS_YM
+						FROM(
+						    SELECT A.REP_RKI_ID AS RKI_ID
+						          ,B1.INTG_IDVD_CNM AS TYPNM
+						          ,NVL(TO_CHAR((SELECT REP_KRI_NVL FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM = C.BAS_YM)), '') AS REP_RKI_NVL_0
+						          ,ROUND(NVL(TO_CHAR((SELECT SUM(REP_KRI_NVL+100)/COUNT(REP_KRI_NVL) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)), ''),2) AS REP_RKI_NVL_00_AVG
+						          ,NULLIF(ROUND(TO_CHAR((SELECT STDDEV_POP(REP_KRI_NVL+100) FROM TB_OR_FH_NVL WHERE REP_RKI_ID = A.REP_RKI_ID AND BAS_YM &lt; C.BAS_YM)),2),0) AS REP_RKI_NVL_00_STD 
+						          ,C.BAS_YM BAS_YM
+						    FROM TB_OR_FM_REPRKI A
+						    LEFT JOIN TB_OR_OM_CODE B1
+						            ON A.GRP_ORG_C = B1.GRP_ORG_C
+						            AND B1.INTG_GRP_C = 'REP_TYP_DSCD'
+						            AND B1.C_UYN = 'Y'
+						            AND A.REP_TYP_DSCD = B1.IDVDC_VAL
+						    LEFT JOIN TB_OR_FH_NVL C
+						            ON A.GRP_ORG_C = C.GRP_ORG_C
+						            AND C.REP_RKI_ID = A.REP_RKI_ID
+						            AND BAS_YM = CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#))
+						     WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)
+						       AND A.VLD_YN = 'Y'
+						     ORDER BY RKI_ID
+						    )
+						 )
+						 	 GROUP BY TYPNM, BAS_YM
+						 )
+						 )
+						 ON 1=1
+						 )
+					)
+					ON 1=1
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011101" name="평판자본량 산출 및 조회" forward="/fam/ORFM0111" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="RKP_TPC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT BAS_YM
+ 						  FROM TB_OR_FH_CPTAM
+ 						ORDER BY BAS_YM ASC
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011102" name="평판 자본량 조회" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A.BAS_YM BAS_YM, C1.INTG_IDVD_CNM AS INP, D.REP_IDX, D.BEF_REP_IDX 
+					      ,ROUND((D.REP_IDX-D.BEF_REP_IDX)/D.BEF_REP_IDX,2) AS IDX_RATE
+					      ,B.RTN_CNTN
+						  ,ROUND((A.INLS_FCT_AM+A.INLS_FCT_FGN_AM)*(1-(D.REP_IDX-D.BEF_REP_IDX)/D.BEF_REP_IDX),2) AS REP_M
+						  ,C1.IDVDC_VAL
+						  FROM TB_OR_FH_CPTAM A
+						  LEFT JOIN TB_OR_FH_CPTAM_DCZ B
+						    ON B.GRP_ORG_C = A.GRP_ORG_C
+						   AND B.BAS_YM = A.BAS_YM
+						   AND B.DCZ_SQNO = (SELECT MAX(DCZ_SQNO) FROM TB_OR_FH_CPTAM_DCZ WHERE BAS_YM = B.BAS_YM)
+						  LEFT JOIN TB_OR_OM_CODE C1
+						    ON A.GRP_ORG_C = C1.GRP_ORG_C
+						   AND C1.INTG_GRP_C = 'CPTAM_DCZ_STSC'
+						   AND C1.IDVDC_VAL = B.CPTAM_DCZ_STSC
+						  LEFT JOIN TB_OR_FH_INDEX D
+						    ON A.GRP_ORG_C = D.GRP_ORG_C
+						   AND D.BAS_YM = (
+                                        CASE WHEN SUBSTR(A.BAS_YM,5,2) IN ('01','02','03') THEN 
+					   							  CONCAT(SUBSTR(A.BAS_YM,0,4)-1,'12')
+					   						 WHEN SUBSTR(A.BAS_YM,5,2) IN ('04','05','06') THEN 
+					   							  CONCAT(SUBSTR(A.BAS_YM,0,4),'03')
+					   						 WHEN SUBSTR(A.BAS_YM,5,2) IN ('07','08','09') THEN 
+					   							  CONCAT(SUBSTR(A.BAS_YM,0,4),'06')
+					   						 WHEN SUBSTR(A.BAS_YM,5,2) IN ('10','11','12') THEN 
+					   							  CONCAT(SUBSTR(A.BAS_YM,0,4),'09') END
+                                           )
+                         WHERE A.BAS_YM BETWEEN CONCAT(TRIM(#sch_bas_y_a#),TRIM(#sch_bas_m_a#)) AND CONCAT(TRIM(#sch_bas_y_b#),TRIM(#sch_bas_m_b#))
+						 ORDER BY A.BAS_YM DESC
+						
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011103" name="평판자본량삭제" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_bas_ym" name="기준년월" parmid="sch_bas_ym" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit10" name="업무프로세스삭제" type="M" mode="update" multiid="sch_bas_ym">
+				<multivalue id="sch_bas_ym" name="ID" multiid="sch_bas_ym"/>
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE FROM TB_OR_FH_CPTAM
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+						   AND BAS_YM = TRIM(#sch_bas_ym#)
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit11" name="업무프로세스삭제" type="M" mode="update" multiid="sch_bas_ym">
+				<multivalue id="sch_bas_ym" name="ID" multiid="sch_bas_ym"/>
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						DELETE FROM TB_OR_FH_CPTAM_DCZ
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+						   AND BAS_YM = TRIM(#sch_bas_ym#)
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011104" name="평판자본량 결재" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_bas_ym" name="KRI지표ID" parmid="sch_bas_ym" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit10" name="결재" type="M" mode="update" multiid="sch_bas_ym">
+				<multivalue id="sch_bas_ym" name="기준년월" multiid="sch_bas_ym"/>
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						UPDATE TB_OR_FH_CPTAM
+						SET DCZ_SQNO = DCZ_SQNO+1
+						   ,LSCHG_DTM = SYSDATE
+						   ,LS_WKR_ENO = TRIM(#userid#)
+						WHERE BAS_YM = TRIM(#sch_bas_ym#)			 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit11" name="결재" type="M" mode="update" multiid="sch_bas_ym">
+				<multivalue id="sch_bas_ym" name="ID" multiid="sch_bas_ym"/>
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						INSERT 
+						  INTO TB_OR_FH_CPTAM_DCZ 
+						  (
+							  GRP_ORG_C, BAS_YM, DCZ_SQNO, DCZMN_ENO, DCZ_DT, CPTAM_DCZ_STSC
+							 ,FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						  )
+						  VALUES 
+						  (
+						  TRIM(#grp_org_c#), TRIM(#sch_bas_ym#),
+						   	  (
+							   SELECT DCZ_SQNO 
+							     FROM TB_OR_FH_CPTAM
+							    WHERE BAS_YM = TRIM(#sch_bas_ym#)
+						  		),
+						  TRIM(#userid#), TO_CHAR(SYSDATE,'YYYYMMDD'), 
+						   (SELECT TRIM(#chk_auth#) CPTAM_DCZ_STSC
+						     FROM TB_OR_FH_CPTAM_DCZ
+						    WHERE BAS_YM = TRIM(#sch_bas_ym#)
+						      AND DCZ_SQNO = (SELECT MAX(DCZ_SQNO) FROM TB_OR_FH_CPTAM_DCZ WHERE BAS_YM = TRIM(#sch_bas_ym#))
+						  )
+						  , SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						  )				 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011105" name="평판자본량 반려" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_bas_ym" name="기준년월" parmid="sch_bas_ym" attr="A" default_value=""/>  
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit10" name="결재" type="M" mode="update" multiid="sch_bas_ym">
+				<multivalue id="bas_ym" name="기준년월" multiid="sch_bas_ym"/>
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						UPDATE TB_OR_FH_CPTAM
+						SET DCZ_SQNO = DCZ_SQNO+1
+						   ,LSCHG_DTM = SYSDATE
+						   ,LS_WKR_ENO = TRIM(#userid#)
+						WHERE BAS_YM = TRIM(#sch_bas_ym#)			 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit11" name="평판자본량 반려" type="M" mode="update" multiid="sch_bas_ym">
+				<multivalue id="sch_bas_ym" name="ID" multiid="sch_bas_ym"/>
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						INSERT 
+						  INTO TB_OR_FH_CPTAM_DCZ 
+						  (
+							  GRP_ORG_C, BAS_YM, DCZ_SQNO, DCZMN_ENO, DCZ_DT, CPTAM_DCZ_STSC, RTN_CNTN,
+							  FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						  )
+						  VALUES 
+						  (
+						  TRIM(#grp_org_c#), TRIM(#sch_bas_ym#),
+						   	  (
+							   SELECT (DCZ_SQNO) AS DCZ_SQNO
+							     FROM TB_OR_FH_CPTAM 
+							    WHERE BAS_YM = TRIM(#sch_bas_ym#)
+						  		),
+						  TRIM(#userid#), TO_CHAR(SYSDATE,'YYYYMMDD'), 
+						  (SELECT '01' CPTAM_DCZ_STSC
+						     FROM TB_OR_FH_CPTAM_DCZ
+						    WHERE BAS_YM = TRIM(#sch_bas_ym#)
+						      AND DCZ_SQNO = (SELECT MAX(DCZ_SQNO) FROM TB_OR_FH_CPTAM_DCZ WHERE BAS_YM = TRIM(#sch_bas_ym#))
+						  )
+						  , #sch_rtn_cntn#
+						  , SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						  )							 
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011201" name="평판자본량 정보 조회" forward="/fam/ORFM0112" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="RKP_TPC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT A.BAS_YM, B.BAS_YM BAS_YM_A, B.REP_IDX, B.BEF_REP_IDX, A.RET_DEC_AM, A.RET_DEC_FGN_AM, A.CMP_DEC_AM, A.CMP_DEC_FGN_AM, A.RP_DEC_AM, A.RP_DEC_FGN_AM
+							  ,ROUND(A.DPLN_SPD_RT,2) DPLN_SPD_RT, ROUND(A.DPLN_SPD_FGN_RT,2) DPLN_SPD_FGN_RT, A.INLS_FCT_AM, A.INLS_FCT_FGN_AM
+							  ,A.RET_DEC_AM+A.CMP_DEC_AM+A.RP_DEC_AM AS SUM_AM, A.RET_DEC_FGN_AM+A.CMP_DEC_FGN_AM+A.RP_DEC_FGN_AM AS SUM_FGN_AM
+							  ,ROUND((B.REP_IDX-B.BEF_REP_IDX)/B.BEF_REP_IDX,3) AS IDX_RATE
+							  ,ROUND((A.INLS_FCT_AM+A.INLS_FCT_FGN_AM)*(1-(B.REP_IDX-B.BEF_REP_IDX)/B.BEF_REP_IDX),2) AS REP_M
+						  FROM TB_OR_FH_CPTAM A
+						  LEFT JOIN TB_OR_FH_INDEX B
+						    ON A.GRP_ORG_C = B.GRP_ORG_C
+						   AND B.BAS_YM = (
+						   					CASE WHEN SUBSTR(TRIM(#bas_ym#),5,2) IN ('01','02','03') THEN 
+						   							  CONCAT(SUBSTR(TRIM(#bas_ym#),0,4)-1,'12')
+						   						 WHEN SUBSTR(TRIM(#bas_ym#),5,2) IN ('04','05','06') THEN 
+						   							  CONCAT(SUBSTR(TRIM(#bas_ym#),0,4),'03')
+						   						 WHEN SUBSTR(TRIM(#bas_ym#),5,2) IN ('07','08','09') THEN 
+						   							  CONCAT(SUBSTR(TRIM(#bas_ym#),0,4),'06')
+						   						 WHEN SUBSTR(TRIM(#bas_ym#),5,2) IN ('10','11','12') THEN 
+						   							  CONCAT(SUBSTR(TRIM(#bas_ym#),0,4),'09') END
+						   				   )
+						 WHERE A.BAS_YM = TRIM(#bas_ym#)
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011301" name="평판자본량 정보 입력" forward="/fam/ORFM0113" forwardng="/comm/errorPage" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="RKP_TPC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						SELECT BAS_YM
+						  FROM TB_OR_OM_SCHD
+						 WHERE BAS_YM NOT IN (SELECT BAS_YM FROM TB_OR_FH_CPTAM)
+						 ORDER BY BAS_YM ASC
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORFM011302" name="평판자본량 입력" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="fam" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="입력" type="S" mode="update" multiid="">
+				<sql id="sql12" name="SQL12">
+					<data id="data111" name="">
+						INSERT INTO TB_OR_FH_CPTAM
+						(
+						    GRP_ORG_C, BAS_YM, RET_DEC_AM, RET_DEC_FGN_AM, CMP_DEC_AM, CMP_DEC_FGN_AM
+						   ,RP_DEC_AM, RP_DEC_FGN_AM, DPLN_SPD_RT, DPLN_SPD_FGN_RT, INLS_FCT_AM, INLS_FCT_FGN_AM, DCZ_SQNO, FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						)
+						VALUES 
+						(
+						TRIM(#grp_org_c#), CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#)), TRIM(#sch_ret_dec_am#), TRIM(#sch_ret_dec_fgn_am#), TRIM(#sch_cmp_dec_am#), TRIM(#sch_cmp_dec_fgn_am#) 
+						   ,TRIM(#sch_rp_dec_am#), TRIM(#sch_rp_dec_fgn_am#) ,TRIM(#sch_dpln_spd_rt#), TRIM(#sch_dpln_spd_fgn_rt#)
+						   ,(TRIM(#sch_ret_dec_am#)+TRIM(#sch_cmp_dec_am#)+TRIM(#sch_rp_dec_am#))*TRIM(#sch_dpln_spd_rt#)/100
+						   ,(TRIM(#sch_ret_dec_fgn_am#)+TRIM(#sch_cmp_dec_fgn_am#)+TRIM(#sch_rp_dec_fgn_am#))*TRIM(#sch_dpln_spd_fgn_rt#)/100
+						   ,00 ,SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						)
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit17" name="통합코드조회" type="S" mode="update">
+				<sql id="sql17" name = "SQL17">
+					<data id="data1" name = "">
+						INSERT INTO TB_OR_FH_CPTAM_DCZ
+						(
+							GRP_ORG_C, BAS_YM, DCZ_SQNO, DCZMN_ENO, DCZ_DT, CPTAM_DCZ_STSC, RTN_CNTN, FIR_INP_DTM, FIR_INPMN_ENO, LSCHG_DTM, LS_WKR_ENO
+						)
+						VALUES
+						(
+							TRIM(#grp_org_c#), CONCAT(TRIM(#sch_bas_y#), TRIM(#sch_bas_m#)), 0, TRIM(#userid#), TO_CHAR(SYSDATE,'YYYYMMDD'), '01','', SYSDATE, TRIM(#userid#), SYSDATE, TRIM(#userid#)
+						)
+						
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+</com_servlet>

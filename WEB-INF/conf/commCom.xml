@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com_servlet id="com" name="COMMON" commkind="com">
+	<lib id="lib" name="라이브러리정의" value="com.shbank.orms.comm.util"/>
+	
+	<process id="CommPopup" name="공통팝업" forward="/comm/CommPopup" forwardng="/comm/jsonErr" resource="com" grid_process_id="" />
+
+	<process id="ORCO010101" name="업무프로세스" forward="/comm/ORCO0101" forwardng="/comm/jsonErr" resource="com" grid_process_id="" />
+	
+	<process id="ORCO010102" name="업무프로세스조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<parm id="sel_grp_org_c" name="선택그룹기관코드" parmid="sel_grp_org_c" attr="S" default_value=""/>
+		<parm id="sch_lvl" name="조회레벨단위" parmid="sch_lvl" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="업무프로세스조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			 SELECT																										                                                                               
+					 A.GRP_ORG_C						
+				   , A.BSN_PRSS_C						
+				   , A.UP_BSN_PRSS_C					
+				   , A.BSN_PRSNM						
+				   , A.LVL_NO AS "LEVEL"				
+				   , A1.UP_BSN_PRSS_C BSN_PRSS_C_LV1	
+				   , A1.BSN_PRSNM BSN_PRSNM_LV1			
+				   , A2.UP_BSN_PRSS_C BSN_PRSS_C_LV2	
+				   , A2.BSN_PRSNM BSN_PRSNM_LV2			
+				   , A3.UP_BSN_PRSS_C BSN_PRSS_C_LV3	
+				   , A3.BSN_PRSNM BSN_PRSNM_LV3			
+			   FROM (SELECT * FROM TB_OR_OC_PRSS	
+					</data>
+				</sql>
+  				<sql id="sql12" name="SQL12">
+					<condition id="cond121" name="조건121" variable="#sel_grp_org_c#" comparison="ne" value="" />
+					<data id="data121" name="">
+			   	  WHERE GRP_ORG_C = TRIM(#sel_grp_org_c#)					
+					</data>
+				</sql>
+  				<sql id="sql13" name="SQL13">
+					<condition id="cond131" name="조건131" variable="#sel_grp_org_c#" comparison="eq" value="" />
+					<data id="data131" name="">
+			   	  WHERE GRP_ORG_C = TRIM(#grp_org_c#)					
+					</data>
+				</sql>
+  				<sql id="sql14" name="SQL14">
+					<data id="data141" name="">
+			   	  AND VLD_YN = 'Y') A				
+			   LEFT JOIN TB_OR_OC_PRSS A3		
+			     ON A.GRP_ORG_C = A3.GRP_ORG_C		
+			    AND A.UP_BSN_PRSS_C = A3.BSN_PRSS_C	
+			    AND A.LVL_NO = 4					
+			    AND A3.LVL_NO = 3					
+			    AND A3.VLD_YN = 'Y'					
+			   LEFT JOIN TB_OR_OC_PRSS A2		
+			     ON A3.GRP_ORG_C = A2.GRP_ORG_C		
+			    AND A3.UP_BSN_PRSS_C = A2.BSN_PRSS_C
+			    AND A2.LVL_NO = 2					
+			    AND A2.VLD_YN = 'Y'					
+			   LEFT JOIN TB_OR_OC_PRSS A1		
+			     ON A2.GRP_ORG_C = A1.GRP_ORG_C		
+			    AND A2.UP_BSN_PRSS_C = A1.BSN_PRSS_C
+			    AND A1.LVL_NO = 1					
+			    AND A1.VLD_YN = 'Y'					
+			  START WITH A.UP_BSN_PRSS_C IS NULL	
+			CONNECT BY PRIOR A.BSN_PRSS_C = A.UP_BSN_PRSS_C	
+					</data>
+				</sql>
+  				<sql id="sql15" name="SQL15">
+					<condition id="cond151" name="조건151" variable="#sch_lvl#" comparison="ne" value="" />
+					<data id="data141" name="">
+			AND LEVEL &lt;= TO_NUMBER(TRIM(#sch_lvl#)) + 1	
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010201" name="원인유형" forward="/comm/ORCO0102" forwardng="/comm/jsonErr" resource="com" grid_process_id="" />
+	
+	<process id="ORCO010202" name="원인유형조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="원인유형조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			SELECT										
+				 A.GRP_ORG_C							
+			   , A.CAS_TPC								
+			   , A.UP_CAS_TPC							
+			   , A.CAS_TPNM								
+			   , A.LVL_NO AS "LEVEL"					
+			   , A1.CAS_TPC CAS_TPC_LV1					
+			   , A1.CAS_TPNM CAS_TPNM_LV1				
+			   , A2.CAS_TPC CAS_TPC_LV2					
+			   , A2.CAS_TPNM CAS_TPNM_LV2				
+			  FROM (SELECT * FROM TB_OR_OC_CAS		
+			  	  WHERE GRP_ORG_C = TRIM(#grp_org_c#)			    
+			  	  AND VLD_YN = 'Y') A					
+			  LEFT JOIN TB_OR_OC_CAS A2			    
+			    ON A.GRP_ORG_C = A2.GRP_ORG_C			
+			   AND A.UP_CAS_TPC = A2.CAS_TPC			
+			   AND A.LVL_NO = 3							
+			   AND A2.LVL_NO = 2						
+			   AND A2.VLD_YN = 'Y'						
+			  LEFT JOIN TB_OR_OC_CAS A1			    
+			    ON A2.GRP_ORG_C = A1.GRP_ORG_C			
+			   AND A2.UP_CAS_TPC = A1.CAS_TPC			
+			   AND A1.LVL_NO = 1						
+			   AND A1.VLD_YN = 'Y'						
+			 START WITH A.UP_CAS_TPC IS NULL			
+			 CONNECT BY PRIOR A.CAS_TPC = A.UP_CAS_TPC	
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010301" name="사건유형" forward="/comm/ORCO0103" forwardng="/comm/jsonErr" resource="com" grid_process_id="" />
+	
+	<process id="ORCO010302" name="사건유형조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="사건유형조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			SELECT										    
+				 A.GRP_ORG_C							    
+			   , A.HPN_TPC								    
+			   , A.UP_HPN_TPC							    
+			   , A.HPN_TPNM								    
+			   , A.LVL_NO AS "LEVEL"					    
+			   , A1.HPN_TPC HPN_TPC_LV1						
+			   , A1.HPN_TPNM	HPN_TPNM_LV1				
+			   , A2.HPN_TPC HPN_TPC_LV2						
+			   , A2.HPN_TPNM	HPN_TPNM_LV2				
+			  FROM (SELECT * FROM TB_OR_OC_HPN			
+			  	  WHERE GRP_ORG_C = TRIM(#grp_org_c#)			    	
+			  	  AND VLD_YN = 'Y') A					    
+			  LEFT JOIN TB_OR_OC_HPN A2			  		
+			    ON A.GRP_ORG_C = A2.GRP_ORG_C				
+			   AND A.UP_HPN_TPC = A2.HPN_TPC				
+			   AND A.LVL_NO = 3							    
+			   AND A2.LVL_NO = 2							
+			   AND A2.VLD_YN = 'Y'						    
+			  LEFT JOIN TB_OR_OC_HPN A1			  		
+			    ON A2.GRP_ORG_C = A1.GRP_ORG_C			    
+			   AND A2.UP_HPN_TPC = A1.HPN_TPC				
+			   AND A1.LVL_NO = 1							
+			   AND A1.VLD_YN = 'Y'						    
+			 START WITH A.UP_HPN_TPC IS NULL				
+			 CONNECT BY PRIOR A.HPN_TPC = A.UP_HPN_TPC		
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010401" name="이머징리스크유형" forward="/comm/ORCO0104" forwardng="/comm/jsonErr" resource="com" grid_process_id="" />
+	
+	<process id="ORCO010402" name="이머징리스크유형조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="이머징리스크유형조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			 SELECT										
+					 A.GRP_ORG_C						
+				   , A.EMRK_TPC							
+				   , A.UP_EMRK_TPC						
+				   , A.EMRK_TPNM						
+				   , A.LVL_NO AS "LEVEL"				
+				   , A1.EMRK_TPC EMRK_TPC_LV1			
+				   , A1.EMRK_TPNM EMRK_TPNM_LV1			
+			   FROM (SELECT * FROM TB_OR_OC_EMRK		
+			   	  WHERE GRP_ORG_C = TRIM(#grp_org_c#)				
+			   	  AND VLD_YN = 'Y') A					
+			   LEFT JOIN TB_OR_OC_EMRK A1			
+			     ON A.GRP_ORG_C = A1.GRP_ORG_C			
+			    AND A.UP_EMRK_TPC = A1.EMRK_TPC			
+			    AND A.LVL_NO = 2						
+			    AND A1.LVL_NO = 1						
+			    AND A1.VLD_YN = 'Y'						
+			  START WITH A.UP_EMRK_TPC IS NULL			
+			  CONNECT BY PRIOR A.EMRK_TPC = A.UP_EMRK_TPC
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010501" name="영향유형" forward="/comm/ORCO0105" forwardng="/comm/jsonErr" resource="com" grid_process_id="" />
+	
+	<process id="ORCO010502" name="영향유형조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="영향유형조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			 SELECT								
+					 A.GRP_ORG_C				
+				   , A.IFN_TPC					
+				   , A.UP_IFN_TPC				
+				   , A.IFN_TPNM					
+				   , A.LVL_NO AS "LEVEL"		
+				   , A1.IFN_TPC IFN_TPC_LV1		
+				   , A1.IFN_TPNM IFN_TPNM_LV1	
+			   FROM (SELECT * FROM TB_OR_OC_IFN
+			   	  WHERE GRP_ORG_C = TRIM(#grp_org_c#)		
+			   	  AND VLD_YN = 'Y') A			
+			   LEFT JOIN TB_OR_OC_IFN A1		
+			     ON A.GRP_ORG_C = A1.GRP_ORG_C	
+			    AND A.UP_IFN_TPC = A1.IFN_TPC	
+			    AND A.LVL_NO = 2				
+			    AND A1.LVL_NO = 1				
+			    AND A1.VLD_YN = 'Y'				
+			  START WITH A.UP_IFN_TPC IS NULL	
+			  CONNECT BY PRIOR A.IFN_TPC = A.UP_IFN_TPC	
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010602" name="부서별 부서조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="사용자ID" sessionid="brc" object="String"/>
+		<parm id="search_mode" name="검색조건" parmid="search_mode" attr="S" default_value="0"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="부서조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			 SELECT											
+					 GRP_ORG_C								
+				   , BRC									
+				   , UP_BRC									
+				   , BRNM									
+				   , LEVEL AS "LEVEL"						
+				   , NVL(LWST_ORGZ_YN, 'N') AS LWST_ORGZ_YN	
+				   , NVL(UYN, 'N') AS UYN
+				   , HOFC_BIZO_DSC /* 본부부서 :02,영업점:03 */    					
+			   FROM (										
+			     SELECT DISTINCT *							
+			       FROM TB_OR_OM_ORGZ					
+			      WHERE GRP_ORG_C = TRIM(#grp_org_c#)					
+			        AND UYN = 'Y'							
+			        AND BR_LKO_YN = 'N'
+			      </data>
+			</sql>
+			 <sql id="sql1" name = "SQL1">
+					<condition id="cond2" name="조건2" comparison="eq" value="1" variable="#search_mode#"/>
+					<data id="data1" name = "">
+		        		START WITH BRC = TRIM(#brc#)	                               
+			    	</data>
+				</sql>
+			 <sql id="sql1" name = "SQL1">
+					<condition id="cond2" name="조건2" comparison="eq" value="0" variable="#search_mode#"/>
+					<data id="data1" name = "">
+		        		START WITH HOFC_BIZO_DSC IS NOT NULL	                            
+			    	</data>
+				</sql>
+			 <sql id="sql1" name = "SQL1">
+			 	<data>					
+			    CONNECT BY PRIOR UP_BRC = BRC				
+			 )	A
+			 											
+			 START WITH HOFC_BIZO_DSC = '01'				
+			 CONNECT BY PRIOR BRC = UP_BRC					
+			 ORDER SIBLINGS BY BRC							
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010603" name="부서별 직원조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sel_brc" name="사무소코드" parmid="sel_brc" attr="S" default_value=""/>
+		<parm id="auth_grp_id" name="권한" parmid="auth_grp_id" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="직원조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			SELECT																				      
+			    A.GRP_ORG_C                                                                           
+			  , A.ENO                                                                                 
+			  , A.BRC                                                                                 
+			  , A.CHRG_EMPNM EMPNM                                                                    
+			  , CO01.INTG_IDVD_CNM PZCNM                                                                               
+			  , CO02.INTG_IDVD_CNM OFT
+			  , CASE WHEN CO03.INTG_IDVD_CNM LIKE '%-%' THEN SUBSTR(CO03.INTG_IDVD_CNM,INSTR(CO03.INTG_IDVD_CNM,'-') +1) 
+                     WHEN CO03.INTG_IDVD_CNM LIKE '%_%' THEN SUBSTR(CO03.INTG_IDVD_CNM,INSTR(CO03.INTG_IDVD_CNM,'_') +1) 
+                     ELSE CO03.INTG_IDVD_CNM END
+                TEAM_CNM                                                                   
+			  , B.BRNM                       
+			  , CASE WHEN AUTH_OPE.AUTH_GRP_ID = '003' THEN 1 ELSE 0 END OPE_BIP		/* 부서ORM업무담당자 */                                                      
+			  , CASE WHEN AUTH_OPE.AUTH_GRP_ID = '004' THEN 1 ELSE 0 END MNG_TEAM   	/* 부서팀장  */          
+			  , CASE WHEN AUTH_OPE.AUTH_GRP_ID = '005' THEN 1 ELSE 0 END MNG_DIRECTOR   /* 부장  */          
+			  , CASE WHEN AUTH_OPE.AUTH_GRP_ID = '006' THEN 1 ELSE 0 END MNG_BR   		/* 지점장 */         
+			  FROM TB_OR_OM_EMP A                                                                  
+			 INNER JOIN TB_OR_OM_ORGZ B                                                            
+			    ON A.GRP_ORG_C = B.GRP_ORG_C                                                          
+			   AND A.BRC = B.BRC                                                                      
+			 INNER JOIN TB_OR_OH_ORGZ_EMP C /* 운영리스크 부서용 권한 테이블 */                          
+			    ON A.GRP_ORG_C = C.GRP_ORG_C                                                          
+			   AND A.ENO = C.ENO                                                                      
+			  LEFT OUTER JOIN TB_OR_OH_ORGZ_EMP_AUTH AUTH_OPE   /* 003:부서 업무 담당자 ,  004:부서팀장 , 006:지점장  , 005:부장  */          
+			    ON C.GRP_ORG_C = AUTH_OPE.GRP_ORG_C                                                       
+			   AND C.BRC = AUTH_OPE.BRC                                                                   
+			   AND C.ENO = AUTH_OPE.ENO                                                                   
+			   AND AUTH_OPE.AUTH_GRP_ID IN ('003','004','005','006')
+			  LEFT OUTER JOIN TB_OR_OM_CODE CO01
+			    ON A.PZCC = CO01.IDVDC_VAL
+			   AND CO01.INTG_GRP_C = 'PZCC' 
+			  LEFT OUTER JOIN TB_OR_OM_CODE CO02
+			    ON A.OFT_C = CO02.IDVDC_VAL
+			   AND CO02.INTG_GRP_C = 'OFT_C'
+			  LEFT OUTER JOIN TB_OR_OM_CODE CO03
+			    ON A.TEAM_CD = CO03.IDVDC_VAL
+			   AND CO03.INTG_GRP_C = 'TEAM_CD'                                                      
+			 WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)                                                              
+			   AND C.BRC = TRIM(#sel_brc#)                                                                    
+			 ORDER BY DECODE(CO01.INTG_IDVD_CNM,'텔러직','XX',NVL(A.PZCC,'XX')), A.ENO														
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010702" name="부서조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="search_txt" name="검색어" parmid="search_txt" attr="S" default_value=""/>
+		<parm id="mode" name="검색어" parmid="mode" attr="S" default_value="0"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="부서조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			SELECT																				            
+					 GRP_ORG_C																					
+				   , BRC																						
+				   , UP_BRC																						
+				   , BRNM
+				   , LVL_NO AS "LEVEL"
+				   , NVL(ORGZ_CFC, 'N') AS ORGZ_CFC																
+				   , NVL(LWST_ORGZ_YN, 'N') AS LWST_ORGZ_YN														
+				   , NVL(UYN, 'N') AS UYN
+				   FROM (																						
+			     SELECT DISTINCT *																			
+			       FROM TB_OR_OM_ORGZ																
+			      WHERE GRP_ORG_C = TRIM(#grp_org_c#)																	
+			        AND UYN = 'Y'																			
+			        AND BR_LKO_YN = 'N'																		
+			      START WITH HOFC_BIZO_DSC IS NOT NULL																								
+					</data>
+				</sql>
+  				<sql id="sql12" name="SQL12">
+					<condition id="cond112" name="조건112" variable="#search_txt#" comparison="ne" value="" />
+					<data id="data112" name="">
+	 			AND (UPPER(BRNM) LIKE '%' || UPPER(TRIM(#search_txt#)) || '%' 											
+	 				OR UPPER(BRC) LIKE '%' || UPPER(TRIM(#search_txt#)) || '%') 											
+					</data>
+				</sql>
+  				<sql id="sql13" name="SQL13">
+					<data id="data113" name="">
+			    	CONNECT BY PRIOR UP_BRC = BRC																
+			 			)	A																							
+		 		    START WITH HOFC_BIZO_DSC = '01'																	
+		 	 		CONNECT BY PRIOR BRC = UP_BRC																
+		 			ORDER SIBLINGS BY BRC																			
+					</data> 
+				</sql>
+			  <result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORCO010802" name="부서조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="search_txt" name="검색어" parmid="search_txt" attr="S" default_value=""/>
+		<parm id="mode" name="검색어" parmid="mode" attr="S" default_value="0"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="부서조회" type="S" mode="select">
+   				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						SELECT																				            
+					 		   GRP_ORG_C																					
+				   			   , BRC																						
+				   			   , UP_BRC																						
+				   			   , BRNM
+				   			   , LEVEL  AS "LEVEL"
+				   			   , NVL(ORGZ_CFC, 'N') AS ORGZ_CFC
+				   			   , NVL(LWST_ORGZ_YN, 'N') AS LWST_ORGZ_YN
+				   			   , NVL(UYN, 'N') AS UYN
+				   			    FROM (																						
+			     				 SELECT DISTINCT *																			
+			       				   FROM TB_OR_OM_ORGZ																
+			      				  WHERE GRP_ORG_C = TRIM(#grp_org_c#)																	
+			        			    AND UYN = 'Y'																			
+			        				AND BR_LKO_YN = 'N'																		
+			      			 START WITH HOFC_BIZO_DSC IS NOT NULL																							
+					</data>
+				</sql>
+				<sql id="sql12" name="SQL12">
+					<condition id="cond112" name="search_txt != null" variable="#search_txt#" comparison="ne" value="" />
+					<data id="data112" name="">
+								    AND (UPPER(BRNM) LIKE '%' || UPPER(TRIM(#search_txt#)) || '%' 											
+	 							     OR UPPER(BRC) LIKE '%' || UPPER(TRIM(#search_txt#)) || '%') 											
+					</data>
+				</sql>
+				<sql id="sql13" name="SQL13">
+					<data id="data113" name="">
+							 CONNECT BY PRIOR UP_BRC = BRC																
+			 			  	   )	A																							
+		 	 		START WITH HOFC_BIZO_DSC = '01'																	
+		 	  		CONNECT BY PRIOR BRC = UP_BRC																	
+		 	 		ORDER SIBLINGS BY BRC						  														
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO010901" name="리스크풀 조회" forward="/comm/ORCO0109" forwardng="/comm/errorPage" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="APL_AFLCO_DSC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 SELECT NVL(IDVDC_VAL,' ') INTGC, NVL(INTG_IDVD_CNM,' ') INTG_CNM  
+						   FROM TB_OR_OM_CODE  
+						  WHERE GRP_ORG_C = #grp_org_c#  
+						    AND INTG_GRP_C = TRIM(#intg_grp_c#)  
+						    AND C_UYN = 'Y'  
+						  ORDER BY SORT_SQ   
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO011001" name="손실 조회" forward="/comm/ORCO0110" forwardng="/comm/errorPage" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="사무소코드" sessionid="brc" object="String"/>
+		<parm id="intg_grp_c_1" name="통합그룹코드1" parmid="intg_grp_c_1" attr="S" default_value="LSHP_FORM_C"/>
+		<parm id="intg_grp_c_2" name="통합그룹코드2" parmid="intg_grp_c_2" attr="S" default_value="LSHP_STSC"/>
+		<parm id="intg_grp_c_3" name="통합그룹코드3" parmid="intg_grp_c_3" attr="S" default_value="LSHP_DCZ_STS_DSC_ORM"/>
+		<parm id="intg_grp_c_4" name="통합그룹코드4" parmid="intg_grp_c_4" attr="S" default_value="LSHP_DCZ_STS_DSC_NML"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회1" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 SELECT NVL(IDVDC_VAL,' ') INTGC, NVL(INTG_IDVD_CNM,' ') INTG_CNM  
+						   FROM TB_OR_OM_CODE  
+						  WHERE GRP_ORG_C = #grp_org_c#  
+						    AND INTG_GRP_C = TRIM(#intg_grp_c_1#)  
+						    AND C_UYN = 'Y'  
+						  ORDER BY SORT_SQ   
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="통합코드조회2" type="S" mode="select">
+				<sql id="sql2" name = "SQL2">
+					<data id="data2" name = "">
+						 SELECT NVL(IDVDC_VAL,' ') INTGC, NVL(INTG_IDVD_CNM,' ') INTG_CNM  
+						   FROM TB_OR_OM_CODE  
+						  WHERE GRP_ORG_C = #grp_org_c#  
+						    AND INTG_GRP_C = TRIM(#intg_grp_c_2#)  
+						    AND C_UYN = 'Y'  
+						  ORDER BY SORT_SQ   
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="통합코드조회3" type="S" mode="select">
+				<sql id="sql3" name = "SQL3">
+					<data id="data3" name = "">
+						 SELECT NVL(IDVDC_VAL,' ') INTGC, NVL(INTG_IDVD_CNM,' ') INTG_CNM  
+						   FROM TB_OR_OM_CODE  
+						  WHERE GRP_ORG_C = #grp_org_c#  
+						    AND INTG_GRP_C = TRIM(#intg_grp_c_3#)  
+						    AND C_UYN = 'Y'  
+						  ORDER BY SORT_SQ   
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit04" name="통합코드조회4" type="S" mode="select">
+				<sql id="sql4" name = "SQL4">
+					<data id="data4" name = "">
+						 SELECT NVL(IDVDC_VAL,' ') INTGC, NVL(INTG_IDVD_CNM,' ') INTG_CNM  
+						   FROM TB_OR_OM_CODE  
+						  WHERE GRP_ORG_C = #grp_org_c#  
+						    AND INTG_GRP_C = TRIM(#intg_grp_c_4#)  
+						    AND C_UYN = 'Y'  
+						  ORDER BY SORT_SQ   
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>						
+		</group>
+	</process>
+	
+	<process id="ORCO011101" name="KRI 조회" forward="/comm/ORCO0111" forwardng="/comm/errorPage" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="RKI_ATTR_C"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 SELECT NVL(IDVDC_VAL,' ') INTGC, NVL(INTG_IDVD_CNM,' ') INTG_CNM  
+						   FROM TB_OR_OM_CODE  
+						  WHERE GRP_ORG_C = #grp_org_c#  
+						    AND INTG_GRP_C = TRIM(#intg_grp_c#)  
+						    AND C_UYN = 'Y'  
+						  ORDER BY SORT_SQ   
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO011202" name="직원조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="brc" name="사무소코드" parmid="brc" attr="S" default_value=""/>
+		<parm id="search_txt" name="검색어" parmid="search_txt" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="직원조회" type="S" mode="select">
+   				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+						SELECT A.BRC, B.BRNM, C.INTG_IDVD_CNM PZCNM, A.ENO, A.CHRG_EMPNM EMPNM
+							FROM 
+							    TB_OR_OM_EMP A
+							    INNER JOIN TB_OR_OM_ORGZ B 
+							        ON A.BRC = B.BRC
+							    INNER JOIN TB_OR_OM_CODE C 
+							        ON A.PZCC = C.IDVDC_VAL
+							        AND C.INTG_GRP_C = 'PZCC'
+							        ORDER BY A.ENO
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORCO011301" name="팀 유형" forward="/comm/ORCO0113" forwardng="/comm/jsonErr" resource="com" grid_process_id="" />
+	
+	<process id="ORCO011302" name="팀 유형 조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="팀 유형 조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			 SELECT
+			 		  A.GRP_ORG_C
+			 		 ,A.IDVDC_VAL
+			 		 ,A.INTG_IDVD_CNM
+			 		 
+			   FROM (SELECT * FROM TB_OR_OM_CODE
+			   		  WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+			   		  AND INTG_GRP_C='TEAM_CD'
+			   		  ) A
+					</data>
+				</sql>
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORCO011401" name="결재" forward="/comm/ORCO0114" forwardng="/comm/jsonErr" resource="com" grid_process_id="" >
+	</process>
+	
+	<process id="ORCO011402" name="결재 내역 조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brnm" name="사무소명" sessionid="brnm" object="String"/>
+		<session id="hofc_bizo_dsc" name="본부부서/영업점" sessionid="hofc_bizo_dsc" object="String"/>
+		<parm id="table_name" name="table_name" paramid="table_name" attr="S" default_value=""/>
+		<parm id="dcz_code" name="dcz_code" paramid="dcz_code" attr="S" default_value=""/>
+		<parm id="rpst_id_column" name="rpst_id_column" paramid="rpst_id_column" attr="S" default_value=""/>
+		<parm id="rpst_id" name="rpst_id" paramid="rpst_id" attr="S" default_value=""/>
+		<parm id="bas_pd_column" name="bas_pd_column" paramid="bas_pd_column" attr="S" default_value=""/>
+		<parm id="bas_pd" name="bas_pd" paramid="bas_pd" attr="S" default_value=""/>
+		<parm id="brc" name="brc" paramid="brc" attr="S" default_value=""/>
+		<parm id="mode" name="mode" paramid="mode" attr="S" default_value=""/>
+		<parm id="brc_yn" name="brc_yn" paramid="brc_yn" attr="S" default_value=""/>
+		<parm id="dcz_brc" name="dcz_brc" paramid="dcz_brc" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="팀 유형 조회" type="S" mode="select">
+  				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+							WITH DEPT_BRNM AS ( 														
+							     SELECT                                                     
+							       A.GRP_ORG_C
+				                 , B.UP_BRC 
+				                 , C.BRNM
+							     , B.BRC    
+							      FROM TB_OR_OM_ORGZ A                              
+							    LEFT JOIN TB_OR_OM_ORGZ B
+							         ON A.GRP_ORG_C = B.GRP_ORG_C                           
+							        AND A.BRC = B.BRC
+							        AND B.UYN = 'Y'
+				                LEFT JOIN TB_OR_OM_ORGZ C
+				                     ON B.UP_BRC = C.BRC
+				                    AND C.UYN = 'Y'
+							      GROUP BY A.GRP_ORG_C,B.UP_BRC,C.BRNM,B.BRC
+							)
+				    ,AUTH_GRPNM AS (
+				       SELECT B.ENO,LISTAGG(A.AUTH_GRPNM,',') WITHIN GROUP (ORDER BY B.ENO) AUTH_GRPNM
+				         FROM TB_OR_OM_AUTH A
+				             ,TB_OR_OH_ORGZ_EMP_AUTH B
+				        WHERE A.AUTH_GRP_ID = B.AUTH_GRP_ID
+				          AND A.AUTH_GRP_ID &lt;&gt; '008'
+				        GROUP BY B.ENO
+				       )
+				SELECT NVL(B.AUTH_GRPNM,'사용자') AUTH_GRPNM
+				      ,F.BRNM BRNM
+				      ,D.BRNM TEAM_NM
+				      ,C.CHRG_EMPNM EMPNM
+				      ,C.ENO  ENO
+				      ,A.FIR_INPMN_ENO DCZ_ENO
+				      ,A.DCZMN_ENO  DCZ_REQ_ENO
+				      ,G.INTG_IDVD_CNM OFTNM
+				      ,CASE WHEN A.DCZ_RMK_C = '01' THEN '반려' 
+				            WHEN A.DCZ_RMK_C = '02' THEN '회수'
+				            WHEN A.DCZ_RMK_C = '03' THEN '재평가요청'
+				            ELSE H.INTG_IDVD_CNM 
+				            END STATUS
+				      ,A.DCZ_DT
+				      ,A.RTN_CNTN
+				  FROM $table_name$ A
+				      ,AUTH_GRPNM B
+				      ,TB_OR_OM_EMP C
+				      ,TB_OR_OM_ORGZ D
+				      ,DEPT_BRNM F
+				      ,TB_OR_OM_CODE G
+				      ,TB_OR_OM_CODE H
+				WHERE A.$rpst_id_column$ = TRIM(#rpst_id#)
+				  AND A.$bas_pd_column$ = TRIM(#bas_pd#)
+				  AND A.FIR_INPMN_ENO = C.ENO (+)
+				  AND ((D.HOFC_BIZO_DSC = '02' AND C.TEAM_CD = D.BRC ) OR (D.HOFC_BIZO_DSC = '03' AND C.BRC = D.BRC))
+				  AND A.FIR_INPMN_ENO = B.ENO (+)
+				  AND D.BRC = F.BRC
+				  AND C.OFT_C = G.IDVDC_VAL
+				  AND G.INTG_GRP_C = 'OFT_C'
+				  AND A.$dcz_code$ = H.IDVDC_VAL
+				  AND H.INTG_GRP_C =TRIM(#dcz_code#)
+				    </data>
+				 </sql>
+				<sql id="sql1" name = "SQL1">
+					<condition id="cond1" name="조건1" comparison="eq" value="Y" variable="#brc_yn#" />
+					<data id="data1" name = "">
+		        		AND A.BRC = #dcz_brc#                        
+			    	</data>
+				</sql>
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+		        		ORDER BY A.DCZ_SQNO DESC                     
+			    	</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean" />
+				
+			</unit>
+		</group>
+	</process>
+	<process id="ORCO011403" name="결재예정자 조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="사무소코드" sessionid="brc" object="String"/>
+		<session id="hofc_bizo_dsc" name="본부부서/영업점" sessionid="hofc_bizo_dsc" object="String"/>
+		<parm id="mode" name="mode" paramid="mode" attr="S" default_value=""/>
+		<parm id="dcz_objr_emp_auth" name="조회 권한" paramid="dcz_objr_emp_auth" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="팀 유형 조회" type="S" mode="select">
+  				<sql id="sql1" name="SQL1">
+					<data id="data1" name="">
+					 SELECT  D.AUTH_GRPNM 
+					        ,NVL((SELECT BRNM FROM TB_OR_OM_ORGZ WHERE BRC= A.UP_BRC),'수협은행') COMBO_BRNM
+					        ,A.BRNM COMBO_TEAM_NM
+					        ,C.ENO COMBO_ENO
+					        ,C.ENO ENO
+					        ,C.CHRG_EMPNM COMBO_EMPNM
+					        ,(SELECT INTG_IDVD_CNM FROM TB_OR_OM_CODE WHERE IDVDC_VAL = C.OFT_C AND INTG_GRP_C = 'OFT_C') COMBO_OFTNM
+					  FROM TB_OR_OM_ORGZ A
+					      ,TB_OR_OH_ORGZ_EMP_AUTH B
+					      ,TB_OR_OM_EMP C
+					      ,TB_OR_OM_AUTH D
+					 WHERE B.AUTH_GRP_ID IN ($dcz_objr_emp_auth$)
+					   AND A.BRC = B.BRC
+					   AND B.ENO = C.ENO
+					   AND B.AUTH_GRP_ID = D.AUTH_GRP_ID
+					</data>
+				</sql>
+				<sql id="sql1" name = "SQL1">
+					<condition id="cond1" name="조건1" comparison="eq" value="02" variable="#hofc_bizo_dsc#" />
+					<condition id="cond2" name="조건2" comparison="eq" value="1" variable="#mode#" operator="and" />
+					<data id="data1" name = "">
+		        		AND A.UP_BRC = (SELECT UP_BRC FROM TB_OR_OM_ORGZ WHERE BRC = #brc#)                                 
+			    	</data>
+				</sql>
+				<sql id="sql1" name = "SQL1">
+					<condition id="cond1" name="조건1" comparison="eq" value="03" variable="#hofc_bizo_dsc#" />
+					<condition id="cond2" name="조건2" comparison="eq" value="1" variable="#mode#" operator="and" />
+					<data id="data1" name = "">
+		        		AND A.BRC = #brc#                        
+			    	</data>
+				</sql>
+				<sql id="sql1" name = "SQL1">
+					<condition id="cond1" name="조건1" comparison="eq" value="02" variable="#hofc_bizo_dsc#" />
+					<condition id="cond2" name="조건2" comparison="eq" value="1" variable="#mode#" operator="and" />
+					<data id="data1" name = "">
+		        	     ORDER BY CASE WHEN A.BRC = #brc# THEN 1 ELSE 2 END                
+			    	</data>
+				</sql>
+				<sql id="sql1" name = "SQL1">
+					<condition id="cond2" name="조건2" comparison="ne" value="1" variable="#mode#" operator="and" />
+					<data id="data1" name = "">
+		        	     ORDER BY C.ENO                
+			    	</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean" />
+			</unit>
+		</group>
+	</process>
+	<process id="ORCO090701" name="공지팝업조회" forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="com" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="공지팝업조회" type="S" mode="select">
+ 				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			 SELECT																	
+			  GRP_ORG_C||BLBD_SQNO BLBD_SQNO										
+			, BLBD_TINM																   
+			, BLBD_CNTN																   
+			 FROM TB_OR_OM_BLBD												       
+			 WHERE GRP_ORG_C = TRIM(#grp_org_c#)												   
+			   AND BLBD_SQNO = (													
+			   	SELECT MAX(BLBD_SQNO) FROM TB_OR_OM_BLBD					        
+			   	 WHERE GRP_ORG_C = TRIM(#grp_org_c#)										       
+			   	   AND PUP_YN = 'Y'													   
+			   	   AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BLTN_ST_DT AND BLTN_ED_DT
+			   )																	
+					</data>
+				</sql>
+				<!-- 
+ 				<servcall id="sv01" name="공지팝업조회" serviceid="ORCO907S1" indatatype="fixed" outdatatype="text">
+					<input id="grp_org_c" name="그룹기관코드" type="text" len="2">
+					 <mapp id="mp01" name="mp01" value="#grp_org_c#" />
+					</input>
+					<outitem id="blbd_sqno" name="공지번호" len="12" /> 
+					<outitem id="blbd_tinm" name="공제제목" len="255" /> 
+					<outitem id="blbd_cntn" name="공지내용" len="4000" /> 
+					<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+				</servcall>
+				-->
+				<result id="vlist" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+
+</com_servlet>

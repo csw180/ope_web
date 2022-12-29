@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="87" viewBox="0 0 20 87">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-rcsa_guide_1);
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #a3a4a6;
+      }
+
+      .cls-3 {
+        fill: #fff;
+      }
+    </style>
+    <clipPath id="clip-rcsa_guide_1">
+      <rect width="20" height="87"/>
+    </clipPath>
+  </defs>
+  <g id="rcsa_guide_1" class="cls-1">
+    <rect class="cls-3" width="20" height="87"/>
+    <line id="선_2" data-name="선 2" class="cls-2" x2="10" transform="translate(6.5 18.5)"/>
+    <line id="선_3" data-name="선 3" class="cls-2" x2="10" transform="translate(6.5 47.5)"/>
+    <path id="패스_9" data-name="패스 9" class="cls-2" d="M-10-2V75H0" transform="translate(16.5 2)"/>
+    <path id="패스_12" data-name="패스 12" class="cls-2" d="M0,0H7V7" transform="translate(11.5 13.55) rotate(45)"/>
+    <path id="패스_13" data-name="패스 13" class="cls-2" d="M0,0H7V7" transform="translate(11.5 42.55) rotate(45)"/>
+    <path id="패스_14" data-name="패스 14" class="cls-2" d="M0,0H7V7" transform="translate(11.5 72.05) rotate(45)"/>
+  </g>
+</svg>

@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com_servlet id="das" name="대시보드" commkind="das">
+	<lib id="lib" name="라이브러리정의" value="com.shbank.orms.comm.util"/>
+	
+	<process id="ORDS010101" name="계열사 ORM 메인화면" forward="/dash/ORDS0101" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="부서코드" sessionid="brc" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="운영리스크업무처리현황_RCSA" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			 																					 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="운영리스크업무처리현황_KRI" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">       
+					                 					                  		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="운영리스크업무처리현황_손실" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">                                                                      		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit04" name="운영리스크업무처리현황_BIA" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name=""> 
+						SELECT BIA_ALL_CNT, BIA_01_CNT, BIA_02_CNT, BIA_03_CNT, BIA_04_CNT, BIA_05_CNT, G.BIA_YY, TO_CHAR(TO_DATE(G.BIA_EVL_ST_DT,'YYYY-MM-DD')) BIA_EVL_ST_DT, TO_CHAR(TO_DATE(G.BIA_EVL_ED_DT,'YYYY-MM-DD')) BIA_EVL_ED_DT 
+						  FROM TB_OR_OM_SCHD G,
+						  	   ( SELECT COUNT(BRC) BIA_ALL_CNT FROM(
+						            SELECT A.BRC 
+						              FROM TB_OR_BM_BIAEVL A, TB_OR_OM_ORGZ B
+                                     WHERE A.BAS_YM LIKE '%'||(SELECT BIA_YY FROM TB_OR_OM_SCHD WHERE TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BIA_EVL_ST_DT AND BIA_EVL_ED_DT)||'%'
+						               AND A.BRC = B.BRC
+						               AND B.HOFC_BIZO_DSC = '02'
+						             GROUP BY A.BRC)
+						       ) , --BRC 총 개수
+						       ( SELECT COUNT(BRC) BIA_01_CNT FROM (
+						            SELECT BRC 
+						              FROM TB_OR_BM_BIAEVL 
+						             WHERE BIA_EVL_PRG_STSC &lt;= '01' 
+                                       AND BAS_YM LIKE '%'||(SELECT BIA_YY FROM TB_OR_OM_SCHD WHERE TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BIA_EVL_ST_DT AND BIA_EVL_ED_DT)||'%'
+						             GROUP BY BRC)
+						       ) , --평가자지정
+						       ( SELECT COUNT(BRC) BIA_02_CNT FROM (
+						            SELECT BRC 
+						              FROM TB_OR_BM_BIAEVL 
+						             WHERE BIA_EVL_PRG_STSC &lt;= '02' 
+                                       AND BAS_YM LIKE '%'||(SELECT BIA_YY FROM TB_OR_OM_SCHD WHERE TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BIA_EVL_ST_DT AND BIA_EVL_ED_DT)||'%'
+						             GROUP BY BRC)
+						       ) , --평가수행
+						       ( SELECT COUNT(BRC) BIA_03_CNT FROM (
+						            SELECT BRC 
+						              FROM TB_OR_BM_BIAEVL 
+						             WHERE BIA_EVL_PRG_STSC &lt;= '04' 
+                                       AND BAS_YM LIKE '%'||(SELECT BIA_YY FROM TB_OR_OM_SCHD WHERE TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BIA_EVL_ST_DT AND BIA_EVL_ED_DT)||'%'
+						             GROUP BY BRC)
+						       ) , --결과 검토 (부서)
+						       ( SELECT COUNT(BRC) BIA_04_CNT FROM (
+						            SELECT BRC 
+						              FROM TB_OR_BM_BIAEVL 
+						             WHERE BIA_EVL_PRG_STSC &lt;= '14' 
+                                       AND BAS_YM LIKE '%'||(SELECT BIA_YY FROM TB_OR_OM_SCHD WHERE TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BIA_EVL_ST_DT AND BIA_EVL_ED_DT)||'%'
+						             GROUP BY BRC)
+						       ) , --결과 검토 (ORM)
+						       ( SELECT COUNT(BRC) BIA_05_CNT FROM (
+						            SELECT BRC 
+						              FROM TB_OR_BM_BIAEVL 
+						             WHERE BIA_EVL_PRG_STSC &lt;= '16' 
+                                       AND BAS_YM LIKE '%'||(SELECT BIA_YY FROM TB_OR_OM_SCHD WHERE TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BIA_EVL_ST_DT AND BIA_EVL_ED_DT)||'%'
+						             GROUP BY BRC)
+						       )  --결과 검토 
+						  WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+						    AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN G.BIA_EVL_ST_DT AND G.BIA_EVL_ED_DT 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit05" name="누적 손실 금액" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+							WITH
+							T1 AS (
+							SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-108),'YYYY') BASYY FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-96),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-84),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-72),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-60),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-48),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-36),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-24),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY') FROM DUAL
+							UNION SELECT TO_CHAR(SYSDATE,'YYYY') FROM DUAL
+							),
+							T2 AS (
+							SELECT SUBSTR(ACG_PRC_DT,1,4) BASYY, SUM(LSOC_AM) LSS_AM, COUNT(*) COUNT
+							FROM TB_OR_LH_LSAM
+							WHERE GRP_ORG_C = '01'
+							  AND RVPY_DSC = '2'
+							  AND ACG_PRC_DT > TO_CHAR(ADD_MONTHS(SYSDATE,-120),'YYYYMMDD')
+							GROUP BY SUBSTR(ACG_PRC_DT,1,4)
+							)
+							SELECT A.BASYY,DECODE(A.BASYY, B.BASYY, B.LSS_AM, 0) LSS_AM, DECODE(A.BASYY, B.BASYY,B.COUNT,0) COUNT
+							FROM T1 A
+							   ,T2 B
+							ORDER BY A.BASYY                                                              
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit06" name="규제 자본 산출 결과" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			              SELECT GRP_ORG_C
+							    , BAS_YM
+							    , RGO_IN_DSC
+							    , SBDR_C
+							    , MSR_ELM_DSCD
+							    , MSR_AM
+							    ,TO_CHAR(SYSDATE,'YYYYMM')
+							FROM TB_OR_GA_MSRELM 
+							WHERE GRP_ORG_C = '01'
+							  AND RGO_IN_DSC = '1'
+							  AND SBDR_C = '00'
+							  AND MSR_ELM_DSCD = 'E900'
+							  AND BAS_YM &lt;=TO_CHAR(SYSDATE,'YYYYMM')
+							  AND BAS_YM &gt;TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYYMM')                                                                                   
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit07" name="내부 자본 산출 결과" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			               SELECT BASYY||BAS_MM, LMT_RTO
+							 FROM (
+								SELECT BASYY, BAS_MM , LMT_RTO , RANK() OVER(ORDER BY BASYY DESC, BAS_MM DESC) RANK
+								FROM TB_OR_GA_LMT_EXRAT 
+								WHERE GRP_ORG_C = '01'
+								  AND RGO_IN_DSC = '1'
+								  AND SBDR_C = '00')
+							 WHERE RANK&lt;3                                                                                  
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit08" name="일정체크" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			               SELECT A.RK_EVL_ST_DT, A.RK_EVL_ED_DT, B.RKI_ST_DT, B.RKI_ED_DT, D.BIA_EVL_ST_DT, D.BIA_EVL_ED_DT, D.BIA_YY
+			                 FROM 
+								(
+								    SELECT RK_EVL_ST_DT, RK_EVL_ED_DT, 1 DUMMY
+								      FROM TB_OR_OM_SCHD
+								     WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+								       AND RK_EVL_TGT_YN = 'Y'
+								       AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN RK_EVL_ST_DT AND RK_EVL_ED_DT
+								) A, --RCSA
+								(
+								    SELECT RKI_ST_DT, RKI_ED_DT, 1 DUMMY 
+								      FROM TB_OR_OM_SCHD
+								     WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+								       AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN RKI_ST_DT AND RKI_ED_DT
+								) B, --KRI
+								(
+								    SELECT 1 DUMMY
+								      FROM DUAL     
+								     WHERE 1=2
+								) C, --손실
+								(
+								    SELECT BIA_EVL_ST_DT, BIA_EVL_ED_DT, BIA_YY, 1 DUMMY
+								      FROM TB_OR_OM_SCHD
+								     WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+								       AND BIA_EVL_TGT_YN = 'Y'
+								       AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BIA_EVL_ST_DT AND BIA_EVL_ED_DT
+								) D, --BIA
+								(SELECT 1 DUMMY FROM DUAL) Z
+								WHERE A.DUMMY(+) = Z.DUMMY
+								  AND B.DUMMY(+) = Z.DUMMY
+								  AND C.DUMMY(+) = Z.DUMMY
+								  AND D.DUMMY(+) = Z.DUMMY
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORDS010201" name="계열사 ORM KRI조회" forward="/dash/ORDS0102" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="본부부서차트" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                                                                                                     
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="영업점차트" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                                                                                                     
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010202" name="본부부서 관리 지표 발생 현황" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="본부부서 관리 지표 발생 현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                			 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010203" name="영업점 관리 지표 발생 현황" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="영업점 관리 지표 발생 현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                                                                                                                                                                                                 		 
+					</data>
+				</sql>
+				
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010204" name="본부부서 관리 지표 발생 현황" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="본부부서 관리 지표 발생 현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                                                                                                    
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010205" name="영업점 관리 지표 발생 현황" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="영업점 관리 지표 발생 현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">                                                                                                 		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010301" name="본부부서 메인화면" forward="/dash/ORDS0103" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="부서코드" sessionid="brc" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="운영리스크업무처리현황_RCSA" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			 																					 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="운영리스크업무처리현황_KRI" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">       
+					                 					                  		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="운영리스크업무처리현황_손실" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">                                                                      		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit04" name="운영리스크업무처리현황_BIA" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name=""> 
+					SELECT BRC, BRNM, BIA_EVL_ST_DT, BIA_EVL_ED_DT,
+					       MIN(BIA_01) BIA_01, MIN(BIA_02) BIA_02, MIN(BIA_03) BIA_03, MIN(BIA_04) BIA_04, MIN(BIA_05) BIA_05
+					  FROM(
+						  SELECT A.BRC, A.BRNM , B.BIA_EVL_ST_DT, B.BIA_EVL_ED_DT,
+						         CASE WHEN C.BIA_EVL_PRG_STSC &lt;= 1 THEN 'N'  ELSE 'Y' END BIA_01,
+						         CASE WHEN C.BIA_EVL_PRG_STSC &lt;= 2 THEN 'N'  ELSE 'Y' END BIA_02,
+						         CASE WHEN C.BIA_EVL_PRG_STSC &lt;= 4 THEN 'N'  ELSE 'Y' END BIA_03,
+						         CASE WHEN C.BIA_EVL_PRG_STSC &lt;= 14 THEN 'N' ELSE 'Y' END BIA_04,
+						         CASE WHEN C.BIA_EVL_PRG_STSC &lt;= 16 THEN 'N' ELSE 'Y' END BIA_05
+						    FROM TB_OR_OM_ORGZ A
+						    INNER JOIN TB_OR_OM_SCHD B
+						      ON A.GRP_ORG_C = B.GRP_ORG_C
+						     AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN B.BIA_EVL_ST_DT AND B.BIA_EVL_ED_DT
+						     AND BIA_EVL_TGT_YN = 'Y'
+						    INNER JOIN TB_OR_BM_BIAEVL C
+						      ON A.GRP_ORG_C = C.GRP_ORG_C
+						     AND C.BAS_YM LIKE '%%'||B.BIA_YY||'%%'
+						     AND C.BRC = A.BRC
+						   WHERE A.UP_BRC = 
+						        (SELECT UP_BRC 
+						           FROM TB_OR_OM_ORGZ 
+						          WHERE BRC = TRIM(#brc#)
+						            AND UYN='Y' 
+						            AND HOFC_BIZO_DSC = '02' )
+						    AND A.LVL_NO = '3'
+						    AND A.UYN = 'Y'
+						    )
+					   GROUP BY BRC, BRNM, BIA_EVL_ST_DT, BIA_EVL_ED_DT
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit05" name="부서 관리 지표 발생 현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                                                                                                       
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010302" name="당월 RED 등급 지표" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="당월 RED 등급 지표" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                			 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010401" name="본부부서 KRI 조회" forward="/dash/ORDS0104" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="사무소코드" sessionid="brc" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="지표발생정보" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                                            		 
+					</data>
+				</sql>
+			</unit>
+			<unit id="unit02" name="전년동월대비발생추이" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+					</data>
+				</sql>
+				
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="전행발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+					</data>
+				</sql>				
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010402" name="관리지표발생현황" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="관리지표발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                			 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010501" name="영업점 메인화면" forward="/dash/ORDS0105" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="사무소코드" sessionid="brc" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="운영리스크업무처리현황_RCSA" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			 																					 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="운영리스크업무처리현황_손실" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">       
+					                 					                  		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="전영업점지표발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">       
+						                  		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit04" name="영업점지표발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">       
+						                  		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit05" name="영업점명 검색" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">       
+						                  		 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010502" name="개인별 지표 발생 현황" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="관리지표발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                			 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010503" name="당월 red 등급 지표" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="관리지표발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                			 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010601" name="영업점 KRI 조회" forward="/dash/ORDS0106" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<session id="brc" name="사무소코드" sessionid="brc" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="관리지표발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			                                                                                             
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="운영리스크업무처리현황_KRI" type="S">
+				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			                                                         
+					</data>
+				</sql>
+				
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="운영리스크업무처리현황_손실" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			                                                                            		 
+					</data>
+				</sql>
+				
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit05" name="평가부서 주요 위험 발생 KRI" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<!-- data : SQL문의 정의 -->
+					<data id="data111" name="">
+			                                                                                                   		 
+					</data>
+				</sql>
+				
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	<process id="ORDS010602" name="관리지표발생현황" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="das" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="관리지표발생현황" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+			                			 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+</com_servlet>

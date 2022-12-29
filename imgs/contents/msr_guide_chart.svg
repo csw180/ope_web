@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="260" viewBox="0 0 400 260">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-msr_guide_chart);
+      }
+
+      .cls-10, .cls-2 {
+        fill: #de2626;
+      }
+
+      .cls-2 {
+        font-size: 14px;
+      }
+
+      .cls-2, .cls-5, .cls-7 {
+        font-family: MalgunGothicBold, Malgun Gothic; font-weight: 700;
+      }
+
+      .cls-3, .cls-5 {
+        fill: #111;
+      }
+
+      .cls-12, .cls-13, .cls-14, .cls-4 {
+        fill: none;
+      }
+
+      .cls-4 {
+        stroke: #e0e0e0;
+      }
+
+      .cls-5, .cls-6, .cls-7 {
+        font-size: 11px;
+        letter-spacing: -0.002em;
+      }
+
+      .cls-15, .cls-6, .cls-7 {
+        fill: #555;
+      }
+
+      .cls-15, .cls-6 {
+        font-family: MalgunGothic, Malgun Gothic;
+      }
+
+      .cls-8 {
+        fill: #618cc7;
+      }
+
+      .cls-9 {
+        fill: #db1313;
+      }
+
+      .cls-11 {
+        fill: #349b48;
+      }
+
+      .cls-12 {
+        stroke: #de2626;
+      }
+
+      .cls-12, .cls-13, .cls-14 {
+        stroke-width: 2px;
+      }
+
+      .cls-13 {
+        stroke: #618cc7;
+      }
+
+      .cls-14 {
+        stroke: #349b48;
+      }
+
+      .cls-15 {
+        font-size: 12px;
+        letter-spacing: -0.01em;
+      }
+
+      .cls-16 {
+        fill: #fff;
+      }
+    </style>
+    <clipPath id="clip-msr_guide_chart">
+      <rect width="400" height="260"/>
+    </clipPath>
+  </defs>
+  <g id="msr_guide_chart" class="cls-1">
+    <rect class="cls-16" width="400" height="260"/>
+    <text id="동일비율_BIC_감소_LC_증가_vs_ORC_감소_추이" data-name="동일비율 BIC 감소, LC 증가 vs ORC 감소 추이" class="cls-2" transform="translate(200 14)"><tspan x="-146.149" y="0">동일비율</tspan><tspan class="cls-3" y="0" xml:space="preserve"> BIC 감소, LC 증가 vs ORC 감소 추이</tspan></text>
+    <line id="선_4" data-name="선 4" class="cls-4" y1="159" transform="translate(40.5 37.5)"/>
+    <line id="선_5" data-name="선 5" class="cls-4" x2="300" transform="translate(40.5 196.5)"/>
+    <text id="단위_:_억원" data-name="단위 : 억원" class="cls-5" transform="translate(54 31)"><tspan x="-54.481" y="0">단위 : 억원</tspan></text>
+    <text id="_1_000" data-name="1,000" class="cls-6" transform="translate(32 50)"><tspan x="-26.553" y="0">1,000</tspan></text>
+    <text id="_800" data-name="800" class="cls-6" transform="translate(32 81)"><tspan x="-18.132" y="0">800</tspan></text>
+    <text id="_600" data-name="600" class="cls-6" transform="translate(32 112)"><tspan x="-18.132" y="0">600</tspan></text>
+    <text id="_400" data-name="400" class="cls-6" transform="translate(32 142)"><tspan x="-18.132" y="0">400</tspan></text>
+    <text id="_200" data-name="200" class="cls-6" transform="translate(32 173)"><tspan x="-18.132" y="0">200</tspan></text>
+    <text id="_-" data-name="-" class="cls-6" transform="translate(32 202)"><tspan x="-4.512" y="0">-</tspan></text>
+    <g id="그룹_8" data-name="그룹 8" transform="translate(38 202)">
+      <text id="현재" class="cls-6" transform="translate(22 12)"><tspan x="-21.978" y="0">현재</tspan></text>
+      <text id="_10_" data-name="10%" class="cls-6" transform="translate(49 12)"><tspan x="-21.274" y="0">10%</tspan></text>
+      <text id="_20_" data-name="20%" class="cls-6" transform="translate(76 12)"><tspan x="-21.274" y="0">20%</tspan></text>
+      <text id="_30_" data-name="30%" class="cls-6" transform="translate(103 12)"><tspan x="-21.274" y="0">30%</tspan></text>
+      <text id="_40_" data-name="40%" class="cls-6" transform="translate(130 12)"><tspan x="-21.274" y="0">40%</tspan></text>
+      <text id="_50_" data-name="50%" class="cls-6" transform="translate(157 12)"><tspan x="-21.274" y="0">50%</tspan></text>
+      <text id="_60_" data-name="60%" class="cls-6" transform="translate(184 12)"><tspan x="-21.274" y="0">60%</tspan></text>
+      <text id="_70_" data-name="70%" class="cls-6" transform="translate(211 12)"><tspan x="-21.274" y="0">70%</tspan></text>
+      <text id="_80_" data-name="80%" class="cls-6" transform="translate(238 12)"><tspan x="-21.274" y="0">80%</tspan></text>
+      <text id="_90_" data-name="90%" class="cls-6" transform="translate(265 12)"><tspan x="-21.274" y="0">90%</tspan></text>
+      <text id="_99_" data-name="99%" class="cls-6" transform="translate(292 12)"><tspan x="-21.274" y="0">99%</tspan></text>
+      <text id="BIC_감소폭" data-name="BIC 감소폭" class="cls-7" transform="translate(308 12)"><tspan x="0" y="0">BIC 감소폭</tspan></text>
+      <path id="다각형_1" data-name="다각형 1" class="cls-8" d="M3.5,0,7,6H0Z" transform="translate(305 11) rotate(180)"/>
+    </g>
+    <g id="그룹_9" data-name="그룹 9" transform="translate(38 221)">
+      <text id="현재-2" data-name="현재" class="cls-6" transform="translate(22 12)"><tspan x="-21.978" y="0">현재</tspan></text>
+      <text id="_10_2" data-name="10%" class="cls-6" transform="translate(49 12)"><tspan x="-21.274" y="0">10%</tspan></text>
+      <text id="_20_2" data-name="20%" class="cls-6" transform="translate(76 12)"><tspan x="-21.274" y="0">20%</tspan></text>
+      <text id="_30_2" data-name="30%" class="cls-6" transform="translate(103 12)"><tspan x="-21.274" y="0">30%</tspan></text>
+      <text id="_40_2" data-name="40%" class="cls-6" transform="translate(130 12)"><tspan x="-21.274" y="0">40%</tspan></text>
+      <text id="_50_2" data-name="50%" class="cls-6" transform="translate(157 12)"><tspan x="-21.274" y="0">50%</tspan></text>
+      <text id="_60_2" data-name="60%" class="cls-6" transform="translate(184 12)"><tspan x="-21.274" y="0">60%</tspan></text>
+      <text id="_70_2" data-name="70%" class="cls-6" transform="translate(211 12)"><tspan x="-21.274" y="0">70%</tspan></text>
+      <text id="_80_2" data-name="80%" class="cls-6" transform="translate(238 12)"><tspan x="-21.274" y="0">80%</tspan></text>
+      <text id="_90_2" data-name="90%" class="cls-6" transform="translate(265 12)"><tspan x="-21.274" y="0">90%</tspan></text>
+      <text id="_99_2" data-name="99%" class="cls-6" transform="translate(292 12)"><tspan x="-21.274" y="0">99%</tspan></text>
+      <text id="LC_증가폭" data-name="LC 증가폭" class="cls-7" transform="translate(308 12)"><tspan x="0" y="0">LC 증가폭</tspan></text>
+      <path id="다각형_1-2" data-name="다각형 1" class="cls-9" d="M3.5,0,7,6H0Z" transform="translate(298 5)"/>
+    </g>
+    <text id="BIC" class="cls-7" transform="translate(374 99)"><tspan x="0" y="0">BIC</tspan></text>
+    <text id="LC" class="cls-7" transform="translate(374 120)"><tspan x="0" y="0">LC</tspan></text>
+    <text id="ORC" class="cls-7" transform="translate(374 140)"><tspan x="0" y="0">ORC</tspan></text>
+    <rect id="사각형_1" data-name="사각형 1" class="cls-8" width="20" height="2" transform="translate(344 94)"/>
+    <rect id="사각형_2" data-name="사각형 2" class="cls-10" width="20" height="2" transform="translate(344 115)"/>
+    <rect id="사각형_3" data-name="사각형 3" class="cls-11" width="20" height="2" transform="translate(344 135)"/>
+    <line id="선_6" data-name="선 6" class="cls-12" y1="26" x2="264" transform="translate(54.5 143.792)"/>
+    <path id="패스_16" data-name="패스 16" class="cls-13" d="M-5,2.5l261.5,143" transform="translate(59.5 45.5)"/>
+    <path id="패스_15" data-name="패스 15" class="cls-14" d="M1045.5,95,1258,164.507l27,8,22,22" transform="translate(-991 -4.507)"/>
+    <text id="동일한_비율로_BIC_및_LC_변동_감소_증가_시_ILM_산식에_의해_ORC는_감소함" data-name="동일한 비율로 BIC 및 LC 변동 (감소/증가) 시,
+ILM 산식에 의해 ORC는 감소함" class="cls-15" transform="translate(253 61)"><tspan x="-119.989" y="0">동일한 비율로 BIC 및 LC 변동 (감소/증가) 시,</tspan><tspan x="-83.468" y="16">ILM 산식에 의해 ORC는 감소함</tspan></text>
+    <text id="BIC_감소폭_LC_증가폭" data-name="BIC 감소폭, LC 증가폭" class="cls-7" transform="translate(191 254)"><tspan x="-55.139" y="0">BIC 감소폭, LC 증가폭</tspan></text>
+  </g>
+</svg>

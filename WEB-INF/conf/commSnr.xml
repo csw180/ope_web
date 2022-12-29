@@ -1,0 +1,1389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com_servlet id="snr" name="ORMS시나리오" commkind="snr" connname="tpFGTE01">
+	<lib id="lib1" name="라이브러리정의" value="com.dgfg.orms.comm.util"/>
+
+	<process id="ORSN010101" name="시나리오 평가정보 관리" forward="/snr/ORSN0101" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="intg_grp_c" name="통합그룹코드" parmid="intg_grp_c" attr="S" default_value="SNRO_EVL_PRG_STSC"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="통합코드조회" type="S" mode="select">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+					SELECT NVL(IDVDC_VAL,' ') INTGC, NVL(INTG_IDVD_CNM,' ') INTG_CNM     
+				      FROM TB_OR_OM_CODE 										  
+					 WHERE GRP_ORG_C = #grp_org_c#	 										
+					   AND INTG_GRP_C = 'SNRO_EVL_PRG_STSC' 									
+					   AND C_UYN = 'Y' 												
+					 ORDER BY SORT_SQ  												  
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="시행년도 조회" type="S" mode="select">
+				<sql id="sql12" name="SQL12">
+					<data id="data121" name="">
+                  SELECT BAS_YY
+                     FROM 
+                   ( 
+                     SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY') BAS_YY FROM DUAL
+					    UNION
+                     SELECT TO_CHAR(SYSDATE,'YYYY') BAS_YY FROM DUAL
+					    UNION
+					 SELECT                    
+				       SUBSTR(TO_CHAR(SNRO_SC),1,4) AS BAS_YY    
+					  FROM TB_OR_SM_SCHD  
+					 WHERE GRP_ORG_C = TRIM('01') 
+					 GROUP BY SUBSTR(TO_CHAR(SNRO_SC),1,4)  
+                    )
+				        ORDER BY BAS_YY DESC
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit03" name="진행 상태 조회" type="S" mode="select">
+				<sql id="sql13" name="SQL13">
+					<data id="data131" name="">
+					SELECT * FROM(                                                                                                                                                                                             
+						SELECT                                                                                                                                                                      
+					       A.GRP_ORG_C /*그룹기관코드*/                                                                                                                                                                          
+					     , A.SNRO_SC /*시나리오회차*/  
+					     , A.SNRO_EVL_TIT /*시나리오제목*/ 
+					     , EFCT_ST_DT /*수행시작일자*/                                                                                                                                                                          
+					     , EFCT_ED_DT /*수행종료일자*/                                                                                     
+					     , A.SNRO_EVL_PRG_STSC /*시나리오평가진행상태코드*/                                                                                                                                                           
+					     , (SELECT INTG_IDVD_CNM FROM TB_OR_OM_CODE WHERE GRP_ORG_C=TRIM(#grp_org_c#) AND INTG_GRP_C='SNRO_EVL_PRG_STSC' AND IDVDC_VAL=A.SNRO_EVL_PRG_STSC) AS SNRO_EVL_PRG_STSCNM /*시나리오평가진행상태*/
+                         , A.SNRO_RSN /*등록변경사유내용*/                                                                                                                                                
+					  FROM TB_OR_SM_SCHD A /*시나리오_평가일정관리기본*/                                                                                                                                                           
+					 WHERE A.GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/                                                                                                                                                   
+					 ORDER BY A.SNRO_SC DESC                                                                                                                                                                              
+					 )WHERE ROWNUM = 1                                                                                                                                                                                    
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010102" name="시나리오 평가정보 관리" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_bas_yy" name="조회년도" parmid="sch_bas_yy" attr="S" default_value=""/>
+		<parm id="sch_snro_evl_prg_stsc" name="진행상태" parmid="sch_snro_evl_prg_stsc" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+					SELECT /*목록 조회*/                                                                                                                                                                 
+					       A.GRP_ORG_C AS GRP_ORG_C_P /*그룹기관코드*/                                                                                                                                                
+					     , A.SNRO_SC /*시나리오회차*/                                                                                                                                                                 
+					     , A.EFCT_ST_DT /*수행시작일자*/                                                                                                                                                              
+					     , A.EFCT_ED_DT /*수행종료일자*/ 
+					     , A.SNRO_EVL_TIT /*시나리오 평가제목*/                                                                                                                                                             
+					     , A.SNRO_RSN /*등록변경사유내용*/                                                                                                                                                         
+					     , A.SNRO_EVL_PRG_STSC /*시나리오평가진행상태코드*/                                                                                                                                                
+					     , (SELECT INTG_IDVD_CNM FROM TB_OR_OM_CODE WHERE GRP_ORG_C=TRIM(#grp_org_c#) AND INTG_GRP_C='SNRO_EVL_PRG_STSC' AND IDVDC_VAL=A.SNRO_EVL_PRG_STSC) AS SNRO_EVL_PRG_STSCNM /*시나리오평가진행상태*/      
+					     , DECODE(COUNT(B.SNRO_SC),0,'미등록',COUNT(B.SNRO_SC)) AS RSKBSN_COUNT                                                                                                                    
+					     , DECODE(SNRO_EVL_PRG_STSC,'03','','등록') AS BTN_RG /*업무등록*/                                                                                                                            
+					     , DECODE(SNRO_EVL_PRG_STSC,'02','완료','') AS BTN_CPL /*평가종료*/                                                                                                                           
+					  FROM TB_OR_SM_SCHD A /*시나리오_평가일정관리기본*/                                                                                                                                                 
+					     , TB_OR_SH_RSKBSN B /*시나리오_중요위험업무내역*/                                                                                                                                               
+					 WHERE A.GRP_ORG_C = B.GRP_ORG_C(+)                                                                                                                                                         
+					   AND A.SNRO_SC = B.SNRO_SC(+)                                                                                                                                                             
+					   AND A.GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/                                                                                                                                         
+					   AND A.SNRO_SC LIKE TRIM(#sch_bas_yy#)||'%%' /*시나리오회차*/
+					   AND B.RSK_BSN_YN(+) = TRIM('Y')
+					</data>
+				</sql>
+				<sql id="sql12" name="SQL12">
+					<condition id="con01_2" name="실행조건12" variable="#sch_snro_evl_prg_stsc#" comparison="ne" value=""/>
+					<data id="data112" name="데이터">
+						AND A.SNRO_EVL_PRG_STSC = TRIM(#sch_snro_evl_prg_stsc#) /*시나리오평가진행상태코드*/
+					</data>
+				</sql>
+				<sql id="sql13" name="SQL13">
+					<data id="data113" name="데이터">
+						 GROUP BY A.GRP_ORG_C, A.SNRO_SC, A.EFCT_ST_DT, A.EFCT_ED_DT, A.SNRO_EVL_TIT, A.SNRO_RSN, A.SNRO_EVL_PRG_STSC
+						ORDER BY A.SNRO_SC DESC   
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010103" name="시나리오 평가정보 관리" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="snro_sc" name="시나리오회차" parmid="snro_sc" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="평가종료" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+					UPDATE TB_OR_SM_SCHD
+					   SET SNRO_EVL_PRG_STSC = '03'
+						 , LSCHG_DTM = SYSDATE 
+						 , LS_WKR_ENO = TRIM(#userid#)
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#) 
+						   AND SNRO_SC = TRIM(#snro_sc#) 
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010201" name="일정등록" forward="/snr/ORSN0102" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="snro_sc" name="시나리오회차" parmid="snro_sc" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="상세조회" type="S">
+			<sql id="sql11" name="SQL11">
+			<data id="data11" name="">
+			SELECT /*ORSN0102S1 상세조회*/                                                                           
+			       GRP_ORG_C /*그룹기관코드*/                                                                          
+			     , SNRO_SC /*시나리오회차*/                                                                            
+			     , SNRO_EVL_TIT /*시나리오평가제목*/                                                                     
+			     , TO_CHAR(TO_DATE(EFCT_ST_DT,'YYYYMMDD'),'YYYY-MM-DD') AS EFCT_ST_DT /*수행시작일자*/                 
+			     , TO_CHAR(TO_DATE(EFCT_ED_DT,'YYYYMMDD'),'YYYY-MM-DD') AS EFCT_ED_DT /*수행종료일자*/                 
+			     , LSS_WVAL_RTO /*손실가중치비율*/                                                                      
+			     , KRI_WVAL_RTO /*KRI가중치비율*/                                                                     
+			     , RCSA_WVAL_RTO /*RCSA가중치비율*/                                                                       
+			     , CTEV_WVAL_RTO /*통제평가가중치비율*/                                                                   
+			     , SNRO_EVL_PRG_STSC /*시나리오평가진행상태코드*/                                                            
+			     , SNRO_RSN /*등록변경사유내용*/                                                                    
+			  FROM TB_OR_SM_SCHD A /*시나리오_평가일정관리기본*/                                                          
+			 WHERE A.GRP_ORG_C = TRIM(#grp_org_c#) --grp_org_c                                                             
+			   AND A.SNRO_SC = TRIM(#snro_sc#) --snro_sc                                                                 			
+   			</data>
+			</sql>
+			<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010202" name="일정등록및수정" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="snro_sc" name="시나리오회차" parmid="snro_sc" attr="S" default_value=""/>
+		<parm id="efct_st_dt" name="수행시작일자" parmid="efct_st_dt" attr="S" default_value=""/>
+		<parm id="efct_ed_dt" name="수행종료일자" parmid="efct_ed_dt" attr="S" default_value=""/>
+		<parm id="snro_rsn" name="등록변경사유내용" parmid="snro_rsn" attr="S" default_value=""/>
+		<parm id="gubun" name="등록수정구분" parmid="gubun" attr="S" default_value=""/>
+		<parm id="snro_evl_tit" name="시나리오평가제목" parmid="snro_evl_tit" attr="S" default_value=""/>
+		<parm id="lss_wval_rto" name="손실가중치비율" parmid="lss_wval_rto" attr="S" default_value=""/>
+		<parm id="kri_wval_rto" name="KRI가중치비율" parmid="kri_wval_rto" attr="S" default_value=""/>
+		<parm id="rcsa_wval_rto" name="RCSA가중치비율" parmid="rcsa_wval_rto" attr="S" default_value=""/>
+		<parm id="ctev_wval_rto" name="통제평가가중치비율" parmid="ctev_wval_rto" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="일정수정" type="S" mode="update" multiid="">
+			<sql id="sql01" name="SQL11">
+				<condition id="con01_1" name="실행조건11" variable="#gubun#" comparison="eq" value="U"/>			
+				<data id="data11" name="">
+				UPDATE /*일정수정*/                                          
+				    TB_OR_SM_SCHD /*시나리오_평가일정관리기본*/                           
+				   SET EFCT_ST_DT = REPLACE(TRIM(#efct_st_dt#),'-','') /*수행시작일자*/ --efct_st_dt     
+				     , EFCT_ED_DT = REPLACE(TRIM(#efct_ed_dt#),'-','') /*수행종료일자*/ --efct_ed_dt     
+				     , SNRO_RSN = TRIM(#snro_rsn#) /*등록변경사유내용*/             
+				     , LSCHG_DTM = SYSDATE /*최종변경일시*/                                   
+				     , LS_WKR_ENO = TRIM(#userid#) /*최종작업자개인번호*/ --userid       
+				     , LSS_WVAL_RTO = TRIM(#lss_wval_rto#)
+				     , KRI_WVAL_RTO = TRIM(#kri_wval_rto#)
+				     , RCSA_WVAL_RTO = TRIM(#rcsa_wval_rto#)
+				     , CTEV_WVAL_RTO = TRIM(#ctev_wval_rto#)               
+				 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/ --grp_org_c_p                     
+				   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/ --snro_sc                           			
+				</data>
+			</sql>
+			<result id="result" name="result" attrname="count" type="count"/>			
+			<sql id="sql02" name="SQL12">
+				<condition id="con02_1" name="실행조건12" variable="#gubun#" comparison="eq" value="I"/>			
+				<data id="data12" name="">
+			INSERT /*일정등록*/
+			  INTO TB_OR_SM_SCHD /*시나리오_평가일정관리공통기본*/
+			     ( GRP_ORG_C /*그룹기관코드*/
+			     , SNRO_SC /*시나리오회차*/
+			     , SNRO_EVL_TIT /*시나리오평가제목*/
+			     , EFCT_ST_DT /*수행시작일자*/
+			     , EFCT_ED_DT /*수행종료일자*/
+			     , LSS_WVAL_RTO /*손실가중치비율*/
+			     , KRI_WVAL_RTO /*KRI가중치비율*/
+			     , RCSA_WVAL_RTO /*RCSA가중치비율*/
+			     , CTEV_WVAL_RTO /*통제평가가중치비율*/
+			     , SNRO_EVL_PRG_STSC /*시나리오평가진행상태코드*/
+			     , FIR_INP_DTM /*최초입력일시*/
+			     , FIR_INPMN_ENO /*최초입력자개인번호*/
+			     , LSCHG_DTM /*최종변경일시*/
+			     , LS_WKR_ENO /*최종작업자개인번호*/
+			     )
+			VALUES
+			     ( TRIM(#grp_org_c#)
+			     , TRIM(#snro_sc#) /*시나리오회차*/
+			     , TRIM(#snro_evl_tit#) /*시나리오평가제목*/
+			     , REPLACE(TRIM(#efct_st_dt#),'-','') /*수행시작일자*/
+			     , REPLACE(TRIM(#efct_ed_dt#),'-','') /*수행종료일자*/
+			     , TRIM(#lss_wval_rto#) /*손실가중치비율*/
+			     , TRIM(#kri_wval_rto#) /*KRI가중치비율*/
+			     , TRIM(#rcsa_wval_rto#) /*RCSA가중치비율*/
+			     , TRIM(#ctev_wval_rto#) /*통제평가가중치비율*/
+			     , '01'
+			     , SYSDATE
+			     , TRIM(#userid#)
+			     , SYSDATE
+			     , TRIM(#userid#)
+			     )                        			
+				</data>
+			</sql>
+			<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+
+	<process id="ORSN010203" name="시나리오회차 채번" forward="/snr/ORSN0102" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_bas_yy" name="조회년도" parmid="sch_bas_yy" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="시나리오회차채번" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+					SELECT /*시나리오회차 채번*/
+					       NVL(MAX(SNRO_SC)+1,TRIM(#sch_bas_yy#)||'01') AS SNRO_SC 
+					     , NULL AS SNRO_EVL_TIT 
+					     , NULL AS EFCT_ST_DT 
+					     , NULL AS EFCT_ED_DT 
+					     , '0' AS LSS_WVAL_RTO 
+					     , '0' AS KRI_WVAL_RTO 
+					     , '0' AS RCSA_WVAL_RTO 
+					     , '0' AS CTEV_WVAL_RTO 
+					  FROM TB_OR_SM_SCHD /*시나리오_평가일정관리공통기본*/ 
+					 WHERE SNRO_SC LIKE TRIM(#sch_bas_yy#)||'%%' 
+					</data>
+				</sql>				
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>				
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010304" name="시나리오 최근발생 데이터 INSERT" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="delete_최근발생손실내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE TB_OR_SH_LSS /*시나리오_최근발생손실내역*/	        
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/ --grp_org_c   
+						   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/ --sch_snro_sc	
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit02" name="시나리오 KRI RED발생내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE TB_OR_SH_KRIRED /*시나리오_KRI RED발생내역*/
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/         
+						   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/         	
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit03" name="시나리오 위험평가내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE TB_OR_SH_RCSA /*시나리오_위험평가내역*/
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/   
+						   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/	  	
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>		
+			<unit id="unit04" name="시나리오 통제평가내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE TB_OR_SH_CTEV /*시나리오_통제평가내역*/
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/   
+						   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/	  	
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>				
+			<unit id="unit05" name="시나리오 중요위험업무내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE TB_OR_SH_RSKBSN /*시나리오_중요위험업무내역*/
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/   
+						   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/	  	
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>			
+			<unit id="unit06" name="시나리오 중요위험업무내역 결재선" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+						DELETE TB_OR_SH_RPTG_DCZ /*시나리오_중요위험업무내역_결재선*/
+						 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/   
+						   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/	  	
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>				
+			<unit id="unit07" name="update_평가일정관리기본" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         UPDATE /*0 : TB_OR_SM_SCHD(시나리오_평가일정관리기본) 계산요청일시 수정*/
+                         	   TB_OR_SM_SCHD /*시나리오_평가일정관리기본*/              
+                            SET LS_CLC_DTM = TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS')
+                         	 , LSCHG_DTM = SYSDATE       
+                         	 , LS_WKR_ENO = TRIM(#userid#) /*최종작업자개인번호*/  
+                          WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/
+                            AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>				
+			<unit id="unit08" name="insert_최근발생손실내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         INSERT /*1 : TB_OR_SH_LSS(시나리오_최근발생손실내역) 입력*/	                                            
+                           INTO TB_OR_SH_LSS /*시나리오_최근발생손실내역*/                                                     
+                              ( GRP_ORG_C /*그룹기관코드*/	                                                                    
+                              , SNRO_SC /*시나리오회차*/                                                                       
+                              , BSN_PRSS_C /*업무프로세스코드*/                                                                  
+                              , LSHP_AMNNO /*손실사건관리번호*/	                                                                
+                              , LSS_TINM /*손실제목명*/	                                                                    
+                              , TTLS_AM /*총손실금액*/
+                              , GULS_AM /*순손실금액*/	                                                                    
+                              , OCU_DT /*발생일자*/
+                              , REG_DT /*등록일자*/                                                                          
+                              , FIR_INP_DTM /*최초입력일시*/	                                                                
+                              , FIR_INPMN_ENO /*최초입력자개인번호*/                                                              
+                              , LSCHG_DTM /*최종변경일시*/                                                                     
+                              , LS_WKR_ENO /*최종작업자개인번호*/	                                                                
+                              )	                                                                                        
+                         SELECT *	                                                                             
+                           FROM (                                                                                        
+                         	 SELECT A.GRP_ORG_C /*그룹기관코드*/	                                              
+                         		  , TRIM(#snro_sc#) AS SNRO_SC /*시나리오회차*/ --sch_snro_sc                                         
+                         		  , E.BSN_PRSS_C /*업무프로세스코드 수정필요*/                                                           
+                         		  , A.LSHP_AMNNO /*손실사건관리번호*/	                                                        
+                         		  , MAX(A.LSS_TINM) AS LSS_TINM /*손실제목명*/	                                            
+                         		  , SUM(DECODE(B.ACC_DSC,'1',B.LSOC_AM,0)) AS TTLS_AM /*총손실금액*/
+                                  , (SUM(DECODE(B.RVPY_DSC,'2',B.LSOC_AM,0))
+                                     - SUM(DECODE(B.RVPY_DSC,'1',B.LSOC_AM,0))) AS GULS_AM /*순손실금액*/
+                         		  , MAX(A.OCU_DT) AS OCU_DT /*발생일자*/
+                         		  , MAX(TO_CHAR(A.FIR_INP_DTM,'YYYYMMDD')) AS REG_DT /*등록일자*/                                                    
+                         		  , SYSDATE AS FIR_INP_DTM /*최초입력일시*/	                                                
+                         		  , TRIM(#userid#) AS FIR_INPMN_ENO /*최초입력자개인번호*/ --userid                                     
+                         		  , SYSDATE AS LSCHG_DTM /*최종변경일시*/                                                     
+                         		  , TRIM(#userid#) AS LS_WKR_ENO /*최종작업자개인번호*/ --userid                                        
+                         	   FROM TB_OR_LM_LSHP A /*손실사건_손실사건기본*/	                                                
+                         		  , TB_OR_LH_LSAM B /*손실사건_손실금액내역*/	                                                
+                         		  , TB_OR_LH_DCZ C /*손실사건_손실결재내역*/
+                         		  , TB_OR_RH_REL_LSS D /*연관손실*/
+                         		  , TB_OR_RM_RKP E /*RCSA 리스크지표 마스터 */                                                   
+                         	  WHERE A.GRP_ORG_C = B.GRP_ORG_C /*그룹기관코드*/	                                            
+                         		AND A.GRP_ORG_C = C.GRP_ORG_C                                                           
+                         		AND A.LSHP_AMNNO = B.LSHP_AMNNO /*손실사건관리번호*/                                            
+                         		AND A.LSHP_AMNNO = C.LSHP_AMNNO	                                                        
+                         		AND A.DCZ_SQNO = C.DCZ_SQNO /*결재일련번호*/	                                                
+                         		AND A.VLD_YN = 'Y'	                                                                    
+                         		AND B.VLD_YN = 'Y'                                                                      
+                         		AND C.VLD_YN = 'Y'
+                         		AND E.VLD_YN = 'Y'
+                         		AND D.OPRK_RKP_ID = E.OPRK_RKP_ID
+                         		AND A.LSHP_AMNNO = D.LSHP_AMNNO 	                                                                    
+                         		AND A.GRP_ORG_C = TRIM(#grp_org_c#) --grp_org_c                                                   
+                         		AND B.ACG_PRC_DT &lt;= TO_CHAR(SYSDATE,'YYYYMMDD') /*회계처리일자*/                              
+                         		AND B.ACG_PRC_DT &gt; TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYYMM') || TO_CHAR(SYSDATE,'DD')	
+                         		AND C.LSHP_DCZ_STS_DSC = '06' /*손실사건결재상태구분코드 06:ORM팀장결재완료*/	                            
+                         	  GROUP BY A.GRP_ORG_C, A.LSHP_AMNNO, E.BSN_PRSS_C, A.LSHP_AMNNO	                        
+                         	) T                                                                                         
+                          WHERE T.TTLS_AM >= 100 /*총손실금액 100만원이상*/	                                                
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>	
+			<unit id="unit09" name="시나리오 KRI RED발생내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         INSERT /*2 : TB_OR_SH_KRIRED(시나리오_KRI RED발생내역) 입력*/	                            
+                           INTO TB_OR_SH_KRIRED /*시나리오_KRI RED발생내역*/	                                    
+                              ( GRP_ORG_C /*그룹기관코드*/	                                                        
+                              , SNRO_SC /*시나리오회차*/	                                                        
+                              , BSN_PRSS_C /*업무프로세스코드*/	                                                    
+                              , OPRK_RKI_ID /*운영리스크리스크지표ID*/	                                                
+                              , OPRK_RKINM /*운영리스크리스크지표명*/	                                                
+                              , KRI_MM_AVL /*KRI월평균값*/	                                                    
+                              , RED_OCU_CN /*적색발생건수*/	                                                    
+                              , FIR_INP_DTM /*최초입력일시*/	                                                    
+                              , FIR_INPMN_ENO /*최초입력자개인번호*/	                                                
+                              , LSCHG_DTM /*최종변경일시*/	                                                        
+                              , LS_WKR_ENO /*최종작업자개인번호*/	                                                    
+                              )	                                                                            
+                         SELECT A.GRP_ORG_C /*그룹기관코드*/	                                                    
+                              , TRIM(#snro_sc#) /*시나리오회차*/	                                                        
+                              , MAX(C.BSN_PRSS_C) AS BSN_PRSS_C /*업무프로세스코드*/	                                
+                              , A.OPRK_RKI_ID /*운영리스크리스크지표ID*/	                                            
+                              , MAX(A.OPRK_RKINM) /*운영리스크리스크지표명*/	                                        
+                              , TRUNC(SUM(A.AFLCO_TT_VAL)/NVL(SUM(A.AFLCO_ORGZ_CN),1),2) AS AFLCO_AVL /*KRI월평균값*/	
+                              , SUM(DECODE(SUBSTR(A.KRI_GRDNM,1,1),'R',1,0)) AS RED_OCU_CN /*적색발생건수*/	    
+                              , SYSDATE /*최초입력일시*/	                                                        
+                              , TRIM(#userid#) /*최초입력자개인번호*/	                                                    
+                              , SYSDATE /*최종변경일시*/	                                                        
+                              , TRIM(#userid#) /*최종작업자개인번호*/	                                                    
+                           FROM TB_OR_KS_RKI_SMST A /*KRI_리스크지표별집계*/	                                    
+                              , TB_OR_RH_REL_KRI B /*RCSA_관련KRI내역*/	                                    
+                              , TB_OR_RM_RKP C /*RCSA_리스크풀기본*/	                                        
+                          WHERE A.GRP_ORG_C = B.GRP_ORG_C	                                                
+                            AND A.GRP_ORG_C = C.GRP_ORG_C	                                                
+                            AND A.OPRK_RKI_ID = B.OPRK_RKI_ID	                                            
+                            AND B.OPRK_RKP_ID = C.OPRK_RKP_ID	                                            
+                            AND A.GRP_ORG_C = TRIM(#grp_org_c#)	                                                    
+                            AND A.BAS_YM &lt;= TO_CHAR(SYSDATE,'YYYYMM')	                                    
+                            AND A.BAS_YM &gt; TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYYMM')	                        
+                          GROUP BY A.GRP_ORG_C, A.OPRK_RKI_ID	                                            
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>	
+			<unit id="unit10" name="시나리오 위험평가내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         INSERT /*3 : TB_OR_SH_RCSA(시나리오_위험평가내역) 입력*/	                                        
+                           INTO TB_OR_SH_RCSA /*시나리오_위험평가내역*/	                                                
+                              ( GRP_ORG_C /*그룹기관코드*/	                                                            
+                              , SNRO_SC /*시나리오회차*/	                                                            
+                              , BAS_YM /*기준년월*/	                                                        
+                              , BSN_PRSS_C /*업무프로세스코드*/	                                                        
+                              , OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                                    
+                              , RK_ISC_CNTN /*리스크사례내용*/	                                                        
+                              , RK_EVL_GRD_AVL /*리스크평가등급평균값*/	                                                
+                         	  , RED_CN /*적색건수*/	                                                                
+                              , FIR_INP_DTM /*최초입력일시*/	                                                        
+                              , FIR_INPMN_ENO /*최초입력자개인번호*/	                                                    
+                              , LSCHG_DTM /*최종변경일시*/	                                                            
+                              , LS_WKR_ENO /*최종작업자개인번호*/	                                                        
+                              )	                                                                                
+                         SELECT A.GRP_ORG_C /*그룹기관코드*/	                                                        
+                              , TRIM(#snro_sc#) /*시나리오회차*/	 
+                              , D.BSN_PRSS_C /*업무프로세스코드*/	                                                           
+                              , A.BAS_YM /*기준년월*/	                           
+                              , D.OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                                
+                              , MAX(D.RK_ISC_CNTN) AS RK_ISC_CNTN /*리스크사례내용*/	                                
+                              , ROUND(TRUNC(SUM(B.RK_EVL_GRD_C)/COUNT(*),2)) AS RK_EVL_GRD_AVL /*리스크평가등급평균값*/	        
+                         	  , SUM(DECODE(B.RK_EVL_GRD_C,'4',1,0)) AS RED_CN /*적색건수(4:Red)*/	                
+                              , SYSDATE /*최초입력일시*/	                                                            
+                              , TRIM(#userid#) /*최초입력자개인번호*/	                                                        
+                              , SYSDATE /*최종변경일시*/	                                                            
+                              , TRIM(#userid#) /*최종작업자개인번호*/	                                                        
+                           FROM TB_OR_OM_SCHD A /*RCSA_리스크평가일정기본*/	                                        
+                              , TB_OR_RM_EVL B /*RCSA_리스크평가기본*/	                                            
+                              , TB_OR_RH_EVL_DCZ C /*RCSA_리스크평가결재내역*/	                                        
+                              , TB_OR_RM_RKP D /*RCSA_리스크풀기본*/	                                            
+                          WHERE A.GRP_ORG_C = B.GRP_ORG_C /*그룹기관코드*/	                                            
+                            AND A.GRP_ORG_C = C.GRP_ORG_C	                                                    
+                            AND A.GRP_ORG_C = D.GRP_ORG_C	                                                    
+                            AND A.BAS_YM = B.BAS_YM /*기준년월*/	                                        
+                            AND A.BAS_YM = C.BAS_YM	                                                    
+                            AND B.BRC = C.BRC /*사무소코드*/	                                                        
+                            AND B.OPRK_RKP_ID = C.OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                
+                            AND B.DCZ_SQNO = C.DCZ_SQNO /*결재일련번호*/	                                            
+                            AND C.OPRK_RKP_ID = D.OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                
+                            AND A.GRP_ORG_C = TRIM(#grp_org_c#)	                                                        
+                            AND B.EVL_OBJ_YN = 'Y' /*평가대상여부*/	                                                
+                            AND C.RK_EVL_DCZ_STSC = '99'   /*리스크평가결재상태코드 99:마감*/                    
+                          GROUP BY A.GRP_ORG_C, A.BAS_YM, D.BSN_PRSS_C, D.OPRK_RKP_ID	                        
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit11" name="시나리오 통제평가내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         INSERT /*4 : TB_OR_SH_CTEV(시나리오_통제평가내역) 입력*/	                                          
+                           INTO TB_OR_SH_CTEV /*시나리오_통제평가내역*/	                                                  
+                              ( GRP_ORG_C /*그룹기관코드*/	                                                             
+                              , SNRO_SC /*시나리오회차*/	                                                         
+                              , BSN_PRSS_C /*업무프로세스코드*/	                                                         
+                              , OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                                     
+                              , RK_CTL_SQNO /*리스크통제일련번호*/	                                                     
+                              , CTL_CNTN /*통제내용*/	                                                             
+                              , CTEV_GRD_AVL /*통제평가등급평균값*/	                                                     
+                         	  , RED_CN /*적색건수*/	                                                                 
+                              , FIR_INP_DTM /*최초입력일시*/	                                                         
+                              , FIR_INPMN_ENO /*최초입력자개인번호*/	                                                     
+                              , LSCHG_DTM /*최종변경일시*/	                                                             
+                              , LS_WKR_ENO /*최종작업자개인번호*/	                                                         
+                              )	                                                                                 
+                         SELECT A.GRP_ORG_C /*그룹기관코드*/	                                                         
+                              , TRIM(#snro_sc#) /*시나리오회차*/                                                    
+                              , F.BSN_PRSS_C /*업무프로세스코드*/	                                                     
+                              , F.OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                                 
+                              , D.RK_CTL_SQNO /*리스크통제일련번호*/	                                                     
+                              , MAX(E.RK_CP_CNTN) AS CTL_CNTN /*통제내용*/	                                             
+                              , TRUNC(SUM(CTL_OPER_EVL_C)/NVL(COUNT(*),0),2) AS CTEV_GRD_AVL /*통제평가등급평균값*/	             
+                         	 , SUM(DECODE(D.CTL_OPER_EVL_C,'3',1,0)) AS RED_CN /*적색건수(3:하)*/	                  
+                              , SYSDATE /*최초입력일시*/	                                                             
+                              , TRIM(#userid#) /*최초입력자개인번호*/	                                                         
+                              , SYSDATE /*최종변경일시*/	                                                             
+                              , TRIM(#userid#) /*최종작업자개인번호*/	                                                         
+                           FROM TB_OR_OM_SCHD A /*RCSA_리스크평가일정기본*/	                                         
+                              , TB_OR_RM_EVL B /*RCSA_리스크평가기본*/	                                             
+                              , TB_OR_RH_EVL_DCZ C /*RCSA_리스크평가결재내역*/	                                         
+                              , TB_OR_RH_CTL_EVL D /*RCSA_통제운영평가내역*/	                                         
+                              , TB_OR_RH_CTL_SCF E /*RCSA_리스크풀통제유형내역*/	                                     
+                              , TB_OR_RM_RKP F /*RCSA_리스크풀기본*/	                                             
+                          WHERE A.GRP_ORG_C = B.GRP_ORG_C /*그룹기관코드*/	                                             
+                            AND A.GRP_ORG_C = C.GRP_ORG_C	                                                     
+                            AND A.GRP_ORG_C = D.GRP_ORG_C	                                                     
+                            AND A.GRP_ORG_C = E.GRP_ORG_C	                                                     
+                            AND A.GRP_ORG_C = F.GRP_ORG_C	                                                     
+                            AND A.BAS_YM = B.BAS_YM /*기준년월*/	                                         
+                            AND A.BAS_YM = C.BAS_YM	                                                     
+                            AND A.BAS_YM = D.BAS_YM	                                                     
+                            AND B.BRC = C.BRC /*사무소코드*/	                                                         
+                            AND B.BRC = D.BRC	                                                                 
+                            AND B.OPRK_RKP_ID = C.OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                  
+                            AND B.OPRK_RKP_ID = D.OPRK_RKP_ID	                                                 
+                            AND B.DCZ_SQNO = C.DCZ_SQNO /*결재일련번호*/	                                             
+                            AND C.OPRK_RKP_ID = F.OPRK_RKP_ID /*운영리스크리스크풀ID*/	                                 
+                            AND D.RK_CTL_SQNO = E.RK_CTL_SQNO /*리스크통제일련번호*/	                                     
+                            AND A.GRP_ORG_C = TRIM(#grp_org_c#)	                                                         
+                            AND B.EVL_OBJ_YN = 'Y' /*평가대상여부*/	                                                 
+                            AND C.RK_EVL_DCZ_STSC = '99' /*리스크평가결재상태코드 99:마감*/	                                 
+                          GROUP BY A.GRP_ORG_C, A.BAS_YM, F.BSN_PRSS_C, F.OPRK_RKP_ID, D.RK_CTL_SQNO	         
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit12" name="insert_중요위험업무내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         INSERT /*5 : TB_OR_SH_RSKBSN(시나리오_중요위험업무내역) 입력*/	                                                                                                                                                                
+                           INTO TB_OR_SH_RSKBSN /*시나리오_중요위험업무내역*/	                                                                                                                                                                        
+                         	 ( GRP_ORG_C /*그룹기관코드*/	                                                                                                                                                                                        
+                         	 , SNRO_SC /*시나리오회차*/	                                                                                                                                                                                        
+                         	 , BSN_PRSS_C /*업무프로세스코드*/	                                                                                                                                                                                    
+                         	 , LV1_BSN_PRSNM /*1레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , LV2_BSN_PRSNM /*2레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , LV3_BSN_PRSNM /*3레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , LV4_BSN_PRSNM /*4레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , LSOC_CN /*손실발생건수*/	                                                                                                                                                                                        
+                         	 , KRI_OCU_CN /*KRI발생건수*/	                                                                                                                                                                                    
+                         	 , RA_OCU_CN /*RCSA발생건수*/	                                                                                                                                                                                        
+                         	 , CTEV_OCU_CN /*통제평가발생건수*/	                                                                                                                                                                                    
+                         	 , LS_RSK_SCR /*최종위험점수*/	                                                                                                                                                                                    
+                         	 , RSKDRVR_ANSS_CNTN /*위험요인분석내용*/	                                                                                                                                                                            
+                         	 , CFT_PLAN_CNTN /*대응방안내용*/	                                                                                                                                                                                    
+                         	 , CFRC_OPI_CNTN /*협의의견내용*/	                                                                                                                                                                                    
+                         	 , RSK_BSN_YN /*위험업무여부*/	                                                                                                                                                                                    
+                         	 , DCZ_SQNO /*결재일련번호*/	                                                                                                                                                                                        
+                         	 , FIR_INP_DTM /*최초입력일시*/	                                                                                                                                                                                    
+                         	 , FIR_INPMN_ENO /*최초입력자개인번호*/	                                                                                                                                                                                
+                         	 , LSCHG_DTM /*최종변경일시*/	                                                                                                                                                                                        
+                         	 , LS_WKR_ENO /*최종작업자개인번호*/	                                                                                                                                                                                    
+                         	 )	                                                                                                                                                                                                            
+                         SELECT TRIM(#grp_org_c#) /*그룹기관코드*/	                                                                                                                                                                                        
+                         	 , TRIM(#snro_sc#) /*시나리오회차*/	                                                                                                                                                                                        
+                         	 , A.BSN_PRSS_C /*업무프로세스코드*/	                                                                                                                                                                                
+                         	 , D.BSN_PRSNM /*1레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , C.BSN_PRSNM /*2레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , B.BSN_PRSNM /*3레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , A.BSN_PRSNM /*4레벨업무프로세스명*/	                                                                                                                                                                                
+                         	 , T1.LSOC_CN /*손실발생건수*/	                                                                                                                                                                                    
+                         	 , T2.KRI_OCU_CN /*KRI발생건수*/	                                                                                                                                                                                
+                         	 , T3.RA_OCU_CN /*RCSA발생건수*/	                                                                                                                                                                                    
+                         	 , T4.CTEV_OCU_CN /*통제평가발생건수*/	                                                                                                                                                                                
+                         	 , TRUNC(NVL((T1.LSOC_CN*E.LSS_WVAL_RTO/100),0) + NVL((T2.KRI_OCU_CN*E.KRI_WVAL_RTO/100),0) + NVL((T3.RA_OCU_CN*E.RCSA_WVAL_RTO/100),0) + NVL((T4.CTEV_OCU_CN*E.CTEV_WVAL_RTO/100),0),2) AS LS_RSK_SCR /*최종위험점수*/	
+                         	 , NULL /*위험요인분석내용*/	                                                                                                                                                                                        
+                         	 , NULL /*대응방안내용*/	                                                                                                                                                                                            
+                         	 , NULL /*협의의견내용*/	                                                                                                                                                                                            
+                         	 , 'N' /*위험업무여부*/	                                                                                                                                                                                            
+                         	 , '0' /*결재일련번호*/	                                                                                                                                                                                            
+                         	 , SYSDATE /*최초입력일시*/	                                                                                                                                                                                        
+                         	 , TRIM(#userid#) /*최초입력자개인번호*/	                                                                                                                                                                                    
+                         	 , SYSDATE /*최종변경일시*/	                                                                                                                                                                                        
+                         	 , TRIM(#userid#) /*최종작업자개인번호*/	                                                                                                                                                                                    
+                           FROM TB_OR_OC_PRSS A /*공통_업무프로세스코드공통*/	                                                                                                                                                                        
+                         	 , TB_OR_OC_PRSS B	                                                                                                                                                                                        
+                         	 , TB_OR_OC_PRSS C	                                                                                                                                                                                        
+                         	 , TB_OR_OC_PRSS D	                                                                                                                                                                                        
+                         	 , (SELECT LSS_WVAL_RTO, KRI_WVAL_RTO, RCSA_WVAL_RTO, CTEV_WVAL_RTO FROM TB_OR_SM_SCHD WHERE GRP_ORG_C=TRIM(#grp_org_c#) 	                                                                                            
+                         		AND SNRO_SC=TRIM(#snro_sc#)) E /*시나리오_평가일정관리기본*/                                                                                                                                                                    
+                         	 , (SELECT BSN_PRSS_C,COUNT(*) AS LSOC_CN FROM TB_OR_SH_LSS WHERE GRP_ORG_C=TRIM(#grp_org_c#) 	                                                                                                                    
+                         		AND SNRO_SC=TRIM(#snro_sc#) GROUP BY BSN_PRSS_C) T1                                                                                                                                                                 
+                         	 , (SELECT BSN_PRSS_C,NVL(SUM(RED_OCU_CN),0) AS KRI_OCU_CN FROM TB_OR_SH_KRIRED WHERE GRP_ORG_C=TRIM(#grp_org_c#) 	                                                                                                    
+                         		AND SNRO_SC=TRIM(#snro_sc#) GROUP BY BSN_PRSS_C) T2                                                                                                                                                                 
+                         	 , (SELECT BSN_PRSS_C,NVL(SUM(RED_CN),0) AS RA_OCU_CN FROM TB_OR_SH_RCSA WHERE GRP_ORG_C=TRIM(#grp_org_c#) 	                                                                                                            
+                         		AND SNRO_SC=TRIM(#snro_sc#) GROUP BY BSN_PRSS_C) T3                                                                                                                                                                 
+                         	 , (SELECT BSN_PRSS_C,NVL(SUM(RED_CN),0) AS CTEV_OCU_CN FROM TB_OR_SH_CTEV WHERE GRP_ORG_C=TRIM(#grp_org_c#) 	                                                                                                        
+                         		AND SNRO_SC=TRIM(#snro_sc#) GROUP BY BSN_PRSS_C) T4                                                                                                                                                                 
+                          WHERE A.GRP_ORG_C = B.GRP_ORG_C	                                                                                                                                                                                
+                            AND A.GRP_ORG_C = C.GRP_ORG_C	                                                                                                                                                                                
+                            AND A.GRP_ORG_C = D.GRP_ORG_C	                                                                                                                                                                                
+                            AND A.UP_BSN_PRSS_C = B.BSN_PRSS_C	                                                                                                                                                                            
+                            AND B.UP_BSN_PRSS_C = C.BSN_PRSS_C	                                                                                                                                                                            
+                            AND C.UP_BSN_PRSS_C = D.BSN_PRSS_C	                                                                                                                                                                            
+                            AND A.BSN_PRSS_C = T1.BSN_PRSS_C(+)	                                                                                                                                                                            
+                            AND A.BSN_PRSS_C = T2.BSN_PRSS_C(+)	                                                                                                                                                                            
+                            AND A.BSN_PRSS_C = T3.BSN_PRSS_C(+)	                                                                                                                                                                            
+                            AND A.BSN_PRSS_C = T4.BSN_PRSS_C(+)	                                                                                                                                                                            
+                            AND A.LVL_NO=4	                                                                                                                                                                                                
+                            AND B.LVL_NO=3	                                                                                                                                                                                                
+                            AND C.LVL_NO=2	                                                                                                                                                                                                
+                            AND D.LVL_NO=1	                                                                                                                                                                                                
+                            AND A.GRP_ORG_C = TRIM(#grp_org_c#)	                                                                                                                                                                                    
+                            AND B.GRP_ORG_C = TRIM(#grp_org_c#)	                                                                                                                                                                                    
+                            AND C.GRP_ORG_C = TRIM(#grp_org_c#)	                                                                                                                                                                                    
+                            AND D.GRP_ORG_C = TRIM(#grp_org_c#)	                                                                                                                                                                                    
+                            AND A.VLD_YN = 'Y'	                                                                                                                                                                                            
+                            AND B.VLD_YN = 'Y'	                                                                                                                                                                                            
+                            AND C.VLD_YN = 'Y'	                                                                                                                                                                                            
+                            AND D.VLD_YN = 'Y'	                                                                                                                                                                                            
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit13" name="insert_위험평가내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         INSERT 													 
+                           INTO TB_OR_SH_RPTG_DCZ /*시나리오_중요위험업무내역_결재선*/     	 
+                         	 ( GRP_ORG_C /*그룹기관코드*/                              
+                         	 , SNRO_SC /*시나리오회차*/                                
+                         	 , BSN_PRSS_C /*업무프로세스코드*/                           
+                         	 , DCZ_SQNO /*결재일련번호*/                               
+                         	 , DCZ_DT	/*결재일자*/                                 
+                         	 , DCZMN_ENO  /*결재개인번호*/                                  
+                         	 , SNRO_DCZ_STSC /*시나리오 결재 상태코드*/                      
+                         	 , RTN_CNTN /*반려내용*/                                
+                         	 , FIR_INP_DTM /*최초입력일시*/                            
+                         	 , FIR_INPMN_ENO /*최초입력자개인번호*/                       
+                         	 , LSCHG_DTM /*최종변경일시*/                              
+                         	 , LS_WKR_ENO /*최종작업자개인번호*/                          
+                         	 )                                                   
+                         SELECT A.GRP_ORG_C /*그룹기관코드*/                            
+                         	 , A.SNRO_SC                                         
+                         	 , A.BSN_PRSS_C /*업무프로세스코드*/                         
+                         	 , A.DCZ_SQNO   /*결재 일련번호 */                         
+                         	 , TO_CHAR(SYSDATE,'YYYYMMDD') DCZ_DT                
+                         	 , TRIM(#userid#) DCZMN_ENO /* 결정자 */            			 
+                         	 , '00' /*초기치*/                                      
+                         	 , '' /*반려내용*/                                      
+                         	 , SYSDATE /*최초입력일시*/                                
+                         	 , TRIM(#userid#) /*최초입력자개인번호*/                			 
+                         	 , SYSDATE /*최종변경일시*/                                
+                         	 , TRIM(#userid#) /*최종작업자개인번호*/                			 
+                           FROM TB_OR_SH_RSKBSN A                           	 
+                          WHERE A.GRP_ORG_C = TRIM(#grp_org_c#)             				 
+                            AND A.SNRO_SC  =	 TRIM(#sch_snro_sc#) /*시나리오회차*/					 
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>			
+			<unit id="unit99" name="update_평가일정관리기본" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+                         UPDATE /*6 : TB_OR_SM_SCHD(시나리오_평가일정관리기본) 최종계산일시 수정*/	 
+                                TB_OR_SM_SCHD /*시나리오_평가일정관리기본*/		                
+                            SET LS_CLC_DTM = TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS')		   
+                              , SNRO_EVL_PRG_STSC = '02' /*시나리오평가진행상태코드(02:평가중)*/	
+                              , LSCHG_DTM = SYSDATE		                               
+                              , LS_WKR_ENO = TRIM(#userid#) /*최종작업자개인번호*/		               
+                          WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/		                   
+                            AND SNRO_SC = TRIM(#sch_snro_sc#) /*시나리오회차*/	                        
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>			
+		</group>
+	</process>
+	
+	<process id="ORSN010301" name="유효년도 조회" forward="/snr/ORSN0103" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+	</process>
+	
+	<process id="ORSN010302" name="중요 위험 업무 조회" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<parm id="sch_ls_rsk_scr_from" name="최종위험점수_from" parmid="sch_ls_rsk_scr_from" attr="S" default_value=""/>
+		<parm id="sch_ls_rsk_scr_to" name="최종위험점수_to" parmid="sch_ls_rsk_scr_to" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+					SELECT /*ORSN0103S2 목록 조회*/                        
+					       GRP_ORG_C AS GRP_ORG_C_P /*그룹기관코드*/         
+					     , SNRO_SC /*시나리오회차*/                          
+					     , BSN_PRSS_C /*업무프로세스코드*/                     
+					     , LV1_BSN_PRSNM /*1레벨업무프로세스명*/                
+					     , LV2_BSN_PRSNM /*2레벨업무프로세스명*/                
+					     , LV3_BSN_PRSNM /*3레벨업무프로세스명*/                
+					     , LV4_BSN_PRSNM /*4레벨업무프로세스명*/                
+					     , LSOC_CN /*손실발생건수*/                          
+					     , KRI_OCU_CN /*KRI발생건수*/                      
+					     , RA_OCU_CN /*RCSA발생건수*/                        
+					     , CTEV_OCU_CN /*통제평가발생건수*/                    
+					     , LS_RSK_SCR /*최종위험점수*/                       
+					     , RSK_BSN_YN /*위험업무여부*/                       
+					  FROM TB_OR_SH_RSKBSN A /*시나리오_중요위험업무내역*/      
+					 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/ --grp_org_c  
+					   AND SNRO_SC = TRIM(#sch_snro_sc#) /*시나리오회차*/ --sch_snro_sc  
+					</data>
+				</sql>
+				<sql id="sql12" name="SQL12">
+					<condition id="con121" name="실행조건12" variable="#sch_bsn_prss_c#" comparison="ne" value=""/>
+					<data id="data112" name="데이터">
+						AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#) /*업무프로세스코드*/ --sch_bsn_prss_c
+					</data>
+				</sql>
+				<sql id="sql13" name="SQL13">
+					<condition id="con131" name="실행조건13" variable="#sch_ls_rsk_scr_from#" comparison="ne" value=""/>
+					<data id="data113" name="데이터">
+						AND LS_RSK_SCR &gt;= TRIM(#sch_ls_rsk_scr_from#) /*최종위험점수 이상*/ --sch_ls_rsk_scr_from
+					</data>
+				</sql>
+				<sql id="sql14" name="SQL14">
+					<condition id="con141" name="실행조건14" variable="#sch_ls_rsk_scr_to#" comparison="ne" value=""/>
+					<data id="data114" name="데이터">
+						AND LS_RSK_SCR &lt;= TRIM(#sch_ls_rsk_scr_to#) /*최종위험점수 이하*/ --sch_ls_rsk_scr_to
+					</data>	
+				</sql>								
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010303" name="위험 업무 제외" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="gubun" name="구분" parmid="gubun" attr="S" default_value=""/>
+		<parm id="status" name="상태" parmid="status" attr="A" default_value=""/>
+		<parm id="grp_org_c_p" name="그룹기관코드" parmid="grp_org_c_p" attr="A" default_value=""/>
+		<parm id="snro_sc" name="시나리오회차" parmid="snro_sc" attr="A" default_value=""/>
+		<parm id="bsn_prss_c" name="업무프로세스코드" parmid="bsn_prss_c" attr="A" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="위험업무 등록제외" type="M" mode="update" multiid="status">
+			    <multivalue id="status" name="status" multiid="status"/>               
+			    <multivalue id="grp_org_c_p" name="grp_org_c_p" multiid="grp_org_c_p"/>
+			    <multivalue id="snro_sc" name="snro_sc" multiid="snro_sc"/>            
+			    <multivalue id="bsn_prss_c" name="bsn_prss_c" multiid="bsn_prss_c"/>   
+				<sql id="sql11" name="SQL11">
+					<condition id="con111" name="실행조건11" variable="#status#" comparison="eq" value="U"/>
+					<condition id="con112" name="실행조건12" variable="#gubun#" comparison="eq" value="Y"/>
+					<data id="data111" name="">
+					UPDATE /*ORSN0103U1 위험업무 등록제외*/                 
+					      	   TB_OR_SH_RSKBSN /*시나리오_중요위험업무내역*/ 
+					   SET RSK_BSN_YN = 'Y' /*위험업무여부*/              
+						 , LSCHG_DTM = SYSDATE /*최종변경일시*/           
+						 , LS_WKR_ENO = TRIM(#userid#) /*최종작업자개인번호*/       
+					 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/           
+					   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/             
+					   AND BSN_PRSS_C = TRIM(#bsn_prss_c#) /*업무프로세스코드*/        
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+				<sql id="sql12" name="SQL12">
+					<condition id="con121" name="실행조건21" variable="#status#" comparison="eq" value="U"/>
+					<condition id="con122" name="실행조건22" variable="#gubun#" comparison="eq" value="N"/>
+					<data id="data121" name="">
+					UPDATE /*ORSN0103U1 위험업무 등록제외*/                 
+					  	   	   TB_OR_SH_RSKBSN /*시나리오_중요위험업무내역*/ 
+					   SET RSK_BSN_YN = 'N' /*위험업무여부*/              
+						 , LSCHG_DTM = SYSDATE /*최종변경일시*/           
+						 , LS_WKR_ENO = TRIM(#userid#) /*최종작업자개인번호*/       
+					 WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/           
+					   AND SNRO_SC = TRIM(#snro_sc#) /*시나리오회차*/             
+					   AND BSN_PRSS_C = TRIM(#bsn_prss_c#) /*업무프로세스코드*/               
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	
+	
+	
+	<process id="ORSN010305" name="중요 위험 업무 등록" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="계산일시조회" type="S">
+			<sql id="sql11" name="SQL11">
+			<data id="data11" name="">
+SELECT /* 유효년도 조회*/                                                                             
+       SNRO_SC /*시나리오회차*/                                                                                 
+     , TO_CHAR(TO_DATE(CLC_RQR_DTM,'YYYYMMDDHH24MISS'),'YYYY.MM.DD,HH24:MI') AS CLC_RQR_DTM /*계산요청일시*/    
+     , TO_CHAR(TO_DATE(LS_CLC_DTM,'YYYYMMDDHH24MISS'),'YYYY.MM.DD,HH24:MI') AS LS_CLC_DTM /*최종계산일시*/      
+  FROM TB_OR_SM_SCHD                                                                                   
+ WHERE GRP_ORG_C = TRIM(#grp_org_c#) --grp_org_c			
+			</data>
+			</sql>
+				<sql id="sql12" name="SQL12">
+					<condition id="con01_2" name="실행조건12" variable="#sch_snro_sc#" comparison="ne" value=""/>
+					<data id="data112" name="데이터">
+						AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc
+					</data>
+				</sql>
+				<sql id="sql13" name="SQL13">
+					<data id="data113" name="데이터">
+						ORDER BY SNRO_SC DESC  
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>		
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010401" name="시나리오 보고서 관리" forward="/snr/ORSN0104" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="유효년도 조회" type="S">
+			<sql id="sql01" name="SQL11">
+			<data id="data11" name="">
+SELECT /* 유효년도 조회*/                
+       SNRO_SC /*시나리오회차*/                    
+  FROM TB_OR_SH_RSKBSN /*시나리오_중요위험업무내역*/  
+ WHERE GRP_ORG_C = TRIM(#grp_org_c#) --c_grp_org_c     
+ GROUP BY SNRO_SC                            
+ ORDER BY SNRO_SC DESC                                               			
+			</data>
+			</sql>
+			<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+			<unit id="unit02" name="현재 진행중 일정정보 조회" type="S">
+			<sql id="sql01" name="SQL11">
+			<data id="data11" name="">
+SELECT * FROM(                                                                           
+SELECT /* 진행중 일정정보 조회*/                                                        
+       A.SNRO_SC /*시나리오회차*/                                                              
+     , TO_CHAR(TO_DATE(A.EFCT_ST_DT,'YYYYMMDD'),'YYYY-MM-DD') AS EFCT_ST_DT /*수행시작일자*/   
+     , TO_CHAR(TO_DATE(A.EFCT_ED_DT,'YYYYMMDD'),'YYYY-MM-DD') AS EFCT_ED_DT /*수행종료일자*/   
+  FROM TB_OR_SM_SCHD A                                                                
+     , TB_OR_SH_RSKBSN B                                                              
+ WHERE A.GRP_ORG_C = B.GRP_ORG_C                                                         
+   AND A.SNRO_SC = B.SNRO_SC                                                             
+   AND A.GRP_ORG_C = TRIM(#grp_org_c#) --grp_org_c                                                 
+ ORDER BY A.SNRO_SC DESC                                                                 
+ )WHERE ROWNUM=1                                                                                                                			
+			</data>
+			</sql>
+			<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010402" name="시나리오 보고서 관리" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+SELECT /* 목록 조회*/                                                                                                                                                       
+       A.GRP_ORG_C AS GRP_ORG_C_P /*그룹기관코드*/                                                                                                                                      
+     , A.SNRO_SC /*시나리오회차*/                                                                                                                                                       
+     , A.BSN_PRSS_C /*업무프로세스코드*/                                                                                                                                                  
+     , A.LV1_BSN_PRSNM /*1레벨업무프로세스명*/                                                                                                                                             
+     , A.LV2_BSN_PRSNM /*2레벨업무프로세스명*/                                                                                                                                             
+     , A.LV3_BSN_PRSNM /*3레벨업무프로세스명*/                                                                                                                                             
+     , A.LV4_BSN_PRSNM /*4레벨업무프로세스명*/                                                                                                                                             
+     , A.LSOC_CN /*손실발생건수*/                                                                                                                                                       
+     , A.KRI_OCU_CN /*KRI발생건수*/                                                                                                                                                   
+     , A.RA_OCU_CN /*RCSA발생건수*/                                                                                                                                                     
+     , A.CTEV_OCU_CN /*통제평가발생건수*/                                                                                                                                                 
+     , A.LS_RSK_SCR /*최종위험점수*/                                                                                                                                                    
+     , A.DCZ_SQNO /*결재일련번호*/                                                                                                                                                      
+     , B.SNRO_DCZ_STSC /*결재상태코드*/                                                                                                                                                 
+     , DECODE(B.SNRO_DCZ_STSC, NULL, '미입력',                                                                                                                                       
+       DECODE(B.RTN_CNTN, NULL,                                                                                                                                                   
+       (SELECT INTG_IDVD_CNM FROM TB_OR_OM_CODE WHERE GRP_ORG_C=A.GRP_ORG_C AND INTG_GRP_C='SNRO_DCZ_STSC' AND IDVDC_VAL=B.SNRO_DCZ_STSC), '반려')) AS SNRO_DCZ_STSCNM /*결재상태*/  
+     , B.RTN_CNTN /*반려내용*/                                                                                                                                                        
+     , '입력' AS BTN_RG /*입력*/                                                                                                                                                      
+  FROM TB_OR_SH_RSKBSN A /*중요위험업무내역*/                                                                                                                                          
+     , TB_OR_SH_RPTG_DCZ B /*보고서결재내역*/                                                                                                                                         
+ WHERE A.GRP_ORG_C = B.GRP_ORG_C(+) /*그룹기관코드*/                                                                                                                                    
+   AND A.SNRO_SC = B.SNRO_SC(+) /*시나리오회차*/                                                                                                                                        
+   AND A.BSN_PRSS_C = B.BSN_PRSS_C(+) /*업무프로세스코드*/                                                                                                                                
+   AND A.DCZ_SQNO = B.DCZ_SQNO(+) /*결재일련번호*/                                                                                                                                      
+   AND A.GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/ --grp_org_c                                                                                                                               
+   AND A.RSK_BSN_YN = 'Y' /*위험업무여부*/                                                                                                                                              
+   AND A.SNRO_SC = TRIM(#sch_snro_sc#) /*시나리오회차*/ --sch_snro_sc                                                                                                                               
+					</data>
+				</sql>
+				<sql id="sql12" name="SQL12">
+					<condition id="con01_2" name="실행조건12" variable="#sch_bsn_prss_c#" comparison="ne" value=""/>
+					<data id="data112" name="데이터">
+   AND A.BSN_PRSS_C = TRIM(#sch_bsn_prss_c#) /*업무프로세스코드*/ --sch_bsn_prss_c
+					</data>
+				</sql>
+				<sql id="sql13" name="SQL13">
+					<data id="data113" name="데이터">
+  ORDER BY A.BSN_PRSS_C ASC 
+					</data>
+				</sql>
+					<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010403" name="시나리오 보고서 결재" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="snro_sc" name="시나리오회차" parmid="bas_ym" attr="A" default_value=""/>
+		<parm id="bsn_prss_c" name="프로세스코드" parmid="bsn_prss_c" attr="A" default_value=""/>
+		<parm id="dcz_dc" name="결재진행코드" parmid="dcz_dc" attr="A" default_value=""/>
+		<parm id="dcz_objr_eno" name="결재확인자개인번호" parmid="dcz_objr_eno" attr="A" default_value=""/>
+		<parm id="sch_rtn_cntn" name="결재/반려의견" parmid="sch_rtn_cntn" attr="A" default_value=""/>
+		<group id="grp01" name="grp01" type="M" multiid="bsn_prss_c">
+				<multivalue id="grp_org_c" name="grp_org_c" multiid="grp_org_c"/>
+				<multivalue id="snro_sc" name="snro_sc" multiid="snro_sc"/>
+				<multivalue id="bsn_prss_c" name="bsn_prss_c" multiid="bsn_prss_c"/>
+				<multivalue id="dcz_dc" name="dcz_dc" multiid="dcz_dc"/>
+				<multivalue id="dcz_objr_eno" name="dcz_objr_eno" multiid="dcz_objr_eno"/>
+				<multivalue id="sch_rtn_cntn" name="sch_rtn_cntn" multiid="sch_rtn_cntn"/>
+				<unit id="unit01" name="MAX결재일련번호 채번" type="S" mode="select" >
+					<sql id="sql1" name = "SQL1">
+						<data id="data1" name = "">
+							 SELECT  MAX(DCZ_SQNO)+1 DCZ_SQNO
+							 FROM    TB_OR_SH_RPTG_DCZ
+							 WHERE   GRP_ORG_C   = #grp_org_c#  
+							 AND     SNRO_SC   = #snro_sc#                 
+							 AND     BSN_PRSS_C   = #bsn_prss_c#                 
+						</data>
+					</sql>
+					<result id="result" name="dcz_sqno" attrname="dcz_sqno" type="single_string"/>
+				</unit>	
+		     	<unit id="unit02" name="결재" type="S" mode="update" >
+					<sql id="sql11" name="SQL11">
+						<data id="data111" name="">
+					INSERT                
+					  INTO TB_OR_SH_RPTG_DCZ /*시나리오_보고서결재내역*/ 
+					     ( GRP_ORG_C /*그룹기관코드*/                  
+					     , SNRO_SC /*시나리오회차*/                    
+					     , BSN_PRSS_C /*시나리오회차*/                    
+					     , DCZ_SQNO /*결재일련번호*/  
+					     , DCZ_DT /*결재일자*/               
+					     , DCZMN_ENO /*결재개인번호*/               
+					     , SNRO_DCZ_STSC /*시나리오결재상태코드*/
+					     , RTN_CNTN
+						 , DCZ_OBJR_ENO                          
+					     , FIR_INP_DTM /*최초입력일시*/                
+					     , FIR_INPMN_ENO /*최초입력자개인번호*/           
+					     , LSCHG_DTM /*최종변경일시*/                  
+					     , LS_WKR_ENO /*최종작업자개인번호*/              
+					     )                                       
+					  VALUES ( 
+						   TRIM(#grp_org_c#)                             
+					     , TRIM(#snro_sc#)                              
+					     , TRIM(#bsn_prss_c#)                              
+					     , #dcz_sqno#                       
+						 , TO_CHAR(SYSDATE,'YYYYMMDD')
+						 , TRIM(#userid#)                              
+					     , #dcz_dc#                  
+						 , #sch_rtn_cntn#
+						 , #dcz_objr_eno#                                  
+					     , SYSDATE                               
+					     , TRIM(#userid#)                               
+					     , SYSDATE                               
+					     , TRIM(#userid#) 
+					     	)                                                                                                   
+						</data>
+					</sql>			
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit99" name="DCZ_SQNO업데이트" type="S" mode="update" >
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 UPDATE  TB_OR_SH_RSKBSN                         
+						 SET     DCZ_SQNO       = #dcz_sqno#                                      
+						 WHERE   GRP_ORG_C       = #grp_org_c#                  
+						   AND   SNRO_SC   = #snro_sc#                 
+						   AND   BSN_PRSS_C   = #bsn_prss_c#                                
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	
+		
+	<process id="ORSN010501" name="시나리오 보고서" forward="/snr/ORSN0105" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="bsn_prss_c_p" name="업무프로세스코드" parmid="bsn_prss_c_p" attr="S" default_value=""/>
+		<parm id="snro_sc_p" name="시나리오회차" parmid="snro_sc_p" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="입력내용조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+SELECT /* 시나리오 보고서 팝업 - 입력내용조회*/     
+       GRP_ORG_C /*그룹기관코드*/                    
+     , SNRO_SC /*시나리오회차*/                      
+     , BSN_PRSS_C /*업무프로세스코드*/                 
+     , RSKDRVR_ANSS_CNTN /*위험요인분석내용*/          
+     , CFT_PLAN_CNTN /*대응방안내용*/                
+     , CFRC_OPI_CNTN /*협의의견내용*/
+     , SNRO_SET /*시나리오 설정*/                
+  FROM TB_OR_SH_RSKBSN /*시나리오_중요위험업무내역*/    
+ WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+   AND SNRO_SC = TRIM(#snro_sc_p#)       
+   AND BSN_PRSS_C = TRIM(#bsn_prss_c_p#) 
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010502" name="시나리오 보고서" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_grp_org_c" name="그룹기관코드" parmid="sch_grp_org_c" attr="S" default_value=""/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="손실목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+SELECT /* 시나리오 보고서 팝업 - 손실*/                   
+       A.TTCN /*발생건수합계*/                                 
+     , A.LSS_AM_TT /*손실금액합계*/                            
+     , A.LSS_AM_AVG /*손실금액평균*/                           
+     , B.LSHP_AMNNO /*손실사건관리번호*/
+     , B.AMN_BRC                         
+     , B.LSS_TINM /*손실제목명*/                              
+     , B.TTLS_AM /*총손실금액*/
+     , B.GULS_AM                               
+     , B.OCU_DT /*발생일자*/
+     , B.REG_DT                                 
+  FROM ( /*요약정보*/                                        
+        SELECT COUNT(*) AS TTCN                          
+             , SUM(TTLS_AM) AS LSS_AM_TT                 
+             , ROUND(SUM(TTLS_AM)/COUNT(*)) AS LSS_AM_AVG
+          FROM TB_OR_SH_LSS /*시나리오_최근발생손실내역*/
+         WHERE GRP_ORG_C = TRIM(#sch_grp_org_c#) --sch_grp_org_c       
+           AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc           
+           AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#)                      
+       ) A                                               
+     , ( /*목록*/                                          
+        SELECT LSHP_AMNNO
+        	 , AMN_BRC                                
+             , LSS_TINM                                  
+             , TTLS_AM
+             , GULS_AM                                   
+             , OCU_DT 
+             , REG_DT                                   
+          FROM TB_OR_SH_LSS /*시나리오_최근발생손실내역*/
+         WHERE GRP_ORG_C = TRIM(#sch_grp_org_c#) --sch_grp_org_c       
+           AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc           
+           AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#)                      
+       ) B                                               
+ ORDER BY B.LSHP_AMNNO ASC                               
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010503" name="시나리오 보고서" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_grp_org_c" name="그룹기관코드" parmid="sch_grp_org_c" attr="S" default_value=""/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="기준년월조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+SELECT /*ORSN0105S2 시나리오 보고서 팝업 - RCSA 1.기준년월조회*/  
+       BAS_YM /*기준년월*/                          
+  FROM TB_OR_SH_RCSA /*시나리오_위험평가내역*/                 
+ WHERE GRP_ORG_C = TRIM(#sch_grp_org_c#) --sch_grp_org_c            
+   AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc                
+   AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#)                           
+ GROUP BY BAS_YM                                   
+ ORDER BY BAS_YM                                   
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>						
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010504" name="시나리오 보고서" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_grp_org_c" name="그룹기관코드" parmid="sch_grp_org_c" attr="S" default_value=""/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="KRI목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+SELECT /* 시나리오 보고서 팝업 - KRI*/                 
+       A.TTCN /*발생건수합계*/                                
+     , A.RED_OCU_CN_TT /*RED발생건수합계*/                    
+     , B.OPRK_RKI_ID /*운영리스크리스크지표ID*/                   
+     , B.OPRK_RKINM /*운영리스크리스크지표명*/                     
+     , B.KRI_MM_AVL /*KRI월평균값*/                         
+     , B.RED_OCU_CN /*적색발생건수*/                          
+  FROM ( /*요약정보*/                                       
+        SELECT COUNT(*) AS TTCN                         
+             , SUM(RED_OCU_CN) AS RED_OCU_CN_TT         
+          FROM TB_OR_SH_KRIRED /*시나리오_KRIRED발생내역*/   
+         WHERE GRP_ORG_C = TRIM(#sch_grp_org_c#) --sch_grp_org_c      
+           AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc          
+           AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#)                     
+       ) A                                              
+     , ( /*목록*/                                         
+        SELECT OPRK_RKI_ID                              
+             , OPRK_RKINM                               
+             , KRI_MM_AVL                               
+             , RED_OCU_CN                               
+          FROM TB_OR_SH_KRIRED /*시나리오_KRIRED발생내역*/   
+         WHERE GRP_ORG_C = TRIM(#sch_grp_org_c#) --sch_grp_org_c      
+           AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc          
+           AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#)                     
+       ) B                                              
+ ORDER BY B.OPRK_RKI_ID ASC                             
+					</data>
+				</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010505" name="시나리오 보고서" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_grp_org_c" name="그룹기관코드" parmid="sch_grp_org_c" attr="S" default_value=""/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<parm id="rskdrvr_anss_cntn" name="위험요인분석내용" parmid="rskdrvr_anss_cntn" attr="S" default_value=""/>
+		<parm id="cft_plan_cntn" name="대응방안내용" parmid="cft_plan_cntn" attr="S" default_value=""/>
+		<parm id="cfrc_opi_cntn" name="협의의견내용" parmid="cfrc_opi_cntn" attr="S" default_value=""/>
+		<parm id="snro_set" name="시나리오 설정" parmid="snro_set" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="보고서수정_중요위험업무내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+UPDATE /*ORSN0105U1 보고서수정*/                                         
+   	   TB_OR_SH_RSKBSN /*시나리오_중요위험업무내역*/                         
+   SET RSKDRVR_ANSS_CNTN = TRIM(#rskdrvr_anss_cntn#) /*위험요인분석내용*/ --rskdrvr_anss_cntn 
+	 , CFT_PLAN_CNTN = TRIM(#cft_plan_cntn#) /*대응방안내용*/ --cft_plan_cntn           
+	 , CFRC_OPI_CNTN = TRIM(#cfrc_opi_cntn#) /*협의의견내용*/ --cfrc_opi_cntn           
+	 , SNRO_SET = TRIM(#snro_set#) /*시나리오설정*/ --snro_set           
+	 , LSCHG_DTM = SYSDATE /*최종변경일시*/                               
+	 , LS_WKR_ENO = TRIM(#userid#) /*최종작업자개인번호*/ --userid                  
+ WHERE GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/ --grp_org_c                   
+   AND SNRO_SC = TRIM(#sch_snro_sc#) /*시나리오회차*/ --sch_snro_sc                   
+   AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#) /*업무프로세스코드*/ --sch_bsn_prss_c                                                                                                                                             
+					</data>
+				</sql>	
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit02" name="보고서수정_보고서결재내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+INSERT /* 입력 상태 변경*/                  
+  INTO TB_OR_SH_RPTG_DCZ /*시나리오_보고서결재내역*/  	
+     ( GRP_ORG_C /*그룹기관코드*/                     
+     , SNRO_SC /*시나리오회차*/                       
+     , DCZ_SQNO /*결재일련번호*/                      
+     , BSN_PRSS_C /*업무프로세스코드*/                  
+     , DCZ_DT /*결재일자*/                          
+     , DCZMN_ENO /*결재개인번호*/                       
+     , SNRO_DCZ_STSC /*시나리오결재상태코드*/             
+     , RTN_CNTN /*반려내용*/                        
+     , FIR_INP_DTM /*최초입력일시*/                   
+     , FIR_INPMN_ENO /*최초입력자개인번호*/              
+     , LSCHG_DTM /*최종변경일시*/                     
+     , LS_WKR_ENO /*최종작업자개인번호*/                 
+     )                                          
+SELECT GRP_ORG_C                                
+     , SNRO_SC                                  
+     , MAX(DCZ_SQNO+1) DCZ_SQNO                 
+     , BSN_PRSS_C                               
+     , TO_CHAR(SYSDATE,'YYYYMMDD')              
+     , TRIM(#userid#)                      		 
+     , '13'                                     
+     , ''                                       
+     , SYSDATE                                  
+     , TRIM(#userid#)                      		 
+     , SYSDATE                                  
+     , TRIM(#userid#)                      		 
+  FROM TB_OR_SH_RPTG_DCZ                   	
+ WHERE GRP_ORG_C = TRIM(#grp_org_c#)       		     
+   AND SNRO_SC = TRIM(#sch_snro_sc#)       		         
+   AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#) 		         
+GROUP BY GRP_ORG_C , SNRO_SC , BSN_PRSS_C       					
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>	
+			<unit id="unit99" name="보고서수정_중요위험업무내역" type="S" mode="update" multiid="">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+UPDATE          								
+       TB_OR_SH_RSKBSN /*중요위험업무내역*/         
+   SET DCZ_SQNO = (SELECT MAX(DCZ_SQNO)        
+                     FROM TB_OR_SH_RPTG_DCZ 
+					WHERE GRP_ORG_C = TRIM(#grp_org_c#)  
+					  AND SNRO_SC =  TRIM(#sch_snro_sc#)   
+					  AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#))
+	 , LSCHG_DTM = SYSDATE /*최종변경일시*/          
+	 , LS_WKR_ENO = TRIM(#userid#) /*최종작업자개인번호*/      
+		WHERE GRP_ORG_C = TRIM(#grp_org_c#)              
+		  AND SNRO_SC =  TRIM(#sch_snro_sc#)               
+		  AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#)             
+					</data>
+				</sql>
+				<result id="result" name="result" attrname="count" type="count"/>
+			</unit>														
+		</group>
+	</process>
+	
+	<process id="ORSN010506" name="시나리오 보고서" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_grp_org_c" name="그룹기관코드" parmid="sch_grp_org_c" attr="S" default_value=""/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<parm id="bas_ym_1" name="기준년월1" parmid="bas_ym_1" attr="S" default_value=""/>
+		<parm id="bas_ym_2" name="기준년월2" parmid="bas_ym_2" attr="S" default_value=""/>
+		<parm id="bas_ym_3" name="기준년월3" parmid="bas_ym_3" attr="S" default_value=""/>
+		<parm id="bas_ym_4" name="기준년월4" parmid="bas_ym_4" attr="S" default_value=""/>
+		<parm id="bas_ym_5" name="기준년월5" parmid="bas_ym_5" attr="S" default_value=""/>
+		<parm id="bas_ym_6" name="기준년월6" parmid="bas_ym_6" attr="S" default_value=""/>
+		<parm id="bas_ym_7" name="기준년월7" parmid="bas_ym_7" attr="S" default_value=""/>
+		<parm id="bas_ym_8" name="기준년월8" parmid="bas_ym_8" attr="S" default_value=""/>
+		<parm id="bas_ym_9" name="기준년월9" parmid="bas_ym_9" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="위험평가목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+SELECT /* 시나리오 보고서 팝업 - RCSA 2.위험평가목록조회*/                                      
+       OPRK_RKP_ID /*운영리스크리스크풀ID*/                                                       
+     , RK_ISC_CNTN /*리스크사례내용*/
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_1#), RED_CN, NULL)) AS RED_CN_1 /*회차1*/ --BAS_YM_1 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_2#), RED_CN, NULL)) AS RED_CN_2 /*회차2*/ --BAS_YM_2 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_3#), RED_CN, NULL)) AS RED_CN_3 /*회차3*/ --BAS_YM_3 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_4#), RED_CN, NULL)) AS RED_CN_4 /*회차4*/ --BAS_YM_4 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_5#), RED_CN, NULL)) AS RED_CN_5 /*회차5*/ --BAS_YM_5 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_6#), RED_CN, NULL)) AS RED_CN_6 /*회차6*/ --BAS_YM_6 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_7#), RED_CN, NULL)) AS RED_CN_7 /*회차7*/ --BAS_YM_7 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_8#), RED_CN, NULL)) AS RED_CN_8 /*회차8*/ --BAS_YM_8 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_9#), RED_CN, NULL)) AS RED_CN_9 /*회차9*/ --BAS_YM_9                                                           
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_1#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_1 /*회차1*/ --BAS_YM_1   
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_2#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_2 /*회차2*/ --BAS_YM_2   
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_3#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_3 /*회차3*/ --BAS_YM_3 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_4#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_4 /*회차4*/ --BAS_YM_4 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_5#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_5 /*회차5*/ --BAS_YM_5 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_6#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_6 /*회차6*/ --BAS_YM_6 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_7#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_7 /*회차7*/ --BAS_YM_7 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_8#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_8 /*회차8*/ --BAS_YM_8 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_9#), RK_EVL_GRD_AVL, NULL)) AS RK_EVL_GRD_AVL_9 /*회차9*/ --BAS_YM_9 
+  FROM TB_OR_SH_RCSA /*시나리오_위험평가내역*/                                                    
+ WHERE GRP_ORG_C = TRIM(#sch_grp_org_c#) --sch_grp_org_c                                               
+   AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc                                                   
+   AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#) --sch_bsn_prss_c
+                                                
+   AND (1=2                                                                              
+    OR BAS_YM = TRIM(#bas_ym_1#) --BAS_YM_1                                               
+    OR BAS_YM = TRIM(#bas_ym_2#) --BAS_YM_2                                               
+    OR BAS_YM = TRIM(#bas_ym_3#) --BAS_YM_3                                               
+    OR BAS_YM = TRIM(#bas_ym_4#) --BAS_YM_4                                               
+    OR BAS_YM = TRIM(#bas_ym_5#) --BAS_YM_5                                               
+    OR BAS_YM = TRIM(#bas_ym_6#) --BAS_YM_6                                               
+    OR BAS_YM = TRIM(#bas_ym_7#) --BAS_YM_7                                               
+    OR BAS_YM = TRIM(#bas_ym_8#) --BAS_YM_8                                               
+    OR BAS_YM = TRIM(#bas_ym_9#) --BAS_YM_9                                               
+       )                                                                                 
+ GROUP BY OPRK_RKP_ID, RK_ISC_CNTN                                                       
+ ORDER BY OPRK_RKP_ID                                                                            
+					</data>
+				</sql>			
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+	<process id="ORSN010507" name="시나리오 보고서" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="snr" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="sch_grp_org_c" name="그룹기관코드" parmid="sch_grp_org_c" attr="S" default_value=""/>
+		<parm id="sch_snro_sc" name="시나리오회차" parmid="sch_snro_sc" attr="S" default_value=""/>
+		<parm id="sch_bsn_prss_c" name="업무프로세스코드" parmid="sch_bsn_prss_c" attr="S" default_value=""/>
+		<parm id="sch_oprk_rkp_id" name="운영리스크리스크풀ID" parmid="sch_oprk_rkp_id" attr="S" default_value=""/>
+		<parm id="bas_ym_1" name="기준년월1" parmid="bas_ym_1" attr="S" default_value=""/>
+		<parm id="bas_ym_2" name="기준년월2" parmid="bas_ym_2" attr="S" default_value=""/>
+		<parm id="bas_ym_3" name="기준년월3" parmid="bas_ym_3" attr="S" default_value=""/>
+		<parm id="bas_ym_4" name="기준년월4" parmid="bas_ym_4" attr="S" default_value=""/>
+		<parm id="bas_ym_5" name="기준년월5" parmid="bas_ym_5" attr="S" default_value=""/>
+		<parm id="bas_ym_6" name="기준년월6" parmid="bas_ym_6" attr="S" default_value=""/>
+		<parm id="bas_ym_7" name="기준년월7" parmid="bas_ym_7" attr="S" default_value=""/>
+		<parm id="bas_ym_8" name="기준년월8" parmid="bas_ym_8" attr="S" default_value=""/>
+		<parm id="bas_ym_9" name="기준년월9" parmid="bas_ym_9" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="통제평가목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+					<data id="data111" name="">
+SELECT /*시나리오 보고서 팝업 - RCSA 3.통제평가목록조회*/                                    
+       OPRK_RKP_ID /*운영리스크리스크풀ID*/                                                     
+     , CTL_CNTN /*통제내용*/                                                               
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_1#), RED_CN, NULL)) AS RED_CN_1 /*회차1*/ --BAS_YM_1 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_2#), RED_CN, NULL)) AS RED_CN_2 /*회차2*/ --BAS_YM_2 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_3#), RED_CN, NULL)) AS RED_CN_3 /*회차3*/ --BAS_YM_3 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_4#), RED_CN, NULL)) AS RED_CN_4 /*회차4*/ --BAS_YM_4 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_5#), RED_CN, NULL)) AS RED_CN_5 /*회차5*/ --BAS_YM_5 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_6#), RED_CN, NULL)) AS RED_CN_6 /*회차6*/ --BAS_YM_6 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_7#), RED_CN, NULL)) AS RED_CN_7 /*회차7*/ --BAS_YM_7 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_8#), RED_CN, NULL)) AS RED_CN_8 /*회차8*/ --BAS_YM_8 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_9#), RED_CN, NULL)) AS RED_CN_9 /*회차9*/ --BAS_YM_9
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_1#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_1 /*회차1*/ --BAS_YM_1 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_2#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_2 /*회차2*/ --BAS_YM_2 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_3#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_3 /*회차3*/ --BAS_YM_3 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_4#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_4 /*회차4*/ --BAS_YM_4 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_5#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_5 /*회차5*/ --BAS_YM_5 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_6#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_6 /*회차6*/ --BAS_YM_6 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_7#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_7 /*회차7*/ --BAS_YM_7 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_8#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_8 /*회차8*/ --BAS_YM_8 
+     , MAX(DECODE(BAS_YM, TRIM(#bas_ym_9#), CTEV_GRD_AVL, NULL)) AS CTEV_GRD_AVL_9 /*회차9*/ --BAS_YM_9  
+  FROM TB_OR_SH_CTEV /*시나리오_통제평가내역*/                                                
+ WHERE GRP_ORG_C = TRIM(#sch_grp_org_c#) --sch_grp_org_c                                             
+   AND SNRO_SC = TRIM(#sch_snro_sc#) --sch_snro_sc                                                 
+   AND BSN_PRSS_C = TRIM(#sch_bsn_prss_c#) --sch_bsn_prss_c                                           
+   AND OPRK_RKP_ID = TRIM(#sch_oprk_rkp_id#) --sch_oprk_rkp_id                                         
+   AND (1=2                                                                            
+    OR BAS_YM = TRIM(#bas_ym_1#) --BAS_YM_1                                               
+    OR BAS_YM = TRIM(#bas_ym_2#) --BAS_YM_2                                               
+    OR BAS_YM = TRIM(#bas_ym_3#) --BAS_YM_3                                               
+    OR BAS_YM = TRIM(#bas_ym_4#) --BAS_YM_4                                               
+    OR BAS_YM = TRIM(#bas_ym_5#) --BAS_YM_5                                               
+    OR BAS_YM = TRIM(#bas_ym_6#) --BAS_YM_6                                               
+    OR BAS_YM = TRIM(#bas_ym_7#) --BAS_YM_7                                               
+    OR BAS_YM = TRIM(#bas_ym_8#) --BAS_YM_8                                               
+    OR BAS_YM = TRIM(#bas_ym_9#) --BAS_YM_9                                               
+       )                                                                               
+ GROUP BY OPRK_RKP_ID, CTL_CNTN, RK_CTL_SQNO                                           
+ ORDER BY RK_CTL_SQNO                                                                  
+					</data>
+				</sql>			
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+			</unit>
+		</group>
+	</process>
+	
+		
+</com_servlet>

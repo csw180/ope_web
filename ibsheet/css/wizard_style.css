@@ -1,0 +1,46 @@
+﻿.controlFieldSet {
+	padding: 1em;
+	font:1.1em sans-serif;
+	border:1px solid #9cb6cf
+}
+.fieldSetTitle {
+	padding: 5px;
+	border:1px solid #9cb6cf;
+	color:#565656;
+	font-size:100%;
+	text-Align:left;
+	font-weight:700;
+	font-size:12pt;
+}
+.fieldSetTitle:hover{
+	background-color:#ADADAD;
+	cursor:pointer;
+}
+
+.ulTable{display:table}
+.liRow{display: table-row;float:left;padding:0 0 5px 0;line-height:26px}
+.liCellTitle{
+	display: table-cell;font-weight:700;padding:0 1px 0 5px;
+	font-family:dotum, Malgun Gothic, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	list-style-Type:circle;
+	Width:200px;
+	vertical-Align:top;
+}
+.liCellContent{
+	display: table-cell;padding:0 5px 0 1px;
+	font-family:dotum, Malgun Gothic, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	list-style-Type:none;
+	Width:200px;
+}
+.liCellContent_w{
+	display: table-cell;padding:0 5px 0 1px;
+	font-family:dotum, Malgun Gothic, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	list-style-Type:none;
+}
+
+.CodeMirror { height: 450px; border: 1px solid #ddd; }
+.CodeMirror-scroll { max-height: 600px; }
+.CodeMirror pre { padding-left: 7px; line-height: 1.25; }

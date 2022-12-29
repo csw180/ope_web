@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+	<Properties>
+		<Property name="logNm">shbank</Property>
+		<Property name="layoutPattern">[%d{yyyy-MM-dd HH:mm:ss.ms}] %p [%c:%L] %m{nolookups} %n</Property>
+	</Properties>
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${layoutPattern}" />
+		</Console> 
+		<RollingFile name="file" fileName="C:/log/${logNm}.log" 
+					filePattern="/data/project/shorms/log/${logNm}_%d{yyyy-MM-dd}_%i.log">
+			<PatternLayout pattern="${layoutPattern}" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10MB" />
+				<!-- 10MB 용량 초과시 DefaultRolloverStrategy 정책만큼 넘버링 -->
+				<TimeBasedTriggeringPolicy interval="1" />
+				<!-- 일별 로그파일 생성 -->
+			</Policies>
+			<DefaultRolloverStrategy max="500" fileIndex="min" />
+			<!-- 롤링 파일 500개 까지 생성 -->
+		</RollingFile> 
+	</Appenders>
+	
+	<Loggers>
+		<Root level="info">
+			<AppenderRef ref="Console"></AppenderRef>
+			<AppenderRef ref="file"></AppenderRef>
+		</Root>
+		
+<!-- 		<logger name="java.sql" level="debug">
+			<AppenderRef ref="Console"></AppenderRef>
+	        <AppenderRef ref="file" />
+		</logger> -->
+		
+		<!-- <logger name="com.shbank.orms" level="info">
+			<AppenderRef ref="Console"></AppenderRef>
+			<AppenderRef ref="file"></AppenderRef>
+		</logger>
+		
+		<logger name="org.springframework" level="info">
+			<AppenderRef ref="Console"></AppenderRef>
+			<AppenderRef ref="file"></AppenderRef>
+		</logger> -->
+		
+	</Loggers>
+</Configuration>

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="960" height="110" viewBox="0 0 960 110">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-msr_guide_fore);
+      }
+
+      .cls-2, .cls-4 {
+        fill: #555;
+      }
+
+      .cls-2 {
+        font-size: 12px;
+      }
+
+      .cls-2, .cls-3, .cls-4 {
+        font-family: MalgunGothicBold, Malgun Gothic;
+        letter-spacing: -0.002em;
+      }
+
+      .cls-3 {
+        fill: #111;
+      }
+
+      .cls-3, .cls-4 {
+        font-size: 13px;
+      }
+
+      .cls-5, .cls-7 {
+        fill: none;
+      }
+
+      .cls-5 {
+        stroke: #9a9a9a;
+      }
+
+      .cls-6 {
+        fill: #db1313;
+      }
+
+      .cls-7 {
+        stroke: #54c3f1;
+      }
+
+      .cls-8 {
+        fill: #fff;
+      }
+    </style>
+    <clipPath id="clip-msr_guide_fore">
+      <rect width="960" height="110"/>
+    </clipPath>
+  </defs>
+  <g id="msr_guide_fore" class="cls-1">
+    <rect class="cls-8" width="960" height="110"/>
+    <text id="전년도_4Q" data-name="전년도
+4Q" class="cls-2" transform="translate(31 86)"><tspan x="-17.976" y="0">전년도</tspan><tspan x="-8.124" y="16">4Q</tspan></text>
+    <text id="_1Q" data-name="1Q" class="cls-2" transform="translate(140 86)"><tspan x="-8.124" y="0">1Q</tspan></text>
+    <text id="_2Q" data-name="2Q" class="cls-2" transform="translate(253 86)"><tspan x="-8.124" y="0">2Q</tspan></text>
+    <text id="_3Q" data-name="3Q" class="cls-2" transform="translate(367 86)"><tspan x="-8.124" y="0">3Q</tspan></text>
+    <text id="_4Q" data-name="4Q" class="cls-2" transform="translate(480 86)"><tspan x="-8.124" y="0">4Q</tspan></text>
+    <text id="차기년도_4Q" data-name="차기년도
+4Q" class="cls-2" transform="translate(932 86)"><tspan x="-23.964" y="0">차기년도</tspan><tspan x="-8.124" y="16">4Q</tspan></text>
+    <text id="각_분기別_한도_모니터링_수행" data-name="각 분기別 한도 모니터링 수행" class="cls-3" transform="translate(762 20)"><tspan x="-86.946" y="0">각 분기別 한도 모니터링 수행</tspan></text>
+    <text id="한도_산출_시점" data-name="한도 산출 시점" class="cls-4" transform="translate(429 25)"><tspan x="-43.479" y="0">한도 산출 시점</tspan></text>
+    <text id="차기년도_3Q" data-name="차기년도
+3Q" class="cls-2" transform="translate(819 86)"><tspan x="-23.964" y="0">차기년도</tspan><tspan x="-8.124" y="16">3Q</tspan></text>
+    <text id="차기년도_2Q" data-name="차기년도
+2Q" class="cls-2" transform="translate(707 86)"><tspan x="-23.964" y="0">차기년도</tspan><tspan x="-8.124" y="16">2Q</tspan></text>
+    <text id="차기년도_1Q" data-name="차기년도
+1Q" class="cls-2" transform="translate(594 86)"><tspan x="-23.964" y="0">차기년도</tspan><tspan x="-8.124" y="16">1Q</tspan></text>
+    <line id="선_8" data-name="선 8" class="cls-5" x2="900" transform="translate(30.5 51.5)"/>
+    <line id="선_9" data-name="선 9" class="cls-5" y2="20" transform="translate(30.5 41.5)"/>
+    <line id="선_10" data-name="선 10" class="cls-5" y2="20" transform="translate(143.5 41.5)"/>
+    <line id="선_17" data-name="선 17" class="cls-5" y2="20" transform="translate(593.5 41.5)"/>
+    <line id="선_11" data-name="선 11" class="cls-5" y2="20" transform="translate(255.5 41.5)"/>
+    <line id="선_16" data-name="선 16" class="cls-5" y2="20" transform="translate(705.5 41.5)"/>
+    <line id="선_12" data-name="선 12" class="cls-5" y2="20" transform="translate(368.5 41.5)"/>
+    <line id="선_15" data-name="선 15" class="cls-5" y2="20" transform="translate(818.5 41.5)"/>
+    <line id="선_13" data-name="선 13" class="cls-5" y2="20" transform="translate(480.5 41.5)"/>
+    <line id="선_14" data-name="선 14" class="cls-5" y2="20" transform="translate(930.5 41.5)"/>
+    <path id="다각형_4" data-name="다각형 4" class="cls-6" d="M8,0l8,15H0Z" transform="translate(437 49) rotate(180)"/>
+    <g id="그룹_21" data-name="그룹 21" transform="translate(591.167 41.804) rotate(-90)">
+      <path id="패스_10" data-name="패스 10" class="cls-7" d="M92.333,680.333s5.545,4.09,6.824,40.9-4.851,89.636-4.478,107.7,4.478,16.359,4.478,16.359" transform="translate(-87.863 -675)"/>
+      <path id="패스_20" data-name="패스 20" class="cls-7" d="M92.333,845.333s5.545-4.09,6.824-40.9-4.851-89.636-4.478-107.7,4.478-16.359,4.478-16.359" transform="translate(-87.863 -509)"/>
+    </g>
+  </g>
+</svg>

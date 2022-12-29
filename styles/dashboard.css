@@ -1,0 +1,135 @@
+@charset "UTF-8";
+
+
+.dash-title{position: relative; margin-bottom: 5px;}
+.dash-title .small{font-size: 13px;}
+.dash-title .btn-dash-more{position: absolute; top:0; left: 0; width: 100%; height: 100%;}
+
+
+
+/* box-dash */
+.box-dash{position: relative; padding: 10px; border: 1px solid #E0E0E0;}
+.box-dash ~ .box-dash{margin-top: 10px;}
+
+.box-dash .date{position: absolute; top: 18px; right: 10px; font-size: 12px; color: #9a9a9a;}
+.box-dash .period{margin: 5px 0 20px;}
+
+
+/* dash-tab */
+.dash-tab{display: table; table-layout: fixed; width: 100%; align-items: center; border-collapse : collapse;}
+.dash-tab li{display: table-cell; border: 1px solid #e0e0e0;}
+.dash-tab .btn-tab{display: flex; align-items: center; justify-content: center; width: 100%; height: 36px; font-weight: 700; color: #9a9a9a; background-color: #F1F7FB;}
+.dash-tab .btn-tab.active{color: #fff; background-color: #0068b7;}
+.dash-tab .btn-tab.red.active{background-color: #db1313;}
+.dash-tab .btn-tab.yellow.active{background-color: #e99200;}
+.dash-tab .btn-tab.green.active{background-color: #349b48;}
+.dash-tab + .wrap-grid{margin-top: 10px;}
+
+
+
+/*** 메인화면 ***/
+
+/* 운영리스크 업무 처리 현황 */
+.risk-status-wrap{display: flex; flex-wrap: wrap; height: 640px;}
+
+.risk-status-wrap .risk-status{position: relative; padding: 10px; width: 50%; height: 50%; border: 1px solid #E0E0E0;}
+.risk-status-wrap .risk-status:nth-child(2n){border-left-width: 0;}
+.risk-status-wrap .risk-status:nth-child(2):last-child{border-top-width: 0; border-left-width: 1px;}
+.risk-status-wrap .risk-status:nth-child(n+3){border-top-width: 0;}
+
+.risk-status-wrap.branch .risk-status{width: 100%;}
+
+.risk-status .period{position: absolute; top: 18px; right: 10px; font-size: 12px; color: #9a9a9a;}
+.risk-status .status-area{display: flex; flex-direction: column; align-items: center; justify-content: center; height: 50px; background-color: #f9fafa;}
+.risk-status .status-area .date{font-size: 12px;}
+.risk-status .status-area .date strong{color: #111;}
+.risk-status .status-area .status{margin-top: 3px; font-weight: 700;}
+.risk-status .status-area.ing{background-color: #fff6f6;}
+.risk-status .status-area.ing .status{color: #db1313;}
+.risk-status .status-area.finish{background-color: #f0f8fd;}
+.risk-status .status-area.finish .status{color: #0068b7;}
+
+.risk-status-list-wrap{position: relative; margin-top: 15px; height: calc(100% - 105px); overflow: auto;}
+.risk-status-list > li{display: flex; justify-content: space-between; padding: 5px 0;}
+.risk-status-list .subject{padding-right: 5px; font-weight: 700; color: #111;}
+.risk-status-list dl{display: inline-flex;}
+.risk-status-list dl dt{margin-left: 10px; width: 18px; height: 18px; text-align: center; border-radius: 3px;}
+.risk-status-list dl dt.main{background-color: #54C3F1;}
+.risk-status-list dl dt.branch{background-color: #004098;}
+.risk-status-list dl dt::before{font-size: 12px; font-weight: 700; color: #fff;}
+.risk-status-list dl dt.main::before{content: "본";}
+.risk-status-list dl dt.branch::before{content: "영";}
+.risk-status-list dl dt .text{font-size: 0;}
+.risk-status-list dl dd{margin-left: 3px;}
+.risk-status-list dl dd.ing{color: #db1313;}
+.risk-status-list .no{font-weight: 700; color: #9a9a9a;}
+.risk-status-list .ing{color: #db1313;}
+.risk-status-list .finish{color: #555;}
+
+.risk-status-table{table-layout: fixed; min-width: 100%;}
+.risk-status-table thead{position: sticky; top: 0; right: 0; text-align: right;}
+.risk-status-table thead th{padding: 5px 3px; max-width: 100px; font-size: 12px; font-weight: 700; text-align: center; color: #004282; background-color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.risk-status-table thead th::before{content: attr(title)}
+.risk-status-table tbody th{padding-right: 5px; min-width: 100px; width: 40%; font-weight: 700; color: #111;}
+.risk-status-table tbody td{padding: 5px 0; font-weight: 700; text-align: center; color: #9a9a9a;}
+.risk-status-table tbody td.ing{font-weight: 500; color: #db1313;}
+.risk-status-table tbody td.finish{font-weight: 500; color: #555;}
+.risk-status-table tbody td.no{font-weight: 700; color: #9a9a9a;}
+
+
+
+/* 운영리스크 주요정보 */
+.risk-info-chart::before{display: none;}
+.risk-info-chart-title{position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;}
+.risk-info-chart-title::before{content: '\f1c0'; font-family: FontAwesome; font-size: 18px; color: #e8b934;}
+.risk-info-chart-title .title1{font-size: 18px; font-weight: 900; color: #111;}
+.risk-info-chart-title .title2{padding-top: 3px; font-size: 12px; color: #9a9a9a;}
+.risk-info-chart .Hcharts-series path:hover{fill: #2a8bd4;}
+
+.risk-info-table tbody td{height: 50px; text-align: center;}
+.risk-info-table tfoot td{text-align: center;}
+
+
+.risk-status-rank{position: absolute; top:16px; right: 10px; display: flex; align-items: center; color: #9a9a9a;}
+.risk-status-rank dt{padding-right: 3px;}
+.risk-status-rank dt::after{content: ' : ';}
+.risk-status-rank dt + dd{font-size: 15px; font-weight: 700; color: #0068b7;}
+.risk-status-rank dd + dd{color: #111;}
+.risk-status-rank dd + dd::before{content : ' / '; padding-left: 2px; font-size: 11px; color: #9a9a9a;}
+
+
+.risk-rank-table tbody tr{height: 52px;}
+.risk-rank-table tfoot td{height: 55px; font-weight: 700;}
+
+
+/* 규제 자본 산출 결과 */
+.das-repcep-chart .Hcharts-data-labels g:not(:last-child){display: none;}
+
+
+
+
+
+/*** KRI 조회 ***/
+
+
+/* 관리 지표 발생 현황 - 전년 동월 대비 발생 추이 / 등급 비교 */
+.kri-month{display: flex; align-items: center; text-align: center;}
+.kri-month dt,
+.kri-month dd{margin: 1px; padding: 1px; height: 20px; border-radius: 3px; white-space: nowrap; opacity: 0.3;}
+.kri-month dt{flex: 3; color: #111; background-color: #F1F7FB;}
+.kri-month dd{flex: 2; font-weight: 700; color: #fff; background-color: #F6F6F6;}
+.kri-month dd::after{content: '월'; font-size: 12px; font-weight: 400;}
+.kri-month dd.red{background-color: #db1313;}
+.kri-month dd.yellow{background-color: #e99200;}
+.kri-month dd.green{background-color: #349b48;}
+.kri-month dt.on{opacity: 1;}
+.kri-month dd.on{opacity: 1;}
+
+/* 전행(전영업점) 발생현황 Pie Chart */
+:root{ --chart-all-color: #db1313;}
+.kri-all-chart .Hcharts-series path:hover{fill: var(--chart-all-color, #2a8bd4);}
+
+.kri-all-chart-branch .wrap-chart::before{content: ""}
+.kri-all-chart-detail .subject{position: absolute; top: 20px; width: 100%; text-align: center; color: #004282;}
+.kri-all-chart-detail .total{position: absolute; top: 50%; width: 100%; font-size: 14px; text-align: center;}
+.kri-all-chart-detail .total strong{font-size: 16px; color: #111;}

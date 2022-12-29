@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="943" height="225" viewBox="0 0 943 225">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-msr_guide_process);
+      }
+
+      .cls-2 {
+        fill: #004098;
+      }
+
+      .cls-10, .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        font-size: 14px;
+        font-family: MalgunGothicBold, Malgun Gothic;
+        letter-spacing: -0.002em;
+      }
+
+      .cls-4 {
+        fill: #54c3f1;
+      }
+
+      .cls-5 {
+        fill: #db1313;
+      }
+
+      .cls-6 {
+        fill: #f0f8fd;
+      }
+
+      .cls-7 {
+        fill: #555;
+        font-size: 13px;
+        font-family: MalgunGothic, Malgun Gothic;
+        letter-spacing: -0.01em;
+      }
+
+      .cls-8 {
+        fill: none;
+        stroke: #54c3f1;
+      }
+
+      .cls-9 {
+        fill: #0068b7;
+      }
+    </style>
+    <clipPath id="clip-msr_guide_process">
+      <rect width="943" height="225"/>
+    </clipPath>
+  </defs>
+  <g id="msr_guide_process" class="cls-1">
+    <rect class="cls-10" width="943" height="225"/>
+    <g id="그룹_10" data-name="그룹 10">
+      <rect id="사각형_4" data-name="사각형 4" class="cls-2" width="460" height="31"/>
+      <text id="금융위기의_실물경제_전이_프로세스" data-name="금융위기의 실물경제 전이 프로세스" class="cls-3" transform="translate(230 22)"><tspan x="-112.145" y="0">금융위기의 실물경제 전이 프로세스</tspan></text>
+    </g>
+    <g id="그룹_11" data-name="그룹 11" transform="translate(483)">
+      <rect id="사각형_4-2" data-name="사각형 4" class="cls-4" width="460" height="31"/>
+      <text id="실물경기_위축의_내부자본_전이_프로세스" data-name="실물경기 위축의 내부자본 전이 프로세스" class="cls-3" transform="translate(230 22)"><tspan x="-128.564" y="0">실물경기 위축의 내부자본 전이 프로세스</tspan></text>
+    </g>
+    <g id="그룹_13" data-name="그룹 13" transform="translate(370 -38)">
+      <circle id="타원_1" data-name="타원 1" class="cls-5" cx="40" cy="40" r="40" transform="translate(62 79)"/>
+      <text id="실물경제_위축" data-name="실물경제
+위축" class="cls-3" transform="translate(102 116)"><tspan x="-27.958" y="0">실물경제</tspan><tspan x="-13.986" y="18">위축</tspan></text>
+    </g>
+    <g id="그룹_14" data-name="그룹 14" transform="translate(-15 -26)">
+      <rect id="사각형_5" data-name="사각형 5" class="cls-6" width="125" height="40" transform="translate(130 87)"/>
+      <text id="금융시장_불안" data-name="금융시장 불안" class="cls-7" transform="translate(193 112)"><tspan x="-40.895" y="0">금융시장 불안</tspan></text>
+    </g>
+    <g id="그룹_20" data-name="그룹 20" transform="translate(407 -26)">
+      <rect id="사각형_5-2" data-name="사각형 5" class="cls-6" width="125" height="40" transform="translate(130 87)"/>
+      <text id="영업지수요소_감소" data-name="영업지수요소 감소" class="cls-7" transform="translate(193 112)"><tspan x="-53.765" y="0">영업지수요소 감소</tspan></text>
+    </g>
+    <g id="그룹_15" data-name="그룹 15" transform="translate(-15 34)">
+      <rect id="사각형_5-3" data-name="사각형 5" class="cls-6" width="125" height="40" transform="translate(130 87)"/>
+      <text id="외화차입여건_악화" data-name="외화차입여건 악화" class="cls-7" transform="translate(193 112)"><tspan x="-53.765" y="0">외화차입여건 악화</tspan></text>
+    </g>
+    <g id="그룹_18" data-name="그룹 18" transform="translate(142 34)">
+      <rect id="사각형_5-4" data-name="사각형 5" class="cls-6" width="125" height="40" transform="translate(130 87)"/>
+      <text id="신용경색" class="cls-7" transform="translate(193 112)"><tspan x="-25.805" y="0">신용경색</tspan></text>
+    </g>
+    <g id="그룹_16" data-name="그룹 16" transform="translate(-15 94)">
+      <rect id="사각형_5-5" data-name="사각형 5" class="cls-6" width="125" height="40" transform="translate(130 87)"/>
+      <text id="세계경제_둔화" data-name="세계경제 둔화" class="cls-7" transform="translate(193 112)"><tspan x="-40.895" y="0">세계경제 둔화</tspan></text>
+    </g>
+    <g id="그룹_19" data-name="그룹 19" transform="translate(407 94)">
+      <rect id="사각형_5-6" data-name="사각형 5" class="cls-6" width="125" height="40" transform="translate(130 87)"/>
+      <text id="손실요소_증가" data-name="손실요소 증가" class="cls-7" transform="translate(193 112)"><tspan x="-40.895" y="0">손실요소 증가</tspan></text>
+    </g>
+    <g id="그룹_17" data-name="그룹 17" transform="translate(142 94)">
+      <rect id="사각형_5-7" data-name="사각형 5" class="cls-6" width="125" height="40" transform="translate(130 87)"/>
+      <text id="수출감소" class="cls-7" transform="translate(193 112)"><tspan x="-25.805" y="0">수출감소</tspan></text>
+    </g>
+    <g id="msr-arrow" transform="translate(80 79)">
+      <line id="선_7" data-name="선 7" class="cls-8" x2="35" transform="translate(0 2.5)"/>
+      <path id="다각형_2" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(35.5) rotate(90)"/>
+    </g>
+    <g id="msr-arrow-2" data-name="msr-arrow" transform="translate(240 78)">
+      <line id="선_7-2" data-name="선 7" class="cls-8" x2="189.5" transform="translate(0 2.75)"/>
+      <path id="다각형_2-2" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(192) rotate(90)"/>
+    </g>
+    <g id="msr-arrow-3" data-name="msr-arrow" transform="translate(512 79)">
+      <line id="선_7-3" data-name="선 7" class="cls-8" x2="25" transform="translate(0 2.5)"/>
+      <path id="다각형_2-3" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(25.5) rotate(90)"/>
+    </g>
+    <g id="msr-arrow-4" data-name="msr-arrow" transform="translate(79.5 82.5)">
+      <line id="선_7-4" data-name="선 7" class="cls-8" x2="35.5" y2="59"/>
+      <path id="다각형_2-4" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(38.199 57.869) rotate(139)"/>
+    </g>
+    <g id="msr-arrow-5" data-name="msr-arrow" transform="translate(240.5 82.5)">
+      <line id="선_7-5" data-name="선 7" class="cls-8" x2="30.5" y2="59"/>
+      <path id="다각형_2-5" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(33.199 57.869) rotate(139)"/>
+    </g>
+    <g id="msr-arrow-6" data-name="msr-arrow" transform="translate(396.421 142.738) rotate(-120)">
+      <path id="패스_17" data-name="패스 17" class="cls-8" d="M0,0,35.061,60.748"/>
+      <path id="다각형_2-6" data-name="다각형 2" class="cls-4" d="M3,0,6,4.874H0Z" transform="translate(38.328 60.423) rotate(154)"/>
+    </g>
+    <g id="msr-arrow-7" data-name="msr-arrow" transform="translate(240 139)">
+      <line id="선_7-6" data-name="선 7" class="cls-8" x2="31.5" transform="translate(0 2.5)"/>
+      <path id="다각형_2-7" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(32) rotate(90)"/>
+    </g>
+    <g id="msr-arrow-8" data-name="msr-arrow" transform="translate(679.75 139)">
+      <line id="선_7-7" data-name="선 7" class="cls-8" x2="19.5" transform="translate(0 2.5)"/>
+      <path id="다각형_2-8" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(20) rotate(90)"/>
+    </g>
+    <g id="msr-arrow-9" data-name="msr-arrow" transform="translate(79.5 81.5)">
+      <line id="선_7-8" data-name="선 7" class="cls-8" x2="35.5" y2="120"/>
+      <path id="다각형_2-9" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(38.067 119.918) rotate(158)"/>
+    </g>
+    <g id="msr-arrow-10" data-name="msr-arrow" transform="translate(240 199)">
+      <line id="선_7-9" data-name="선 7" class="cls-8" x2="31.5" transform="translate(0 2.5)"/>
+      <path id="다각형_2-10" data-name="다각형 2" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(32) rotate(90)"/>
+    </g>
+    <g id="그룹_12" data-name="그룹 12" transform="translate(-62 -38)">
+      <circle id="타원_1-2" data-name="타원 1" class="cls-9" cx="40" cy="40" r="40" transform="translate(62 79)"/>
+      <text id="글로벌_금융위기" data-name="글로벌
+금융위기" class="cls-3" transform="translate(102 116)"><tspan x="-20.972" y="0">글로벌</tspan><tspan x="-27.958" y="18">금융위기</tspan></text>
+    </g>
+    <path id="패스_18" data-name="패스 18" class="cls-8" d="M0,0H18V120H0" transform="translate(662 82)"/>
+    <path id="패스_19" data-name="패스 19" class="cls-8" d="M1965,201h74.5V122.012" transform="translate(-1568)"/>
+    <path id="다각형_3" data-name="다각형 3" class="cls-4" d="M2.5,0,5,4H0Z" transform="translate(469 121)"/>
+  </g>
+</svg>

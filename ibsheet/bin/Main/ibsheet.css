@@ -1,0 +1,768 @@
+/* -----------------------------------------------------------------------*/
+/* ----------------- "Main" IBSheet style definition ---------------------*/
+/* -----------------------------------------------------------------------*/
+
+/* Base tags */
+.GMImage {padding-bottom:256px;}
+.GMNone {display:none;}
+.GMSection,.GMSectionFF3, .GMChildPart {table-layout:fixed; width:0;}
+.GMSectionFF3 {border-collapse:collapse; }
+
+/* Sections */
+.GMMainTable {border:1px solid #E0E0E0; border-top-color: #004282; border-collapse:separate; text-align:left; background:#fff; font-size:12px;}
+.GMFootLeft,.GMFootMid,.GMFootRight {border-top:1px solid #979a9d;}
+.GMHeadLeft,.GMBodyLeft,.GMFootLeft,.GMHScrollLeft {border-right:1px solid #979a9d;}	
+.GMHeadRight,.GMBodyRight,.GMFootRight,.GMHScrollRight {border-left:1px solid #979a9d;} 
+.GMVScroll {padding-top:1px; padding-bottom:1px;}
+.GMHScrollLeft,.GMHScrollMid,.GMHScrollLeftResizeTouch,.GMHScrollRightResizeTouch {padding-left:1px; padding-right:1px; cursor:default;}
+.GMHScrollLeftResizeTouch {border-right:2px solid #555; padding-right:18px; background:#F4F4F4;}
+.GMHScrollRightResizeTouch {border-left:2px solid #555; padding-left:18px; background:#F4F4F4;}
+.GMHScrollMidLeftResizeTouch {border-left:1px solid #555; padding-left:19px; background:#F4F4F4;}
+.GMHScrollMidRightResizeTouch {border-right:1px solid #555; padding-right:19px; background:#F4F4F4;}
+.GMHScrollWide {padding-right:1px;}
+.GMHScrollHidden {overflow:visible !important; background:#F4F4F4; cursor:default; }
+.GMXScroll {background:#F4F4F4;}
+.GMPage {border-top:0px solid #E0E0E0;}
+
+/* Rows */
+.GMSpaceRowHeight{height:21px; }
+.GMRowHeight 	 {height:18px; }
+.GMRowHeightTouch{height:22px; }
+.GMSpaceMargin   {margin:0; }
+.GMSpaceMarginTouch{margin:0; }
+.GMSpaceRow {background:#fff; white-space:nowrap; overflow:hidden; padding-top:2px; padding-bottom:2px; border-bottom:1px solid #e0e0ff;}
+.GMGroupRow,.GMSearchRow,.GMPagerRow 
+{background-color:#F1F4F5; white-space:nowrap; padding: 3px 0; overflow:hidden; border-bottom:1px solid #E0E0E0;} 
+.GMGroupRow,.GMPagerRow {background-position:0 -1801px; }
+.GMFillRow {background:#fff; }
+.GMRowAbove,.GMRowBelow {border-left:1px solid #9cb6c8; border-right:1px solid #9cb6c8;}
+.GMRowAbove { margin-top:3px; overflow:hidden;}
+.GMRowBelow {margin-bottom:3px; overflow:hidden;}
+.GMCountRowTop {color:#555; background-color:#e5ecf1; white-space:nowrap;padding-top:5px; padding-bottom:5px; overflow:hidden; border-bottom:1px solid #E0E0E0;}
+.GMCountRowBottom {color:#555; background-color:#F6F6F6; white-space:nowrap; padding-top:2px; padding-bottom:3px; overflow:hidden; border-top:1px solid #E0E0E0;}
+.GMCountFont { font-size: 12px;  }
+.GMNoDataRow {padding-top:12px; padding-bottom:0px; background-color:#fff; color:#555;}
+
+/* Cell */
+.GMCell,.GMCellPanel,.GMCellFilter,.GMHeaderDrag,.GMHeaderGroup 
+ {color:#444444; border-bottom:1px solid #E0E0E0; border-right:1px solid #E0E0E0; border-left:0; border-top:0;vertical-align:middle; overflow:hidden; height:auto; font-size:12px; }
+
+.GMCellHeader,.GMCellHeaderEmpty
+ {vertical-align:middle; overflow:hidden;height:auto; background-color:#F1F7FB; padding-top:1px; border-right:1px solid #E0E0E0; border-bottom:1px solid #E0E0E0;} 
+.GMCellBorderFF3 {border-left:0;border-top:0;} 
+.GMCellSpace {vertical-align:top;}
+.GMCellSpacePanel,.GMCellSpaceBool {vertical-align:top; }
+.GMCellSpaceRadio { padding-top:3px !important;}
+.GMCellSpaceEditButton { vertical-align:top; padding-top:4px !important; border:1px solid #555 !important; background-color:#fff !important; }
+.GMCellSpaceButtonButton { vertical-align:top; }
+.GMCellSpaceButton { vertical-align:top; white-space:nowrap; }
+.GMCellSpaceAbove { border-top:1px solid #9cb6c8; }
+.GMCellSpaceBelow { border-bottom:1px solid #9cb6c8; }
+.GMCellPanel,.GMCellHeaderPanel{ white-space:nowrap; } 
+.GMCellHidden { background:transparent!important; border-top:none!important; border-bottom:none!important; }
+.GMHeaderButton { padding:0; }
+.GMHeaderGroup {background: #8ab1b1; font-weight: 700; color:#fff; padding: 2px 3px; border-radius: 3px; text-align: center;}
+.GMHeaderGroupFocus {background-color: #C0C0A0; }
+.GMHeaderGroupDelete {background-color: #F0F0E0; color: #F0F0E0; }
+.GMHeaderGroupCustom {color:#ababab; padding-left:5px; cursor:default; white-space:nowrap; vertical-align: middle;}
+.GMHeaderDrag {background: #9FB9E9; cursor:default; overflow:hidden; }
+.GMHeaderFocus {background: #9FB9E9;}
+.GMPanel {padding-left:80px;}
+.GMNoTreeLines1 {text-align:right;}
+.GMNoTreeLines2 {text-align:right; vertical-align:middle; padding-top:0;}
+.GMTree {padding-top:0; white-space:nowrap; vertical-align:top;}
+.GMSpannedTree {vertical-align:top;}
+.GMCellClassInner {padding-top:0; padding-bottom:0;}
+
+/* Inside cell */
+.GMStatus,.GMSeq,.GMPopup,.GMPopupEdit,.GMHtml,.GMText,.GMLines,.GMPass,.GMInt,.GMFloat,.GMDate,
+.GMLink,.GMImg,.GMRadio,.GMRadioText,.GMList,.GMEnum,.GMDropCols,.GMAbs,.GMPagerEdit,.GMUser,.GMResult 
+ {white-space:nowrap;vertical-align: middle;padding:2px 3px;} 
+.GMInt,.GMFloat { text-align:right; }
+.GMLines,.GMRadio,.GMHtml,.GMList { white-space:normal; }	
+.GMImg,.GMHtml {padding:0; } 
+.GMRadio,.GMRadioText { padding:0; font-weight:normal !important; }
+.GMBool { text-align:center; }
+.GMIcon { background-repeat:no-repeat; }
+.GMHiddenSpace { display:none; }
+.GMDropCols { padding-top:2px !important; }
+
+.GMHeaderText {color:#333; vertical-align:middle; font-size:13px; font-weight: 700; }
+.GMAbs { padding:0; }
+.GMUser { padding:0; }
+.GMPagerEdit { text-align:right; font-weight: 700; vertical-align: middle;}
+.GMPagerTotal { text-align:left;font-weight: 700;  vertical-align: middle;}
+.GMMergedCellH {padding:0 0 5px 0}
+.GMMergedCellV {padding:0 0 1px 0}
+
+.GMWrap0 { white-space:nowrap; }
+.GMWrap1 { white-space:normal; }
+.GMEllipsis { white-space:nowrap; text-overflow:ellipsis;}
+
+.GMAlignLeft { text-align:left; }
+.GMAlignCenter { text-align:center; }
+.GMAlignJustify { text-align:center; }
+.GMAlignRight { text-align:right;}
+
+.GMAlignTop { vertical-align:top; }
+.GMAlignMiddle { vertical-align:middle; }
+.GMAlignBottom { vertical-align:bottom; }
+
+.GMCellButtonBase {
+    display: inline-block;
+    padding: 4px 15px 4px 3px;
+    line-height: 1;
+    font-size: 12px;
+    color: #555;
+    background-color: #fff;
+    background-image: url(btnArrow.png);
+    background-repeat: no-repeat;
+    background-position: right center;
+    background-size: 12px 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+.GMCellButtonBase:hover{
+	color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+.GMCellButtonText {
+    display: inline-block;
+    padding: 4px 2px;
+    border: 0;
+    border-radius: 3px;
+    line-height: 1;
+    font-size: 12px;
+    font-weight: bold;
+    color: #09aeed;
+    text-decoration: underline;
+    text-decoration-color: #40c7f3;
+    text-underline-offset: 2px;
+    background-color: transparent;
+}
+.GMCellButtonText:hover{
+    background-color: #e9f5f5;
+}
+.GMCellButton {
+    cursor: pointer;
+}
+.GMCellButton0 {
+    cursor:default;
+    opacity: 0.7;
+}
+
+/* Tree Img with lines */
+.GM000,.GM010,.GM001,.GM011,.GM100,.GM110,.GM101,.GM111, 
+.GM000T,.GM010T,.GM001T,.GM011T,.GM100T,.GM110T,.GM101T,.GM111T,
+.GM00,.GM01,.GM10,.GM11,.GM00T,.GM01T,.GM10T,.GM11T,
+.GM0T,.GM1T,.GM0TL,.GM1TL,.GM0C,.GM1C,.GM0CL,.GM1CL,.GM0E,.GM1E,.GM0EL,.GM1EL,
+.GM0,.GM1,.GMT,.GMTL,.GMC,.GMCL,.GME,.GMEL,.GMD0,.GMD1,.GMD2,.GMD3,.GMD4,.GMD0L,.GMD1L,.GMD2L,.GMD3L,.GMD4L 
+{background-image:url(Tree.png); vertical-align:top;}
+
+u.GM000,u.GM010,u.GM001,u.GM011,u.GM100,u.GM110,u.GM101,u.GM111 { padding-left:39px; }
+u.GM000T,u.GM010T,u.GM001T,u.GM011T,u.GM100T,u.GM110T,u.GM101T,u.GM111T { padding-left:60px; }
+u.GM00,u.GM01,u.GM10,u.GM11 { padding-left:26px; }   
+u.GM00T,u.GM01T,u.GM10T,u.GM11T { padding-left:47px; }   
+u.GM0T,u.GM1T,u.GM0TL,u.GM1TL,u.GM0C,u.GM1C,u.GM0CL,u.GM1CL,u.GM0E,u.GM1E,u.GM0EL,u.GM1EL { padding-left:34px; }   
+u.GM0,u.GM1 { padding-left:13px; }
+u.GMT,u.GMTL,u.GMC,u.GMCL,u.GME,u.GMEL,u.GMD0,u.GMD1,u.GMD2,u.GMD3,u.GMD4,u.GMD0L,u.GMD1L,u.GMD2L,u.GMD3L,u.GMD4L { padding-left:21px; }   
+
+.GM000,.GM000T{ background-position:-24px 0px; }
+.GM010,.GM010T{ background-position:-136px 0; }
+.GM001,.GM001T{ background-position:-272px 0; }
+.GM011,.GM011T{ background-position:-392px 0; }
+.GM100,.GM100T{ background-position:-512px 0; }
+.GM110,.GM110T{ background-position:-640px 0; }
+.GM101,.GM101T{ background-position:-768px 0; }
+.GM111,.GM111T{ background-position:-896px 0; }
+.GM00,.GM00T  { background-position:-37px 0;  }
+.GM10,.GM10T  { background-position:-149px 0; }
+.GM01,.GM01T  { background-position:-285px 0; }
+.GM11,.GM11T  { background-position:-405px 0; }
+.GM0,.GM0T 	  { background-position:-50px 0;  }
+.GM1,.GM1T 	  { background-position:-298px 0; }
+.GMT 		  { background-position:-63px 0;  }
+.GM0TL 		  { background-position:-1032px 0; }
+.GM1TL 		  { background-position:-1088px 0; }
+.GM0C 	      { background-position:-1160px 0; }
+.GM1C 		  { background-position:-1216px 0; }
+.GM0CL 		  { background-position:-1288px 0; }
+.GM1CL 		  { background-position:-1344px 0; }
+.GM0E 		  { background-position:-1416px 0; }
+.GM1E 		  { background-position:-1472px 0; }
+.GM0EL 		  { background-position:-1544px 0; }
+.GM1EL 		  { background-position:-1600px 0; }
+.GMTL 		  { background-position:-1045px 0; }
+.GMC 		  { background-position:-1173px 0; }
+.GMCL 		  { background-position:-1301px 0; }
+.GME 		  { background-position:-1429px 0; }
+.GMEL 		  { background-position:-1557px 0; }
+.GMD0 		  { background-position:-1664px 0; }
+.GMD1 		  { background-position:-1696px 0; }
+.GMD2 		  { background-position:-1728px 0; }
+.GMD3 		  { background-position:-1760px 0; }
+.GMD0L 		  { background-position:-1792px 0; }
+.GMD1L 		  { background-position:-1824px 0; }
+.GMD2L 		  { background-position:-1856px 0; }
+.GMD3L 		  { background-position:-1888px 0; }
+.GMD4 		  { background-position:-1920px 0; }
+.GMD4L 		  { background-position:-1952px 0; }
+
+/* Tree Img without lines  */
+.GMND0,.GMND1,.GMND2,.GMND3,.GMND4,.GMNC,.GMNE,.GMNCR,.GMNER {background-image:url(TreeN.png); background-repeat:no-repeat; vertical-align:top; }
+u.GMND0,u.GMND1,u.GMND2,u.GMND3,u.GMND4,u.GMNC,u.GMNE,u.GMNCR,u.GMNER { padding-left:20px; }
+.GMND0 { background-position: -6px 0; }
+.GMND1 { background-position: -56px 0; }
+.GMND2 { background-position: -106px 0; }
+.GMND3 { background-position: -156px 0; }
+.GMND4 { background-position: -206px 0; }
+.GMNC { background-position:right -50px;}
+.GMNE { background-position:right -2000px;}
+.GMNCR { background-position:-255px -50px;}
+.GMNER { background-position:-255px -2000px;}
+u.GMNL { padding-left:21px; }
+
+/* Tree Node Image */
+.GMTreeNodeIcon0, .GMTreeNodeIcon1, .GMTreeNodeIcon2 { background-position:2px 5px; background-repeat:no-repeat; }
+.GMTreeNodeIcon0 { background-image:url(treenode0.png); }
+.GMTreeNodeIcon1 { background-image:url(treenode1.png); }
+.GMTreeNodeIcon2 { background-image:url(treenode2.png); }
+
+/* Cell images */
+.GMIconLink { text-decoration:none; width:1000px; display:inline-block; }
+.GMIconLeft,.GMIconRight,.GMIconCenter {  background-repeat:no-repeat; }
+.GMIconLeft { background-position:left 0; padding-left:20px !important; }
+.GMIconRight { background-position:right 0; padding-right:20px !important; }
+.GMIconCenter { background-position:center 0; }
+.GMPopupRight { background:url(popup.png) no-repeat 5px center; }
+.GMExpandLeft,.GMCollapseLeft,.GMExpandHeaderLeft,.GMCollapseHeaderLeft { padding-left:20px!important; }
+.GMDateRight{ padding-right:20px!important;}
+u.GMDateRight,.GMPopupRight { padding-right:0!important; padding-left:17px; }
+.GMDateRight {background:url(calendar.png) no-repeat 2px center}
+.GMEnumRight { background:url(combo.png) no-repeat right center; }
+u.GMEnumRight {padding-right:0; padding-left:17px}
+.GMExpandLeft { background:url(ic_plus.png) no-repeat 3px center; padding:2px 0 0  18px; _padding:0 0 0 18px }
+.GMCollapseLeft { background:url(ic_minus.png) no-repeat 3px center ; padding:2px 0 0  18px; _padding:0 0 0 18px }
+.GMRadio0Right,.GMRadio1Right,.GMRadio2Right,.GMRadio3Right {line-height:17px; padding-right:17px; padding-left:3px; }
+u.GMFilter0,u.GMFilter1 { padding-left:16px; }
+.GMBool0,.GMBool0RO,.GMBool1,.GMBool1RO,.GMBool2,.GMBool2RO,.GMBool3,.GMBool3RO {background-position:center center; background-repeat:no-repeat;}
+
+.GMCheck0Left, .GMCheck1Left, .GMCheckRO0Left, .GMCheckRO1Left { background-repeat:no-repeat; padding-left:20px!important; background-position:3px 50%;}
+.GMCheck0Left   { background-image:url(chk0.png); }
+.GMCheck1Left   { background-image:url(chk1.png); }
+.GMCheckRO0Left { background-image:url(chk0R.png); }
+.GMCheckRO1Left { background-image:url(chk1R.png); }
+
+.GMBool0   { background-image:url(chk0.png);  }
+.GMBool0RO { background-image:url(chk0R.png); }
+
+.GMBool1   { background-image:url(chk1.png);  }
+.GMBool1RO { background-image:url(chk1R.png); }
+
+.GMBool2   { background-image:url(chk2.png);  }
+.GMBool2RO { background-image:url(chk2R.png); }
+
+.GMBool3   { background-image:url(chk3.png);  }
+.GMBool3RO { background-image:url(chk3R.png); }
+
+/* Filter images  */
+.GMFilter0Left,.GMFilter1Left,.GMFilter2Left,.GMFilter3Left,.GMFilter4Left,.GMFilter5Left,.GMFilter6Left,.GMFilter7Left,
+.GMFilter8Left,.GMFilter9Left,.GMFilter10Left,.GMFilter11Left,.GMFilter12Left {width:100%; height:18px; padding-left:18px;}
+
+.GMFilter0Left,.GMFilter0Menu 	{ background:url(filter0.png) no-repeat left center; }   
+.GMFilter1Left,.GMFilter1Menu 	{ background:url(filter1.png) no-repeat left center; }
+.GMFilter2Left,.GMFilter2Menu 	{ background:url(filter2.png) no-repeat left center; }
+.GMFilter3Left,.GMFilter3Menu 	{ background:url(filter3.png) no-repeat left center; }
+.GMFilter4Left,.GMFilter4Menu 	{ background:url(filter4.png) no-repeat left center; }
+.GMFilter5Left,.GMFilter5Menu 	{ background:url(filter5.png) no-repeat left center; }   
+.GMFilter6Left,.GMFilter6Menu 	{ background:url(filter6.png) no-repeat left center; }
+.GMFilter7Left,.GMFilter7Menu 	{ background:url(filter7.png) no-repeat left center; }
+.GMFilter8Left,.GMFilter8Menu 	{ background:url(filter8.png) no-repeat left center; }
+.GMFilter9Left,.GMFilter9Menu 	{ background:url(filter9.png) no-repeat left center; }
+.GMFilter10Left,.GMFilter10Menu { background:url(filter10.png) no-repeat left center; }
+.GMFilter11Left,.GMFilter11Menu { background:url(filter11.png) no-repeat left center; }
+.GMFilter12Left,.GMFilter12Menu { background:url(filter12.png) no-repeat left center; }
+
+.GMFilter0Menu,.GMFilter1Menu,.GMFilter2Menu,.GMFilter3Menu,.GMFilter4Menu,.GMFilter5Menu,.GMFilter6Menu,.GMFilter7Menu,.GMFilter8Menu,.GMFilter9Menu,
+.GMFilter10Menu,.GMFilter11Menu,.GMFilter12Menu {width:18px; height:18px; overflow:hidden; margin: -2px 0 0 -1px;}
+.GMFilterMenuHeader { padding-left:2px; border-bottom:0 !important; } 
+
+/*  Keyfield Image */
+.GMKeyfield {background-image:url(keyfield.png); display:inline-block; vertical-align:middle; background-repeat: no-repeat; background-position:center 1px; padding: 0 2px 0 4px; }
+
+/* GMKeyfield : hack OP*/
+ @media all and (-webkit-min-device-pixel-ratio:10000), not all and (-webkit-min-device-pixel-ratio:0) 
+ { .GMKeyfield{  background-position: center 3px;padding: 0 2px 0 4px; }}
+
+/* CheckBox Header Image */
+.GMCheckHeader0 {background-image:url(chk0.png); display:inline-block; vertical-align:middle; background-repeat:no-repeat; margin-right: 3px; width: 12px; height: 12px;}
+
+.GMCheckHeader1 {background-image:url(chk1.png); display:inline-block; vertical-align:middle; background-repeat:no-repeat; margin-right: 3px; width: 12px; height: 12px;}
+
+/* Sort images */
+.GMSort {display:block; float:right; margin:5px 2px 0; width:7px;}
+
+/* State classes */
+/* The colors must be set by numbers not by names */
+.GMColorDefault  { background-color: #fffff5;} /* Default */
+.GMColorNoFocus  { background-color:#E8F4FF;}
+/* .GMColorReadOnly { background-color:#F3F3F3;} */
+.GMColorReadOnly { background-color:#fff;} /* �닔�젙遺덇� */
+.GMColorPreview  { background-color:#fff;}
+.GMColorAlternate{ background-color:#F3F3F3;}
+.GMColorSelected { background-color:/*#FFFF80*/#aadbff; }
+
+.GMColorFilter {background-color:#fff;}
+
+/*//.GMClassSelected { }*/
+.GMColorError   { background-color:#FF6969; }
+.GMColorDeleted { background-color:#FFCDCD; }
+.GMClassDeleted { font-style:italic; }
+.GMColorAdded   { background-color:#CDFFCD; }
+.GMClassAdded   { font-weight:bold; }
+.GMColorMoved1  { background-color:#fff; }
+.GMColorMoved2  { background-color:#D7EBEB; }
+.GMColorChanged { background-color:#EBEBFF; }
+.GMColorChangedCell { background-color:#E1E1FF; }
+.GMClassChangedCell { font-weight:bold; }
+.GMColorMaxChildren { background-color:#FFFFF0; }
+.GMColorDetail { background-color:#FFF0FF; }
+.GMColorDetailSelected { background-color:#FFF0E0; }
+.GMColorDragged{ background-color:#E0E0C0; }
+.GMColorFound1 { background-color:#FF87FF; }
+.GMColorFound2 { background-color:#FFC387; }
+.GMColorFound3 { background-color:#87FF87; }
+
+.GMColorHovered 			{ background-color:#fff5cf; }
+.GMColorHoveredCell 		{ background-color:#ffdb5e; }
+.GMColorHoveredCellReadOnly { background-color:#F0F0F0; }
+.GMColorHoveredCellSpace 	{ background-color:#fff; }
+.GMColorHoveredCellSpaceEdit{ background-color:#C0C0FF; }
+.GMColorHoveredCellSpaceBool{ background-color:#fff; }
+.GMColorHoveredCellButton 	{ background-color:#efefef; }
+.GMColorHoveredCellButton1 	{ background-color:#efefef; }
+
+.GMColorFocused 			{ background-color:#f1f5f5; } /* �꽑�깮�맂 �쁺�뿭 */
+.GMColorFocusedCell 		{ background-color:#FFFFFE; }
+.GMColorFocusedCellSafari 	{ background-color:#A0A0FF; }
+.GMColorFocusedCellSpace 	{ background-color:#E6E6E6; }
+.GMColorFocusedCellButton 	{ background-color:#BCD; }
+.GMColorFocusedCellHeader 	{ background-color:#FFFFFE; }
+.GMColorFocusedCellPanel 	{ background-color:#FFFFFE; }
+.GMColorEditedCell 			{ background-color:#fff; }
+.GMColorViewedCell 			{ background-color:#fff; }
+
+/* Hover, focus, edit cursors */
+.GMHoverRowBackground 	{ opacity:0.2; filter:alpha(opacity=20); background:#ffc600; }
+.GMHoverRowBorder 		{ z-index:0; border-top:1px solid #ffc600; border-bottom:1px solid #ffc600; cursor:default; }
+.GMHoverCellBorder 	{ z-index:0; border:1px solid #ffc600; cursor:default; }
+.GMFocusRowBackground 	{ opacity:0.1; filter:alpha(opacity=50); background:/*IBSB*/#f1f4f5; } /* <-- Sheet : Selected Row Background */
+.GMFocusRowBorder 		{ z-index:0; border:1px solid /*IBSB*/#c0d8e0; } /* <-- Sheet : Selected Row Border */
+.GMFocusCellBorder		{ z-index:0; border:2px solid /*IBSB*/#c0d8e0; } /* <-- Sheet : Selected Cell Border */
+.GMFocusCellSpaceBorder,.GMEditCellSpaceBorder { z-index:4; }
+.GMEditCellBorder 		{ z-index:0; border:2px solid #FF6666;}    /*<-- Sheet : CellEdit Border */
+.GMEditCellInput 		{ position:relative; border:0 solid #39aefb; overflow:hidden; z-index:2; } 
+
+.GMCursorBackground, .GMCursorBorderLeft ,.GMCursorBorderRight,.GMCursorBorderTop,.GMCursorBorderBottom 
+ {position:relative;overflow:hidden;}
+
+.GMCursorBackground  {border:none; padding:0;}
+.GMCursorBorderLeft  {padding-right:0; padding-top:0; padding-bottom:0; border-right:none; border-top:none; border-bottom:none;  width:0; height:0;}
+.GMCursorBorderRight {padding-left:0; padding-top:0; padding-bottom:0; border-left:none; border-top:none; border-bottom:none;  width:0; height:0;}
+.GMCursorBorderTop 	 {padding-bottom:0; padding-left:0; padding-right:0; border-bottom:none; border-left:none; border-right:none;  width:0; height:0;}
+.GMCursorBorderBottom{padding-top:0; padding-left:0; padding-right:0; border-top:none; border-left:none; border-right:none; width:0; height:0;}
+
+/* Cell edges */
+.GMNoLeft { border-left:0; }
+.GMNoRight { border-right:0; }
+
+/* Dragging */
+.GMMouseObject { opacity:0.5; filter:alpha(opacity=50); z-index:300; overflow:hidden;}
+.GMDragObject {z-index:300; margin-left:10px; margin-top:10px; padding-left:3px; padding-right:3px;background:#E4E5F0 ; border:1px solid #777;}
+.GMDragColInsideTop,.GMDragColInsideBottom,.GMDragColOutsideTop,.GMDragColOutsideBottom{position:absolute;width:10px; height:11px; overflow:hidden; z-index:258;}
+.GMDragColInsideTop 	{background:url(in_top.png) no-repeat;} 	
+.GMDragColInsideBottom  {background:url(in_bottom.png) no-repeat;}	
+.GMDragColOutsideTop  	{background:url(out_top.png) no-repeat;}	
+.GMDragColOutsideBottom {background:url(out_bottom.png) no-repeat;}	 
+
+/* Messages */
+.GMDisabled{position:absolute; z-index:264; background:#fff; opacity:0.5; filter:alpha(opacity=50); } 
+.GMProcess {position: absolute; left:0; top:0; width:auto !important; white-space:nowrap; text-align:center; visibility:hidden; border-radius: 40px; box-shadow: 1px 1px 5px rgba(0,0,0, 0.15); z-index:266;}
+.GMMessage {background:#E2F0FF; border:1px solid #555; padding:10px; white-space:nowrap; text-align:center;
+			 position: absolute; left:0; top:0; visibility:hidden; z-index:266;}
+.GMMessageShadow 
+{position:absolute; margin-left:3px; margin-top:3px; z-index:265;opacity:0.5; filter:alpha(opacity=50); left:0; top:0; visibility:hidden;}
+      
+/* Other */
+/* !!! No .GM style prefix here !!! */
+.GridTmpTag { position:absolute; left:5px; top:5px; visibility:hidden; }
+
+/* Popup menus, TGLib */
+.GMMenuMain  {position:absolute;left:0;top:0; z-index:258;}
+.GMMenuOuter {overflow:hidden; border:1px solid #555; background:#fff; padding:1px; margin:1px;}
+.GMMenuHeader{overflow:hidden; position:absolute; z-index:258;border:1px solid #b0b0c0; background:#fff; cursor:pointer; _cursor:hand;}
+.GMMenuHead {color:#555; cursor:pointer; text-align:left; font-weight:bold; padding-top:5px; padding-bottom:4px;
+	background: #F1F4F5; /* Old browsers */
+	background: -moz-linear-gradient(top,  #F1F4F5 0%, #dcdcdc 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F1F4F5), color-stop(100%,#dcdcdc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* IE10+ */
+	background: linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F1F4F5', endColorstr='#dcdcdc',GradientType=0 ); /* IE6-9 */
+}
+.GMMenuClose {float:right; width:14px; cursor:pointer; _cursor:hand; display:none;}
+.GMMenuBody {cursor:default; background-color:#fff;}
+.GMMenuShadow {position:absolute;margin:3px 0 0 3px;z-index:257;background-color:#888; opacity:0.5; filter:alpha(opacity=50);}
+.GMMenuCheckedIconRight {padding-right:17px; background:url(chk1.png) no-repeat 96% center; }
+.GMMenuUncheckedIconRight { padding-right:17px;background:url(chk0.png) no-repeat 96% center ; }
+
+.GMMenuCursorIcon {background-image:url(mnu_cur.png); background-repeat:no-repeat; background-position: 3px center;_background-color:#fff}
+.GMMenuHoverIcon {background-image:url(mnu_cur2.png); background-repeat:no-repeat; background-position: 3px center; _background-color:#ffeeaa }   
+
+.GMMenuNextIcon { padding-right:10px; }
+.GMMenuNextIconRtl { padding-left:10px; }
+
+.GMMenuItemText,.GMMenuItemIcon,.GMMenuEnum,.GMMenuEnumHeader,.GMMenuEdit,.GMFilterMenuItemText 
+{white-space:nowrap; overflow:hidden; vertical-align: middle; padding:3px 0 2px 0; font-size:12px; }
+.GMMenuItemDisabled {opacity:0.50; filter:alpha(opacity=30); overflow:hidden; }
+.GMMenuLevel {color:blue;text-align:center; }  
+.GMMenuEnumParent,.GMMenuEditParent {padding-left:5px; padding-right:2px}
+.GMMenuItemIcon {background-repeat:no-repeat;}
+.GMMenuEnum {border:1px solid #DDD; border-top:1px solid #666; border-left:1px solid #666; padding-left:15px; overflow:hidden;}
+.GMMenuEnumHeader  {padding:1px 0 2px 16px; cursor:default; } 
+.GMMenuEdit{border:1px solid #DDD; border-top:1px solid #666; border-left:1px solid #666; background:white; overflow:hidden;white-space:nowrap; padding-left:2px; padding-right:2px;}
+.GMMenuEditInput,.GMMenuEditTextarea {margin:0;padding:0;border:0; background:#FDD;_margin:-1px;  }   
+.GMMenuEditTextarea { line-height:13px;  }   
+.GMMenuEditInt,.GMMenuEditFloat,.GMMenuEditDate { text-align:right; } 
+.GMMenuEditMulti { white-space:normal; }
+.GMMenuItem {background-color:#fff;padding:2px;}  
+.GMMenuItemHover {background-color:#F1F4F5; border:1px solid #727478;margin:0 1px; padding:1px 0;}
+.GMMenuFocusHover {margin:1px; background-color:#F0F1F1; border:1px solid #555;}
+.GMMenuFocus 	  {margin:1px; background-color:#F0F1F1; border:1px solid #CFCFCF;}
+.GMMenuSeparator {margin:1px 3px 0 3px; height:1px; border-top:1px solid #aaaadd; overflow:hidden;}
+.GMMenuCaption {padding:2px; background:#fff; color:blue; text-align:center;}
+.GMMenuVSeparator { border-right:1px solid #DDD; }
+.GMMenuFoot { border-top:none; text-align:center; white-space:nowrap; }
+.GMMenuButton {margin:5px 2px 4px 2px; padding:3px 0; width:48px; font-size:11px; text-align:center; background:#f3f3f3; border:1px solid #C6C6C6; border-radius: 3px; white-space:nowrap;} 
+.GMMenuButtonHover { background:#F1F4F5; border:1px solid #727478; }
+
+.GMEnumMenuItem {background-color:#fff; padding:1px; border: 1px solid transparent;}  
+.GMEnumMenuFocus      {margin:1px; background-color:#F0F1F1; border:1px solid #CFCFCF;}
+.GMEnumMenuFocusHover {margin:1px; background-color:#F0F1F1; border:1px solid #555;}
+.GMEnumMenuItemHover {background-color:#F1F4F5; border:1px solid #CFCFCF;margin:0 1px; padding:1px 0;}
+.GMEnumMenuColBorderColor {border-color:#C6C9CC; font-size:12px; }
+
+.GMSuggestMenuItem {background-color:#fff;padding:2px;padding-top:0px;padding-bottom:0px;}  
+.GMSuggestMenuFocus       {margin:1px; background-color:#F0F1F1; border:1px solid #CFCFCF;}
+.GMSuggestMenuFocusHover {margin:1px; background-color:#F0F1F1; border:1px solid #555;}
+.GMSuggestMenuItemHover {background-color:#F1F4F5; border:0px solid #CFCFCF;margin:0 1px; padding:1px;padding-top:0px;padding-bottom:0px;}
+.GMSuggestMenuColBorderColor {border-color:#C6C9CC;}
+
+/* Grid configuration menus */
+.GMCfGMenuOuter,.GMColumnsMenuOuter { border:1px solid #555; }
+.GMCfGMenuHead,.GMColumnsMenuHead { padding-left:3px; }
+.GMCfGMenuBody,.GMColumnsMenuBody { padding-left:4px; padding-right:4px;}
+.GMCfGMenuFoot,.GMColumnsMenuFoot { padding-right:3px; padding-left:3px;}
+.GMCfGMenuButton { width:70px; } 
+.GMCfGMenuItemText,.GMColumnsMenuItemText { padding-left:3px; }
+.GMColumnsMenuItemText { white-space:nowrap; }
+.GMCfGMenuItem,.GMColumnsMenuItem { padding-top:3px; padding-bottom:3px;}
+.GMCfGMenuItemHover,.GMCfGMenuFocus,.GMCfGMenuFocusHover,
+.GMColumnsMenuItemHover,.GMColumnsMenuFocus,.GMColumnsMenuFocusHover { padding-top:2px; padding-bottom:2px;}
+
+/* Popup grid dialog */
+.GMPopupGridOuter { border:0; overflow:visible; }
+.GMPopupGridHead { padding:0; }
+.GMPopupGridBody { padding:0; }
+.GMPopupGridFoot { padding:0; }
+.GMPopupGridButton { width:50px;margin-top:-2px; margin-bottom:3px;} 
+
+/* Calendar, TGLib */
+/* calendar small design */
+
+.GMPickMain  {position:absolute; left:0; top:0; z-index:500; font-size:12px;}
+.GMPickOuter {overflow:hidden; background:#fff; border:1px solid #F1F4F5; }
+.GMPickHeader{overflow:hidden; position:absolute; z-index:500; border:1px solid black; background:#fff; cursor:pointer; _cursor:hand;}
+.GMPickHeaderBottom{border-bottom:0; padding-bottom:1px;}
+.GMPickHeaderTop{border-top:0; padding-bottom:1px; }
+.GMPickHead {background:#5c8397; font-size:10px; color:white; cursor:default; padding-left:5px; padding-top:1px; padding-bottom:1px;border-bottom:1px solid white;}
+.GMPickClose{float:right; width:14px; cursor:pointer; _cursor:hand; display:none;}
+.GMPickBody {cursor:default; padding:0; }
+.GMPickShadow{position:absolute; background:#888; z-index:400; margin:3px 0 0 3px;opacity:0.5; filter:alpha(opacity=50);} 
+.GMPickFooter,.GMPick2Footer{text-align:center; padding:4px 2px; cursor:default; background:#EFF0F1; }
+
+.GMPickMY{background-color:#0068b7; color:#fff; font-weight: 700; cursor:default;text-align:center;padding:6px 0 6px 0;}
+
+.GMPickMYDown{padding-right:13px; background:url(d_down.png) no-repeat right; cursor:pointer; _cursor:hand;}
+.GMPickMYUp {padding-right:13px; background:url(d_up.png) no-repeat right center; cursor:pointer; _cursor:hand;}
+
+.GMPickMYRtl{padding-right:0; padding-left:13px; }
+.GMPickBL,.GMPickBR{padding-top:3px; cursor:pointer; _cursor:hand; width:20px; height:22px; overflow:hidden;}
+
+.GMPickBL {float:left !important; background:url(d_left.png) no-repeat 50%; }
+.GMPickBR {float:right !important; background:url(d_right.png) no-repeat 50%; }
+
+.GMPickTable{width:220px !important;}
+.GMPickRow  {background:#fff;}
+.GMPickRowW {font-size: 11px; font-weight: 700; background:#F1F4F5;}
+.GMPickCell {width:22px;}
+.GMPickWDN {background:transparent; color:#333333;text-align:center; cursor:default; margin:2px 3px;padding:1px;}
+
+.GMPickHover,.GMPickSelHover,.GMPickWD,.GMPickSa,.GMPickSu,.GMPickHo,.GMPickSel,.GMPickNow,.GMPickWDNE,.GMPickSaNE,.GMPickSuNE,
+.GMPickSelNE,.GMPickNowNE,.GMPickOM,.GMPickOMNE {text-align:center; border:1px solid #fff; cursor:pointer; _cursor:hand;margin:2px 3px; padding: 2px 0; border-radius: 10px;}
+.GMPickWN,.GMPickWNE {text-align:center; cursor:pointer; _cursor:hand;padding:3px 4px; border-right:1px solid #C6C9CC; background:#EFF0F1; white-space:nowrap;}
+
+.GMPickWDNE,.GMPickSaNE,.GMPickSuNE,.GMPickSelNE,.GMPickNowNE,.GMPickWNE {cursor:default;}
+.GMPickWD{background-color:#fff;}
+.GMPickSa{background-color:#fff; color:blue;}
+.GMPickSu{background-color:#fff; color:red;}
+.GMPickHo{background-color:#fff; color:orange;}
+.GMPickSel{background-color:#0068b7; color: #fff; border:1px solid #0068b7;}
+.GMPickSelNE{background-color:#fbea54; border:1px solid #E0E0E0;}
+.GMPickNow {background-color:#def5fb; border:1px solid #E0E0E0;}
+.GMPickNowNE{background-color:#def5fb; border:1px solid #E0E0E0;}
+.GMPickHover{background-color:#ddd; border:1px solid #ddd;}
+.GMPickSelHover{background-color:#dddddd; border:1px solid #dddddd;}
+.GMPickOM{background-color:white; color:#aaaaaa;}
+.GMPickOMNE{color:#aaaaaa;}
+
+.GMPickEmpty{background:url(d_blank.png) no-repeat 50%; cursor:pointer; _cursor:hand;padding:3px 0; }
+
+.GMPickTimeCell 
+{text-align:right; padding-bottom:4px; padding-top:6px; padding-right:5px; border-top:1px solid #C6C9CC; background:#EFF0F1;}
+
+.GMPickTime 
+{border:0px none; white-space:nowrap; text-align:right; background:#EFF0F1;}
+
+.GMPickButton{background:#DFDFDF; text-align:center; border:1px solid #727478; width:45px; height:20px; font:inherit;}
+    
+.GMPickButtonHover{background:#F1F4F5; border:1px solid #727478; }
+.GMPick2Table{width:100% !important; vertical-align:middle}
+.GMPick2CellM{height:220px; width:55px; }
+.GMPick2CellY{height:22px; width:25%; vertical-align:middle }
+.GMPick2CellSep{height:22px; width:5px; }
+.GMPick2Cell{vertical-align:middle}
+.GMPick2M,.GMPick2Y,.GMPick2MSel,.GMPick2YSel,.GMPick2MHover,.GMPick2YHover,.GMPick2MSelHover,.GMPick2YSelHover
+{cursor:pointer; _cursor:hand; text-align:center; margin-left:1px; margin-right:1px; padding: 2px 4px; border-radius: 10px; overflow:hidden; }
+@media screen and (-ms-high-contrast : active), (-ms-high-contrast : none) {
+	.GMPick2M,.GMPick2Y,.GMPick2MSel,.GMPick2YSel,.GMPick2MHover,.GMPick2YHover,.GMPick2MSelHover,.GMPick2YSelHover{border-radius: 0;}
+}
+
+.GMPick2MSel,.GMPick2YSel {background:#0068b7; color: #fff; border:1px solid #0068b7; margin-left:0; margin-right:0;}
+.GMPick2MHover,.GMPick2YHover {background:#DDD; border:1px solid #fff; margin-left:0; margin-right:0;}
+.GMPick2MSelHover,.GMPick2YSelHover {background:#004282; color: #fff; border:1px solid #0068b7; margin-left:0; margin-right:0;}   
+.GMPick2SepH {width:1px; height:1px; overflow:hidden; }
+.GMPick2Sep {width:1px; background:#E3E4E6; overflow:hidden; margin-left:2px; margin-right:2px; height:26px;}
+.GMPick2BL,.GMPick2BR {cursor:pointer; _cursor:hand; }
+
+
+.GMPick2BL {background:url(d_left2.png) no-repeat center center}
+.GMPick2BR {background:url(d_right2.png) no-repeat center center}
+
+
+
+/* Edit controls, TGLib */
+.GMEdit,.GMEditInline {padding:2px 4px;border:1px solid #DDD; border-top:1px solid #666; border-left:1px solid #666;background:#fff; white-space:nowrap; overflow:hidden;}
+
+.GMEditInline { display:inline-block; vertical-align:bottom; }
+.GMEditInput,.GMEditTextarea {border:0 solid transparent !important; margin:0; padding:0;padding-right:1px !important;vertical-align: middle; font-size:/*IBFS*/12px; } 
+
+.GMEditTextarea { line-height:13px; }
+.GMEditSpaceInput { vertical-align:middle; }
+.GMEditNormalInput,.GMEditNormalTextarea,.GMEditSpaceTextarea { background-color:#fff; /*#FFDCFF;*/; }
+.GMEditInt,.GMEditFloat { text-align:right; }
+
+.GMEditMulti { white-space:normal; }
+.GMEditReadOnly { background-color:#FFEEFF; }   
+.GMEditParent { position:absolute; z-index:258; overflow:hidden; }
+
+.GMEnumHeaderLeft,.GMEnumHeaderRight,.GMEnumHeaderNone 
+{background:white; cursor:pointer; _cursor:hand; vertical-align:middle; text-align:left; padding:2px 0 2px 2px; font-size:/*IBFS*/12px;}
+
+.GMEnumHeaderRight {background: url(combo.png) no-repeat right center;margin:1px 1px 0 0;}
+ @media screen and (-webkit-min-device-pixel-ratio:0) {.GMEnumHeaderRight{margin:1px 0 0 0;}}/* hack:CR,SF */
+.GMEnumHeaderRight, x:-moz-any-link, x:default {margin:1px 0 0 0;} /* hack:FF */
+ @media all and (-webkit-min-device-pixel-ratio:10000), not all and (-webkit-min-device-pixel-ratio:0) {.GMEnumHeaderRight{ margin:1px 0 0 0;}}/* hack:OP */
+
+.GMEnumMenuHeader { background:#fff; }
+
+.GMEnumControl,.GMEnumInline {cursor:pointer; _cursor:hand; padding-left:15px; padding-right:4px; padding-top:2px; padding-bottom:2px; border:1px solid #DDD; border-top:1px solid #666; border-left:1px solid #666; overflow:hidden;}
+
+.GMEnumInline { display:inline-block; vertical-align:bottom; }
+.GMEnumHeader { cursor:pointer; _cursor:hand;padding-left:15px; padding-right:4px; padding-top:2px; padding-bottom:2px;} 
+
+/*  Custom scrollbars  */
+.GMCustScroll1RightHidden { background:url(VScroll.gif) left -108px; height:18px; overflow:hidden; }
+.GMCustScroll1Right { padding-right:18px; background:url(VScroll.gif) right 0; }
+.GMCustScroll1RightHover { padding-right:18px; background:url(VScroll.gif) right -18px; }
+.GMCustScroll1Left { padding-left:18px;  background:url(VScroll.gif) left 0; }
+.GMCustScroll1LeftHover { padding-left:18px;  background:url(VScroll.gif) left -18px; }
+.GMCustScroll1SliderRight { padding-right:3px; background:url(VScroll.gif) right -36px; }
+.GMCustScroll1SliderLeft { padding-left:3px; background:url(VScroll.gif) left -36px; }
+.GMCustScroll1SliderHIn { height:18px; overflow:hidden; background:url(VScroll.gif) center -54px; }
+.GMCustScroll1SliderRightHover { padding-right:3px; background:url(VScroll.gif) right -72px; }
+.GMCustScroll1SliderLeftHover { padding-left:3px; background:url(VScroll.gif) left -72px; }
+.GMCustScroll1SliderHInHover { height:18px; overflow:hidden; background:url(VScroll.gif) center -90px; }
+
+.GMCustScroll2RightHidden { background:url(VScroll.gif) left -460px; height:10px; overflow:hidden; }
+.GMCustScroll2Right { padding-right:10px; background:url(VScroll.gif) right -400px; }
+.GMCustScroll2RightHover { padding-right:10px; background:url(VScroll.gif) right -410px; }
+.GMCustScroll2Left { padding-left:10px;  background:url(VScroll.gif) left -400px; }
+.GMCustScroll2LeftHover { padding-left:10px;  background:url(VScroll.gif) left -410px; }
+.GMCustScroll2SliderRight { padding-right:6px; background:url(VScroll.gif) right -420px; }
+.GMCustScroll2SliderLeft { padding-left:6px; background:url(VScroll.gif) left -420px; }
+.GMCustScroll2SliderHIn { height:10px; overflow:hidden; background:url(VScroll.gif) center -430px; }
+.GMCustScroll2SliderRightHover { padding-right:6px; background:url(VScroll.gif) right -440px; }
+.GMCustScroll2SliderLeftHover { padding-left:6px; background:url(VScroll.gif) left -440px; }
+.GMCustScroll2SliderHInHover { height:10px; overflow:hidden; background:url(VScroll.gif) center -450px; }
+
+.GMCustScroll3Right,.GMCustScroll3RightHidden { background:white; height:9px; overflow:hidden; }
+.GMCustScroll3SliderRight,.GMCustScroll3SliderRightHover { padding-right:3px; height:9px; background:url(VScroll.gif) right -126px; }
+.GMCustScroll3SliderLeft,.GMCustScroll3SliderLeftHover { height:9px; background:url(VScroll.gif) left -126px; }
+.GMCustScroll3SliderRightHover { background-position:right -135px; }
+.GMCustScroll3SliderLeftHover { background-position:left -135px; }
+
+.GMCustScroll4Right,.GMCustScroll4RightHidden,.GMCustScroll4SliderRight,.GMCustScroll4SliderRightHover { height:1px; overflow:hidden; }
+
+.GMCustScroll1DownHidden { background:url(HScroll.gif) -108px top; width:18px; overflow:hidden; }
+.GMCustScroll1Down { padding-bottom:18px; background:url(HScroll.gif) 0px bottom; cursor:default; width:18px; overflow:hidden; }
+.GMCustScroll1DownHover { padding-bottom:18px; background:url(HScroll.gif) -18px bottom; width:18px; overflow:hidden; }
+.GMCustScroll1Up { padding-top:18px; background:url(HScroll.gif) 0px top; width:18px; overflow:hidden; }
+.GMCustScroll1UpHover { padding-top:18px;  background:url(HScroll.gif) -18px top; width:18px; overflow:hidden; }
+.GMCustScroll1SliderDown { padding-bottom:3px; background:url(HScroll.gif) -36px bottom; width:18px; overflow:hidden; }
+.GMCustScroll1SliderUp { padding-top:3px; background:url(HScroll.gif) -36px top; width:18px; overflow:hidden; }
+.GMCustScroll1SliderVIn { background:url(HScroll.gif) -54px center; width:18px; overflow:hidden; }
+.GMCustScroll1SliderDownHover { padding-bottom:3px; background:url(HScroll.gif) -72px bottom; width:18px; overflow:hidden; }
+.GMCustScroll1SliderUpHover { padding-top:3px; background:url(HScroll.gif) -72px top; width:18px; overflow:hidden; }
+.GMCustScroll1SliderVInHover { background:url(HScroll.gif) -90px center; width:18px; overflow:hidden; }
+
+.GMCustScroll2DownHidden { background:url(HScroll.gif) -460px top; width:10px; overflow:hidden; }
+.GMCustScroll2Down { padding-bottom:10px; background:url(HScroll.gif) -400px bottom; cursor:default; width:10px; overflow:hidden; }
+.GMCustScroll2DownHover { padding-bottom:10px; background:url(HScroll.gif) -410px bottom; width:10px; overflow:hidden; }
+.GMCustScroll2Up { padding-top:10px; background:url(HScroll.gif) -400px top; width:10px; overflow:hidden; }
+.GMCustScroll2UpHover { padding-top:10px;  background:url(HScroll.gif) -410px top; width:10px; overflow:hidden; }
+.GMCustScroll2SliderDown { padding-bottom:6px; background:url(HScroll.gif) -420px bottom; width:10px; overflow:hidden; }
+.GMCustScroll2SliderUp { padding-top:6px; background:url(HScroll.gif) -420px top; width:10px; overflow:hidden; }
+.GMCustScroll2SliderVIn { background:url(HScroll.gif) -430px center; width:10px; overflow:hidden; }
+.GMCustScroll2SliderDownHover { padding-bottom:6px; background:url(HScroll.gif) -440px bottom; width:10px; overflow:hidden; }
+.GMCustScroll2SliderUpHover { padding-top:6px; background:url(HScroll.gif) -440px top; width:10px; overflow:hidden; }
+.GMCustScroll2SliderVInHover { background:url(HScroll.gif) -450px center; width:10px; overflow:hidden; }
+
+.GMCustScroll3Down,.GMCustScroll3DownHidden { background:white; width:9px; overflow:hidden; cursor:default; }
+.GMCustScroll3SliderDown,.GMCustScroll3SliderDownHover { padding-bottom:3px; width:9px; background:url(HScroll.gif) -126px bottom; }
+.GMCustScroll3SliderUp,.GMCustScroll3SliderUpHover { width:9px; background:url(HScroll.gif) -126px top; cursor:default; }
+.GMCustScroll3SliderDownHover { background-position:-135px bottom; }
+.GMCustScroll3SliderUpHover { background-position:-135px top; cursor:default; }
+
+.GMCustScroll4Down,.GMCustScroll4DownHidden,.GMCustScroll4SliderDown,.GMCustScroll4SliderDownHover { width:1px; overflow:hidden; }
+
+/* Other messages, TGLib */
+.GMHintMain {position:absolute; margin-left:-1px; margin-top:-1px; left:0px; top:0px; z-index:260; background:#fff; cursor:default; }
+.GMHintOuter {overflow:hidden; border:1px solid #555; background:#fff !important; color:black; text-align:left; }
+.GMHintHeaderOuter {background-color:#39aefb !important; color:#fff; border: 1px solid #fff; }
+.GMHintShadow {position:absolute; z-index:259;background:#888; opacity:0.3; filter:alpha(opacity=30);margin-left:2px; margin-top:2px;}
+.GMTipMain {position:absolute; left:0px; top:0px; z-index:262; visibility:hidden; }
+.GMTipOuter  {overflow:hidden; cursor:default; font:12px Arial;padding-left:3px; padding-right:3px; background:#E4E5F0; border:1px solid #777;}
+.GMTipBody {background:#E4E5F0; white-space:nowrap; }
+.GMTipShadow {position:absolute;z-index:261;background:#888; opacity:0.3; filter:alpha(opacity=30);visibility:hidden; margin-left:3px; margin-top:3px}
+.GMMouseOrig { background:yellow !important; opacity:0.5; filter:alpha(opacity=50); }
+.GMMouseDragObject { position:absolute; z-index:260; background:#888; opacity:0.5; filter:alpha(opacity=50); }
+.GMFocus { border:1px solid #AAF; border-top:1px solid #00F; border-left:1px solid #00F; background-color:#EEE; } 
+.GridDisabled { position:absolute; z-index:256; background:white; opacity:0.5; filter:alpha(opacity=50); } 
+
+/* Do not change, marks the style loaded */
+.GMLoaded { border:1px solid #555 !important;}
+
+/*sum*/
+.GMSumCell{background:#fafafa; color:#db1313;}
+.GMSubSumCell{background: #FCF0E7; border-top:1px solid #F7BBA1; border-bottom:1px solid #F7BBA1; color:#DA5615}
+.GMCumulateCell{background: #FCF0E7; border-bottom:1px solid #F7BBA1; color:#BE3600}
+
+/* FindDialog */
+.GMH1Pop,.GMPPop{margin:0; padding:0}
+.GMPaddingl10{padding-left:10px}
+.GMPaddingT10{padding-top:10px}
+.GMPPop{ padding:0 0 10px 0; text-align:center }
+.GMPop{width:410px; overflow:hidden;padding:0; font-size:12px;background:#F9F9F9;}
+.GMPopTitle{width:100%;color:#555;border-bottom:1px solid #B9B9B9; font-size:12px; font-weight:bold; display:block; line-height:28px;
+background: #F1F4F5;}
+.GMPopSearch{overflow:hidden; }
+.GMPopContent{background-color:#fff}
+.GMPopContent textarea{border-color: #acacac;}
+.GMPopUl,.GMPopUl2{list-style:none; margin:0; padding:10px;}
+.GMPopDiv{overflow:hidden; width:100%}
+.GMPopDiv2{overflow:hidden; width:100%}
+.GMPopLeft,.GMPopLeft2, .GMPopLeft3{width:220px; float:left !important; }
+.GMPopRight,.GMPopRight2,.GMPopRight3{width:166px; float:right !important; }
+.GMPopUl input {margin:-2px 2px 0px 0px;padding:0 ; width:13px; height:13px; vertical-align:middle;}
+.GMPopUl li{ padding-top:4px;padding-bottom:3px ; padding-left:5px}
+.GMPopUl2 li{ padding-top:4px; padding-bottom:3px;}
+.GMBtn{margin-top:10px; text-align:center }
+.GMPopLeft, .GMPopRight{ height:120px}
+.GMPopLeft2, .GMPopRight2{ height:120px}
+.GMPopLabel{line-height:12px; margin:0 0 0 2px}
+.GMPopSubtitle{font-weight:bold; color:#000; border-bottom:1px solid  #E0E0E0; background-color:#E7E7E7;padding-left:4px;}
+.GMPopBtn {text-align: center;text-decoration: none;color:#fff;border:1px solid #316290; font-size:12px;width:50px !important;height:22px !important; cursor:pointer;}
+.GMPopBtn2 {text-align: center;text-decoration: none;color:#8c8c8c;border:1px solid #acacac; font-size:12px; height:22px !important; cursor:pointer;}
+.GMPopBtn, .GMPopBtn:hover {color:#fff;}
+.GMPopBtnBlue {
+background: #F1F4F5; /* Old browsers */
+background: -moz-linear-gradient(top,  #F1F4F5 0%, #dcdcdc 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#F1F4F5), color-stop(100%,#dcdcdc)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* IE10+ */
+background: linear-gradient(top,  #F1F4F5 0%,#dcdcdc 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#F1F4F5', endColorstr='#dcdcdc',GradientType=0 ); /* IE6-9 */
+}
+.GMPopBtnBlue:hover {
+background: #dcdcdc; /* Old browsers */
+background: -moz-linear-gradient(top,  #dcdcdc 0%, #F1F4F5 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dcdcdc), color-stop(100%,#F1F4F5)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #dcdcdc 0%,#F1F4F5 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #dcdcdc 0%,#F1F4F5 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #dcdcdc 0%,#F1F4F5 100%); /* IE10+ */
+background: linear-gradient(top,  #dcdcdc 0%,#F1F4F5 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dcdcdc', endColorstr='#F1F4F5',GradientType=0 ); /* IE6-9 */
+}		
+
+
+.GMPopDisc {margin:0px 8px 8px 8px;background-color:#f9f9f9;border:1px solid #acacac;}
+.GMPopDisc ul {padding:0px;margin-left:0;margin-top:10px;margin-bottom:0;}
+.GMPopDisc li {list-style:none;background:url(bullet.png) no-repeat 5px 5px;margin-bottom:8px;padding-left:13px;color:#555}
+
+.GMPopChkArea {margin:8px; height:25px;}
+.GMPopChkArea ul {margin:0; padding:0; float:right!important; background-color:#ebf2f5; border:1px solid #D0DBE8;}
+.GMPopChkArea li {float:left!important; padding:3px 5px 0px 5px; list-style:none; color:#426b8c; font-weight:bold;}
+
+.GMPopFilter {width:250px;}
+.GMPopHelp0, .GMPopHelp1, .GMPopClose {
+    cursor:pointer; margin: 4px 2px 0;
+    padding-right:3px;float:right!important;height:20px;
+    border: 0px none; background-repeat: no-repeat; padding-left: 12px; background-image: url(filter_btn.png);
+}
+.GMPopHelp0 { background-position:0px 0px; }
+.GMPopHelp1 { background-position:-23px 0px; }
+.GMPopClose { background-position:-46px 0px; }
+
+/* Paging Icon */
+.GMToolPagerFirst, .GMToolPagerFirst1, .GMToolPagerPrev, .GMToolPagerPrev1, .GMToolPagerNext, .GMToolPagerNext1, .GMToolPagerLast, .GMToolPagerLast1 {
+    display: inline-block; background-repeat: no-repeat; width: 24px; height: 24px;  background-image: url(pager.png);
+}
+
+.GMToolPagerFirst1 { background-position:0px 0px; }
+.GMToolPagerFirst { background-position:-30px 0px; }
+.GMToolPagerPrev1 { background-position:-120px 0px; }
+.GMToolPagerPrev { background-position:-150px 0px; }
+.GMToolPagerNext1 { background-position:-180px 0px; }
+.GMToolPagerNext { background-position:-210px 0px; }
+.GMToolPagerLast1 { background-position:-300px 0px; }
+.GMToolPagerLast { background-position:-330px 0px; }
+
+
+/* Count */
+.ibCount{margin: 0; line-height: 24px;}
+.ibCountBottom{font-weight: 700; color: #0068b7;}
+.ibCountTotal{font-weight: 700;}

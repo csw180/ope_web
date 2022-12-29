@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="960" height="250" viewBox="0 0 960 250">
+  <defs>
+    <style>
+      .cls-1 {
+        clip-path: url(#clip-msr_guide_forechart);
+      }
+
+      .cls-2 {
+        fill: #fefefe;
+      }
+
+      .cls-2, .cls-4 {
+        stroke: #e0e0e0;
+      }
+
+      .cls-12, .cls-14, .cls-16, .cls-18, .cls-19, .cls-20, .cls-21, .cls-24, .cls-3, .cls-4, .cls-6, .cls-7 {
+        fill: none;
+      }
+
+      .cls-3 {
+        stroke: #f1f1f1;
+      }
+
+      .cls-5 {
+        fill: #555;
+        font-size: 11px;
+        letter-spacing: -0.002em;
+      }
+
+      .cls-10, .cls-11, .cls-5, .cls-9 {
+        font-family: MalgunGothic, Malgun Gothic;
+      }
+
+      .cls-6 {
+        stroke: #707070;
+      }
+
+      .cls-7 {
+        stroke: #555;
+        stroke-dasharray: 3;
+      }
+
+      .cls-8 {
+        fill: #111;
+        font-size: 14px;
+        font-family: MalgunGothicBold, Malgun Gothic;
+      }
+
+      .cls-13, .cls-9 {
+        fill: #349b48;
+      }
+
+      .cls-10, .cls-11, .cls-9 {
+        font-size: 12px;
+        letter-spacing: -0.01em;
+      }
+
+      .cls-10 {
+        fill: #e44d4d;
+      }
+
+      .cls-11, .cls-17 {
+        fill: #7f7f7f;
+      }
+
+      .cls-12 {
+        stroke: #349b48;
+      }
+
+      .cls-12, .cls-14, .cls-16 {
+        stroke-dasharray: 4;
+      }
+
+      .cls-14 {
+        stroke: #db1313;
+      }
+
+      .cls-15 {
+        fill: #db1313;
+      }
+
+      .cls-16 {
+        stroke: #7f7f7f;
+      }
+
+      .cls-18 {
+        stroke: #0068b7;
+      }
+
+      .cls-19 {
+        stroke: #99cda3;
+      }
+
+      .cls-20 {
+        stroke: #ed8888;
+      }
+
+      .cls-21 {
+        stroke: #e99200;
+      }
+
+      .cls-22 {
+        fill: #e99200;
+      }
+
+      .cls-23 {
+        stroke: none;
+      }
+
+      .cls-25 {
+        fill: #fff;
+      }
+    </style>
+    <clipPath id="clip-msr_guide_forechart">
+      <rect width="960" height="250"/>
+    </clipPath>
+  </defs>
+  <g id="msr_guide_forechart" class="cls-1">
+    <rect class="cls-25" width="960" height="250"/>
+    <g id="사각형_6" data-name="사각형 6" class="cls-2">
+      <rect class="cls-23" width="960" height="250"/>
+      <rect class="cls-24" x="0.5" y="0.5" width="959" height="249"/>
+    </g>
+    <g id="그룹_22" data-name="그룹 22" transform="translate(0 20)">
+      <line id="선_9" data-name="선 9" class="cls-3" y2="20" transform="translate(30.5 186.5)"/>
+      <line id="선_18" data-name="선 18" class="cls-3" y2="20" transform="translate(180.5 186.5)"/>
+      <line id="선_19" data-name="선 19" class="cls-3" y2="20" transform="translate(330.5 186.5)"/>
+      <line id="선_24" data-name="선 24" class="cls-3" y2="20" transform="translate(480.5 186.5)"/>
+      <line id="선_21" data-name="선 21" class="cls-3" y2="20" transform="translate(630.5 186.5)"/>
+      <line id="선_22" data-name="선 22" class="cls-3" y2="20" transform="translate(780.5 186.5)"/>
+      <line id="선_23" data-name="선 23" class="cls-3" y2="20" transform="translate(930.5 186.5)"/>
+      <line id="선_5" data-name="선 5" class="cls-4" x2="900" transform="translate(30.5 196.5)"/>
+    </g>
+    <text id="t-5" class="cls-5" transform="translate(106 239)"><tspan x="-7.159" y="0">t-5</tspan></text>
+    <text id="t-4" class="cls-5" transform="translate(256 239)"><tspan x="-7.159" y="0">t-4</tspan></text>
+    <text id="t-3" class="cls-5" transform="translate(406 239)"><tspan x="-7.159" y="0">t-3</tspan></text>
+    <text id="t-2" class="cls-5" transform="translate(556 239)"><tspan x="-7.159" y="0">t-2</tspan></text>
+    <text id="t-1" class="cls-5" transform="translate(706 239)"><tspan x="-7.159" y="0">t-1</tspan></text>
+    <text id="t" class="cls-5" transform="translate(856 239)"><tspan x="-1.896" y="0">t</tspan></text>
+    <line id="선_25" data-name="선 25" class="cls-6" y1="165" transform="translate(706.5 42.5)"/>
+    <line id="선_26" data-name="선 26" class="cls-7" y1="165" transform="translate(856 42.5)"/>
+    <text id="신뢰수준_99_4Q_연도별_예측치" data-name="신뢰수준 99% 4Q 연도별 예측치" class="cls-8" transform="translate(480 21)"><tspan x="-103.578" y="0">신뢰수준 99% 4Q 연도별 예측치</tspan></text>
+    <text id="_113_678_006_116_99_신뢰수준_한도_추정_" data-name="113,678,006,116 (+99% 신뢰수준 한도 추정)" class="cls-9" transform="translate(31 50)"><tspan x="0" y="0">113,678,006,116 (+99% 신뢰수준 한도 추정)</tspan></text>
+    <text id="_109_891_840_845_95_신뢰수준_한도_추정_" data-name="109,891,840,845 (+95% 신뢰수준 한도 추정)" class="cls-10" transform="translate(31 99)"><tspan x="0" y="0">109,891,840,845 (+95% 신뢰수준 한도 추정)</tspan></text>
+    <text id="_100_704_822_069_추세_예측_값_" data-name="100,704,822,069 (추세 예측 값)" class="cls-11" transform="translate(31 147)"><tspan x="0" y="0">100,704,822,069 (추세 예측 값)</tspan></text>
+    <g id="그룹_23" data-name="그룹 23">
+      <line id="선_27" data-name="선 27" class="cls-12" x2="824" transform="translate(30.5 59)"/>
+      <circle id="타원_2" data-name="타원 2" class="cls-13" cx="4" cy="4" r="4" transform="translate(852 55)"/>
+    </g>
+    <g id="그룹_24" data-name="그룹 24" transform="translate(0 21)">
+      <line id="선_27-2" data-name="선 27" class="cls-14" x2="824" transform="translate(30.5 59)"/>
+      <circle id="타원_2-2" data-name="타원 2" class="cls-15" cx="4" cy="4" r="4" transform="translate(852 55)"/>
+    </g>
+    <g id="그룹_25" data-name="그룹 25" transform="translate(0 70)">
+      <line id="선_27-3" data-name="선 27" class="cls-16" x2="824" transform="translate(30.5 59)"/>
+      <circle id="타원_2-3" data-name="타원 2" class="cls-17" cx="4" cy="4" r="4" transform="translate(852 55)"/>
+    </g>
+    <path id="패스_21" data-name="패스 21" class="cls-18" d="M856,1891.071s-9.214,35.357-44.571,40.357-105.346,21.912-105,43.571,83.214,37.143,105,37.5,42.357,27.143,44.571,36.786" transform="translate(0 -1846)"/>
+    <line id="선_28" data-name="선 28" class="cls-19" x1="743" y2="84" transform="translate(113.5 59.5)"/>
+    <line id="선_29" data-name="선 29" class="cls-20" x1="743" y2="84" transform="translate(113.5 83)"/>
+    <line id="선_30" data-name="선 30" class="cls-6" x1="743" y2="84" transform="translate(113.5 129)"/>
+    <path id="패스_22" data-name="패스 22" class="cls-21" d="M113,2059l144-27H416l141-23,151-19,151-14" transform="translate(0 -1846)"/>
+    <circle id="타원_3" data-name="타원 3" class="cls-22" cx="2" cy="2" r="2" transform="translate(112 211)"/>
+    <circle id="타원_4" data-name="타원 4" class="cls-22" cx="2" cy="2" r="2" transform="translate(254 184)"/>
+    <circle id="타원_5" data-name="타원 5" class="cls-22" cx="2" cy="2" r="2" transform="translate(413 184)"/>
+    <circle id="타원_6" data-name="타원 6" class="cls-22" cx="2" cy="2" r="2" transform="translate(561 161)"/>
+    <circle id="타원_7" data-name="타원 7" class="cls-22" cx="2" cy="2" r="2" transform="translate(705 142)"/>
+    <circle id="타원_8" data-name="타원 8" class="cls-22" cx="2" cy="2" r="2" transform="translate(855 128)"/>
+  </g>
+</svg>

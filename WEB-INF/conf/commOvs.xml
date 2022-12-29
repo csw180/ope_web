@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com_servlet id="ovs" name="해외법인" commkind="ovs" connname="tpFGTE01">
+	<lib id="lib1" name="라이브러리정의" value="com.dgfg.orms.comm.util"/>
+
+	<process id="ORVS010101" name="해외관리전담" forward="/ovs/ORVS0101" forwardng="/comm/errorPage" resource="ovs" grid_process_id="">
+		<session id="grp_org_c" name="그룹내 기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="bas_ym" name="보고연월" parmid="bas_ym" attr="A" default_value=""/>  <!--   attr="S"  : 싱글 ,attr="A" 멀티 -->
+		<group id="grp01" name="grp01" type="S">
+			<!--보고년월 조회  -->				
+				<unit id="unit01" name="보고년도 조회" type="S" mode="select">
+					<sql id="sql12" name="SQL12">
+						<data id="data121" name="">
+    					SELECT DISTINCT
+			       			SUBSTR(BAS_YM,0,4) BAS_YY 					/*기준년월*/  
+			     			FROM TB_OR_CF_ADM  			 				/*해외관리기본*/ 
+			 				WHERE GRP_ORG_C = TRIM(#grp_org_c#)
+							GROUP BY BAS_YM
+						UNION 
+                           SELECT TO_CHAR(SYSDATE,'YYYY') BAS_YY FROM DUAL
+                        UNION 
+                           SELECT TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYY') BAS_YY FROM DUAL
+						ORDER BY BAS_YY DESC 
+						</data>
+					</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+				</unit>
+		</group>
+	</process>
+	
+	<process id="ORVS010102" name="해외법인 관리" forward="/comm/jsonLst" forwardng="/comm/errorPage" resource="ovs" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="bas_yy" name="조회년" parmid="bas_ym" attr="S" default_value=""/>
+		<parm id="bas_mm" name="조회월" parmid="bas_ym" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit99" name="목록조회" type="S">
+				<sql id="sql11" name="SQL11">
+						<data id="data111" name="">
+						SELECT /*목록 조회*/                                                                                                                                                 
+					       A.BAS_YM /*보고년월*/                                                                                                                                                                 
+					     , C.RPT_TIT /*보고서제목*/
+                         , B.OVRS_DCZ_PRG_STSC   /*결재상태*/
+					     , (SELECT MAX(DCZ_DT) FROM TB_OR_CF_ADM_DCZ WHERE BAS_YM = '202201' AND OVRS_DCZ_PRG_STSC = '14') DCZ_ST_DT  /*결제상신일자*/                                                                                                                                                              
+					     , (SELECT MAX(DCZ_DT) FROM TB_OR_CF_ADM_DCZ WHERE BAS_YM = '202201' AND OVRS_DCZ_PRG_STSC = '15') DCZ_ET_DT  /*결제완료일자*/                                                                                                                                                      
+					     , A.LSCHG_DTM   /*최종변경일시*/                                                           
+					  FROM TB_OR_CF_ADM A /*보고서관리기본*/                                                                                                                                                 
+					     , TB_OR_CF_ADM_DCZ B /*보고서관리*/    
+					     , TB_OR_CF_RPT C /*보고서 상세내용*/                                                                                                                                           
+					 WHERE A.GRP_ORG_C = B.GRP_ORG_C                                                                                                                                                         
+					   AND A.BAS_YM = B.BAS_YM
+                       AND A.BAS_YM = C.BAS_YM
+                       AND A.DCZ_SQNO = B.DCZ_SQNO 
+					</data>
+				</sql>
+				<sql id="sql2" name = "SQL2">
+					<condition id="cond1" name="조건1" comparison="ne" value="" variable="#bas_yy#"  />
+					<data id="data1" name = "">
+						AND TRIM(SUBSTR(A.BAS_YM,0,4)) = TRIM(#bas_yy#)
+					</data>
+				</sql>
+				<sql id="sql3" name = "SQL3">
+					<condition id="cond1" name="조건1" comparison="ne" value="" variable="#bas_mm#"  />
+					<data id="data1" name = "">
+						AND TRIM(SUBSTR(A.BAS_YM,5,2)) = TRIM(#bas_mm#)
+					</data>
+				</sql>
+			
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+			</unit>
+		</group>
+	</process>
+	
+	
+	<process id="ORVS010103" name="해외보고서 결재" forward="/comm/saveOk" forwardng="/comm/saveNg" resource="ovs" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="bas_ym" name="보고년월" parmid="bas_ym" attr="A" default_value=""/>
+		<parm id="dcz_dc" name="결재진행코드" parmid="dcz_dc" attr="A" default_value=""/>
+		<parm id="dcz_objr_eno" name="결재확인자개인번호" parmid="dcz_objr_eno" attr="A" default_value=""/>
+		<parm id="sch_rtn_cntn" name="결재/반려의견" parmid="sch_rtn_cntn" attr="A" default_value=""/>
+		<group id="grp01" name="grp01" type="M" multiid="bas_ym">
+				<multivalue id="bas_ym" name="bas_ym" multiid="bas_ym"/>
+				<multivalue id="dcz_dc" name="dcz_dc" multiid="dcz_dc"/>
+				<multivalue id="dcz_objr_eno" name="dcz_objr_eno" multiid="dcz_objr_eno"/>
+				<multivalue id="sch_rtn_cntn" name="sch_rtn_cntn" multiid="sch_rtn_cntn"/>
+				<unit id="unit01" name="MAX결재일련번호 채번" type="S" mode="select" >
+					<sql id="sql1" name = "SQL1">
+						<data id="data1" name = "">
+							 SELECT  MAX(DCZ_SQNO)+1 DCZ_SQNO
+							 FROM    TB_OR_CF_ADM_DCZ
+							 WHERE   GRP_ORG_C   = #grp_org_c#  
+							 AND     BAS_YM   = #bas_ym#                 
+						</data>
+					</sql>
+					<result id="result" name="dcz_sqno" attrname="dcz_sqno" type="single_string"/>
+				</unit>	
+		     	<unit id="unit02" name="결재" type="S" mode="update" >
+					<sql id="sql11" name="SQL11">
+						<data id="data111" name="">
+					INSERT /*ORVS010103 결재상신*/                   
+					  INTO TB_OR_CF_ADM_DCZ /*시나리오_보고서결재내역*/ 
+					     ( GRP_ORG_C /*그룹기관코드*/                  
+					     , BAS_YM /*시나리오회차*/                    
+					     , DCZ_SQNO /*결재일련번호*/  
+					     , DCZ_DT /*결재일자*/               
+					     , DCZMN_ENO /*결재개인번호*/               
+					     , OVRS_DCZ_PRG_STSC /*해외결재상태코드*/
+					     , RTN_CNTN
+						 , DCZ_OBJR_ENO                          
+					     , FIR_INP_DTM /*최초입력일시*/                
+					     , FIR_INPMN_ENO /*최초입력자개인번호*/           
+					     , LSCHG_DTM /*최종변경일시*/                  
+					     , LS_WKR_ENO /*최종작업자개인번호*/              
+					     )                                       
+					  VALUES ( 
+						   TRIM(#grp_org_c#)                             
+					     , TRIM(#bas_ym#)                              
+					     , #dcz_sqno#                       
+						 , TO_CHAR(SYSDATE,'YYYYMMDD')
+						 , TRIM(#userid#)                              
+					     , #dcz_dc#                  
+						 , #sch_rtn_cntn#
+						 , #dcz_objr_eno#                                  
+					     , SYSDATE                               
+					     , TRIM(#userid#)                               
+					     , SYSDATE                               
+					     , TRIM(#userid#) 
+					     	)                                                                                                   
+						</data>
+					</sql>			
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit99" name="DCZ_SQNO업데이트" type="S" mode="update" >
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 UPDATE  TB_OR_CF_ADM                         
+						 SET     DCZ_SQNO       = #dcz_sqno#                                      
+						 WHERE   GRP_ORG_C       = #grp_org_c#                  
+						 AND     BAS_YM       = #bas_ym#                               
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+		</group>
+	</process>
+	
+		
+	<process id="ORVS010201" name="해외법인 운영리스크 월보고" forward="/ovs/ORVS0102" forwardng="/comm/errorPage" resource="ovs" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		<parm id="bas_ym" name="조회년월" parmid="bas_ym" attr="S" default_value=""/>
+		<parm id="mode" name="I/U" parmid="mode" attr="S" default_value=""/>
+		<parm id="dcz_prg_stsc" name="진행상태" parmid="dcz_prg_stsc" attr="S" default_value=""/>
+		<group id="grp01" name="grp01" type="S">
+			<unit id="unit01" name="보고년도 조회" type="S" mode="select">
+					<sql id="sql12" name="SQL12">
+						<condition id="cond1" name="cond1" variable="#mode#" comparison="eq" value="I" />        	
+						<data id="data121" name="">
+						  SELECT A.BAS_YM
+                            FROM 
+                                (SELECT SUBSTR(TO_CHAR(SYSDATE,'YYYYMM'),0,4)||LPAD(LEVEL,2,'0') BAS_YM
+                                   FROM DUAL
+                                   CONNECT BY LEVEL &lt;=12
+                                 ) A
+                                ,TB_OR_CF_ADM B
+                           WHERE A.BAS_YM = B.BAS_YM (+)
+                             AND B.BAS_YM IS NULL
+                             UNION
+                        SELECT A.BAS_YM
+                            FROM 
+                                (SELECT SUBSTR(TO_CHAR(ADD_MONTHS(SYSDATE,-12),'YYYYMM'),0,4)||LPAD(LEVEL,2,'0') BAS_YM
+                                   FROM DUAL
+                                   CONNECT BY LEVEL &lt;12
+                                 ) A
+                                ,TB_OR_CF_ADM B
+                           WHERE A.BAS_YM = B.BAS_YM (+)
+                             AND B.BAS_YM IS NULL 
+						</data>
+					</sql>
+					<sql id="sql12" name="SQL12">
+						<condition id="cond1" name="cond1" variable="#mode#" comparison="eq" value="U" />        	
+						<data id="data121" name="">
+    					SELECT DISTINCT
+			       			BAS_YM 		/*기준년월*/  
+			     			FROM TB_OR_CF_ADM  	/*해외관리기본*/ 
+						</data>
+					</sql>
+				<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>
+				</unit>
+		</group>
+	</process>
+	
+	<process id="ORVS010202" name="해외법인 관리 보고서 " forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="ovs" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		    
+		    <parm id="bas_ym" name="보고년월" parmid="bas_ym" attr="S" default_value=""/>
+			<parm id="bas_yy" name="조회년" parmid="bas_yy" attr="S" default_value=""/>
+			<parm id="bas_mm" name="조회월" parmid="bas_mm" attr="S" default_value=""/>
+			<parm id="rpt_tit" name="보고서제목" parmid="rpt_tit" attr="S" default_value=""/>
+		     
+		     <parm id="rslt_mnm_cpt_amt" name="점검결과_최소자본금" parmid="rslt_mnm_cpt_amt" attr="S" default_value=""/>
+		     <parm id="rslt_slf_cpt_rt" name="점검결과_자기자본비율" parmid="rslt_slf_cpt_rt" attr="S" default_value=""/>
+		     <parm id="rslt_irrt_hglm" name="점검결과_이자율상한" parmid="rslt_irrt_hglm" attr="S" default_value=""/>
+		     <parm id="rslt_ln_lmt" name="점검결과_1인당대출한도" parmid="rslt_ln_lmt" attr="S" default_value=""/>
+		     
+		     <parm id="rglt_mnm_cpt_amt" name="규제기준_최소자본금" parmid="rglt_mnm_cpt_amt" attr="S" default_value=""/>
+		     <parm id="rglt_slf_cpt_rt" name="규제기준_자기자본비율" parmid="rglt_slf_cpt_rt" attr="S" default_value=""/>
+		     <parm id="rglt_irrt_hglm" name="규제기준_이자율상한" parmid="rglt_irrt_hglm" attr="S" default_value=""/>
+		     <parm id="rglt_ln_lmt_amt" name="규제기준_1인당대출한도" parmid="rglt_ln_lmt_amt" attr="S" default_value=""/>
+		     		     
+		     <parm id="lss_occ_cnt" name="손실사건_발생건수" parmid="lss_occ_cnt" attr="S" default_value=""/>
+		     <parm id="lss_occ_am" name="손실사건_발생금액" parmid="lss_occ_am" attr="S" default_value=""/>
+		    		     
+		     <parm id="rcsa_prss_cnt" name="RCSA_전체 프로세스 수" parmid="rcsa_prss_cnt" attr="S" default_value=""/>
+		     <parm id="rcsa_rkp_cnt" name="RCSA_전체 수" parmid="rcsa_rkp_cnt" attr="S" default_value=""/>
+		     <parm id="rcsa_evl_cnt" name="RCSA_평가건수" parmid="rcsa_evl_cnt" attr="S" default_value=""/>
+		     		     
+		     <parm id="kri_red_cnt" name="kri Red건수" parmid="kri_red_cnt" attr="S" default_value=""/>
+		     <parm id="kri_yellow_cnt" name="kri Yellow건수" parmid="kri_yellow_cnt" attr="S" default_value=""/>
+		     <parm id="kri_green_cnt" name="kri Green건수" parmid="kri_green_cnt" attr="S" default_value=""/>
+		     
+		     <parm id="bcp_cntn" name="bcp" parmid="bcp_cntn" attr="S" default_value=""/>
+		     <parm id="snr_cntn" name="시나리오" parmid="snr_cntn" attr="S" default_value=""/>
+		     
+		     <parm id="fir_inp_dtm" name="최초작업일시" parmid="fir_inp_dtm" attr="S" default_value=""/>
+		     <parm id="fir_inpmn_eno" name="최초작업자번호" parmid="fir_inpmn_eno" attr="S" default_value=""/>
+		     
+		     <parm id="lschg_dtm" name="최종작업일시" parmid="lschg_dtm" attr="S" default_value=""/>
+		     <parm id="ls_wkr_eno" name="최종작업자번호" parmid="ls_wkr_eno" attr="S" default_value=""/>
+		     
+		     <group id="grp01" name="grp01" type="S">
+				<unit id="unit99" name="당분기 목록조회" type="S">
+					<sql id="sql11" name="SQL11">
+						<data id="data114" name="">
+		                 
+		                 SELECT 
+		                 RPT_TIT
+		                 ,RSLT_SLF_CPT_RT
+		                 ,RSLT_MNM_CPT_AMT
+		                 ,RSLT_IRRT_HGLM
+		                 ,RSLT_LN_LMT
+		                 ,RGLT_SLF_CPT_RT
+		                 ,RGLT_MNM_CPT_AMT
+		                 ,RGLT_IRRT_HGLM
+		                 ,RGLT_LN_LMT_AMT
+		                 ,LSS_OCC_CNT
+		                 ,LSS_OCC_AM
+		                 ,RCSA_PRSS_CNT 			/*RCSA 전체프로세스 수*/
+					     ,RCSA_RKP_CNT 				/*RCSA 전체 수*/
+					     ,RCSA_EVL_CNT				/*RCSA 평가 건수 */
+					     ,KRI_RED_CNT 				/*KRI RED 발생건수*/
+					     ,KRI_YELLOW_CNT 			/*KRI YELLOW 발생건수*/
+					     ,KRI_GREEN_CNT  			/*KRI GREEN 발생건수*/                                                                                                   
+					  	 ,BCP_CNTN					/*BCP*/
+					   	 ,SNR_CNTN					/*시나리오*/
+					  	 ,FIR_INP_DTM 				/*최초입력자*/
+					  	 ,FIR_INPMN_ENO				/*최초입력일시*/
+					  	 ,LSCHG_DTM					/*최종입력자*/
+					  	 ,LS_WKR_ENO				/*최종입력일시*/
+		                 FROM TB_OR_CF_RPT
+		                 
+		                 WHERE BAS_YM = TRIM(#bas_yy#)||TRIM(#bas_mm#)
+		                 
+					
+		
+						</data>
+					</sql>
+							<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+				</unit>
+
+			
+
+			</group>
+	</process>
+		
+	<process id="ORVS010203" name="해외법인 관리 보고서 " forward="/comm/jsonLst" forwardng="/comm/jsonErr" resource="ovs" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		  	<parm id="lss_occ_cnt" name="손실사건_발생건수" parmid="lss_occ_cnt" attr="S" default_value=""/>
+		     <parm id="lss_occ_am" name="손실사건_발생금액" parmid="lss_occ_am" attr="S" default_value=""/>
+		    		     
+		     <parm id="rcsa_prss_cnt" name="RCSA_전체 프로세스 수" parmid="rcsa_prss_cnt" attr="S" default_value=""/>
+		     <parm id="rcsa_rkp_cnt" name="RCSA_전체 수" parmid="rcsa_rkp_cnt" attr="S" default_value=""/>
+		     <parm id="rcsa_evl_cnt" name="RCSA_평가건수" parmid="rcsa_evl_cnt" attr="S" default_value=""/>
+		     		     
+		     <parm id="kri_red_cnt" name="kri Red건수" parmid="kri_red_cnt" attr="S" default_value=""/>
+		     <parm id="kri_yellow_cnt" name="kri Yellow건수" parmid="kri_yellow_cnt" attr="S" default_value=""/>
+		     <parm id="kri_green_cnt" name="kri Green건수" parmid="kri_green_cnt" attr="S" default_value=""/>
+		  
+		  <group id="grp01" name="grp01" type="S">
+					
+					<unit id="unit99" name="전분기 목록조회" type="S">
+					<sql id="sql112" name="SQL112">
+						<data id="data115" name="">
+		          SELECT 
+		       
+		                 LSS_OCC_CNT
+		                 ,LSS_OCC_AM
+		                 ,RCSA_PRSS_CNT 			
+					     ,RCSA_RKP_CNT 				
+					     ,RCSA_EVL_CNT				
+					     ,KRI_RED_CNT 				
+					     ,KRI_YELLOW_CNT 			
+					     ,KRI_GREEN_CNT  			                                                                                                   
+			
+		                 FROM TB_OR_CF_RPT
+		                 
+		                 WHERE BAS_YM = TO_CHAR(ADD_MONTHS(TO_DATE(TRIM(#bas_yy#)||TRIM(#bas_mm#),'YYYYMM'),-1),'YYYYMM')
+
+					</data>
+					</sql>
+							<result id="vList" name="vList" attrname="vList" type="vector_entitybean"/>			
+				</unit>
+
+			</group>
+	</process>
+	
+	
+	 <process id="ORVS010204" name="해외법인 관리 보고서 저장 " forward="/comm/saveOk" forwardng="/comm/saveNg" resource="ovs" grid_process_id="">
+		<session id="grp_org_c" name="그룹기관코드" sessionid="grp_org_c" object="String"/>
+		<session id="userid" name="사용자ID" sessionid="userid" object="String"/>
+		    <parm id="bas_ym" name="보고년월" parmid="bas_ym" attr="S" default_value=""/>
+			<parm id="bas_yy" name="조회년" parmid="bas_yy" attr="S" default_value=""/>
+			<parm id="bas_mm" name="조회월" parmid="bas_mm" attr="S" default_value=""/>
+			<parm id="mode" name="I/U" parmid="mode" attr="S" default_value=""/>
+			
+	
+			 <parm id="rpt_tit" name="보고서제목" parmid="rpt_tit" attr="S" default_value=""/>
+		     
+		     <parm id="rslt_mnm_cpt_amt" name="점검결과_최소자본금" parmid="rslt_mnm_cpt_amt" attr="S" default_value=""/>
+		     <parm id="rslt_slf_cpt_rt" name="점검결과_자기자본비율" parmid="rslt_slf_cpt_rt" attr="S" default_value=""/>
+		     <parm id="rslt_irrt_hglm" name="점검결과_이자율상한" parmid="rslt_irrt_hglm" attr="S" default_value=""/>
+		     <parm id="rslt_ln_lmt" name="점검결과_1인당대출한도" parmid="rslt_ln_lmt" attr="S" default_value=""/>
+		     
+		     <parm id="rglt_mnm_cpt_amt" name="규제기준_최소자본금" parmid="rglt_mnm_cpt_amt" attr="S" default_value=""/>
+		     <parm id="rglt_slf_cpt_rt" name="규제기준_자기자본비율" parmid="rglt_slf_cpt_rt" attr="S" default_value=""/>
+		     <parm id="rglt_irrt_hglm" name="규제기준_이자율상한" parmid="rglt_irrt_hglm" attr="S" default_value=""/>
+		     <parm id="rglt_ln_lmt_amt" name="규제기준_1인당대출한도" parmid="rglt_ln_lmt_amt" attr="S" default_value=""/>
+		     		     
+		     <parm id="lss_occ_cnt" name="손실사건_발생건수" parmid="lss_occ_cnt" attr="S" default_value=""/>
+		     <parm id="lss_occ_am" name="손실사건_발생금액" parmid="lss_occ_am" attr="S" default_value=""/>
+		    		     
+		     <parm id="rcsa_prss_cnt" name="RCSA_전체 프로세스 수" parmid="rcsa_prss_cnt" attr="S" default_value=""/>
+		     <parm id="rcsa_rkp_cnt" name="RCSA_전체 수" parmid="rcsa_rkp_cnt" attr="S" default_value=""/>
+		     <parm id="rcsa_evl_cnt" name="RCSA_평가건수" parmid="rcsa_evl_cnt" attr="S" default_value=""/>
+		     		     
+		     <parm id="kri_red_cnt" name="kri Red건수" parmid="kri_red_cnt" attr="S" default_value=""/>
+		     <parm id="kri_yellow_cnt" name="kri Yellow건수" parmid="kri_yellow_cnt" attr="S" default_value=""/>
+		     <parm id="kri_green_cnt" name="kri Green건수" parmid="kri_green_cnt" attr="S" default_value=""/>
+		     
+		     <parm id="bcp_cntn" name="bcp" parmid="bcp_cntn" attr="S" default_value=""/>
+		     <parm id="snr_cntn" name="시나리오" parmid="snr_cntn" attr="S" default_value=""/>
+
+		     
+		     <group id="grp01" name="grp01" type="S">
+				<unit id="unit99" name="보고서수정" type="S" mode="update" multiid="">
+					<sql id="sql11" name="SQL11">
+					<condition id="con01_1" name="실행조건11" variable="#mode#" comparison="eq" value="U"/>		
+						<data id="data111" name="">
+	
+					UPDATE /*ORVS010204 보고서 수정*/
+						TB_OR_CF_RPT
+						SET 
+						  RPT_TIT = TRIM(#rpt_tit#)
+	  					 ,RSLT_SLF_CPT_RT = TRIM(#rslt_slf_cpt_rt#)
+		                 ,RSLT_MNM_CPT_AMT = TRIM(#rslt_mnm_cpt_amt#)
+		                 ,RSLT_IRRT_HGLM = TRIM(#rslt_irrt_hglm#)
+		                 ,RSLT_LN_LMT = TRIM(#rslt_ln_lmt#)
+		                 ,RGLT_SLF_CPT_RT = TRIM(#rglt_slf_cpt_rt#)
+		                 ,RGLT_MNM_CPT_AMT = TRIM(#rglt_mnm_cpt_amt#)
+		                 ,RGLT_IRRT_HGLM = TRIM(#rglt_irrt_hglm#)
+		                 ,RGLT_LN_LMT_AMT = TRIM(#rglt_ln_lmt_amt#)
+		                 ,LSS_OCC_CNT = TRIM(#lss_occ_cnt#)
+		                 ,LSS_OCC_AM = TRIM(#lss_occ_am#)
+		                 ,RCSA_PRSS_CNT = TRIM(#rcsa_prss_cnt#) 			/*RCSA 전체프로세스 수*/
+					     ,RCSA_RKP_CNT = TRIM(#rcsa_rkp_cnt#) 				/*RCSA 전체 수*/
+					     ,RCSA_EVL_CNT = TRIM(#rcsa_evl_cnt#)				/*RCSA 평가 건수 */
+					     ,KRI_RED_CNT = TRIM(#kri_red_cnt#) 				/*KRI RED 발생건수*/
+					     ,KRI_YELLOW_CNT = TRIM(#kri_yellow_cnt#) 			/*KRI YELLOW 발생건수*/
+					     ,KRI_GREEN_CNT = TRIM(#kri_green_cnt#)  			/*KRI GREEN 발생건수*/                                                                                                   
+					  	 ,BCP_CNTN = TRIM(#bcp_cntn#)						/*BCP*/
+					   	 ,SNR_CNTN = TRIM(#snr_cntn#)						/*시나리오*/
+					   	 ,LSCHG_DTM = SYSDATE								/*최종입력자*/
+					  	 ,LS_WKR_ENO = TRIM(#userid#)						/*최종입력일시*/					
+						WHERE	GRP_ORG_C = TRIM(#grp_org_c#) /*그룹기관코드*/ --grp_org_c                   
+   						  AND	BAS_YM = TRIM((#bas_yy#)||TRIM(#bas_mm#))
+		
+						</data>
+					</sql>
+					<result id="result" name="result" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit02" name="해외보고서 상세 테이블 INSERT" type="S" mode="update" >
+			 	<sql id="sql12" name="SQL12">
+				<condition id="con02_1" name="실행조건12" variable="#mode#" comparison="eq" value="I"/>	
+					<data id="data112" name="">
+					INSERT INTO TB_OR_CF_RPT A
+						(
+						A.GRP_ORG_C
+						 ,A.BAS_YM 
+						 ,A.RPT_TIT
+		                 ,A.RSLT_MNM_CPT_AMT  
+	  					 ,A.RSLT_SLF_CPT_RT  
+		                 ,A.RSLT_IRRT_HGLM  
+		                 ,A.RSLT_LN_LMT 
+		                 ,A.RGLT_MNM_CPT_AMT 
+		                 ,A.RGLT_SLF_CPT_RT 
+		                 ,A.RGLT_IRRT_HGLM 
+		                 ,A.RGLT_LN_LMT_AMT 
+		                 ,A.LSS_OCC_CNT 
+		                 ,A.LSS_OCC_AM 
+		                 ,A.RCSA_PRSS_CNT  			
+					     ,A.RCSA_RKP_CNT  				/*RCSA 전체 수*/
+					     ,A.RCSA_EVL_CNT 				/*RCSA 평가 건수 */
+					     ,A.KRI_RED_CNT  				/*KRI RED 발생건수*/
+					     ,A.KRI_YELLOW_CNT  			/*KRI YELLOW 발생건수*/
+					     ,A.KRI_GREEN_CNT  			/*KRI GREEN 발생건수*/                                                                                                   
+					  	 ,A.BCP_CNTN 						/*BCP*/
+					   	 ,A.SNR_CNTN 						/*시나리오*/
+					     ,A.FIR_INP_DTM
+                         ,A.FIR_INPMN_ENO
+					   	 ,A.LSCHG_DTM 								
+					  	 ,A.LS_WKR_ENO 							/*최종입력일시*/					
+						)
+						VALUES
+						(
+						TRIM(#grp_org_c#)
+						,TRIM(#bas_yy#||#bas_mm#)
+						,TRIM(#rpt_tit#)
+						,TRIM(#rslt_mnm_cpt_amt#)
+						,TRIM(#rslt_slf_cpt_rt#)
+						,TRIM(#rslt_irrt_hglm#)
+						,TRIM(#rslt_ln_lmt#)
+						,TRIM(#rglt_mnm_cpt_amt#)
+						,TRIM(#rglt_slf_cpt_rt#)
+						,TRIM(#rglt_irrt_hglm#)
+						,TRIM(#rglt_ln_lmt_amt#)
+						,TRIM(#lss_occ_cnt#)
+						,TRIM(#lss_occ_am#)
+						,TRIM(#rcsa_prss_cnt#)
+						,TRIM(#rcsa_rkp_cnt#)
+						,TRIM(#rcsa_evl_cnt#)
+						,TRIM(#kri_red_cnt#)
+						,TRIM(#kri_yellow_cnt#)
+						,TRIM(#kri_green_cnt#)
+						,TRIM(#bcp_cntn#)
+						,TRIM(#snr_cntn#)
+						,SYSDATE
+						,TRIM(#userid#)
+						,SYSDATE
+						,TRIM(#userid#)
+						)				
+						</data>
+					</sql>
+					<result id="result" name="result" attrname="count" type="count"/> 
+				</unit>
+				<unit id="unit02" name="기본 INSERT" type="S" mode="update" >
+			 	<sql id="sql13" name="SQL13">
+				<condition id="con02_1" name="실행조건12" variable="#mode#" comparison="eq" value="I"/>	
+					<data id="data112" name="">
+					INSERT INTO TB_OR_CF_ADM A
+						(
+						  A.GRP_ORG_C
+						 ,A.BAS_YM 
+						 ,A.DCZ_SQNO
+					     ,A.FIR_INP_DTM
+                         ,A.FIR_INPMN_ENO
+					   	 ,A.LSCHG_DTM 								
+					  	 ,A.LS_WKR_ENO 				
+						)
+						VALUES
+						(
+						TRIM(#grp_org_c#)
+						,TRIM(#bas_yy#||#bas_mm#)
+						,'0'
+						,SYSDATE
+						,TRIM(#userid#)
+						,SYSDATE
+						,TRIM(#userid#)
+						)					
+						</data>
+					</sql>
+					<result id="result" name="result" attrname="count" type="count"/> 
+				</unit>
+				<unit id="unit01" name="MAX결재일련번호 채번" type="S" mode="select" >
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 SELECT  NVL(MAX(DCZ_SQNO)+1,0) DCZ_SQNO
+						 FROM    TB_OR_CF_ADM_DCZ   
+						 WHERE   GRP_ORG_C   = #grp_org_c# 
+						 AND     BAS_YM   = TRIM(#bas_yy#||#bas_mm#)                 
+					</data>
+				</sql>
+				<result id="result" name="dcz_sqno" attrname="dcz_sqno" type="single_string"/>
+			</unit>
+			<unit id="unit02" name="결재 테이블 INSERT" type="S" mode="update" >
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 INSERT INTO TB_OR_CF_ADM_DCZ 
+						     (   GRP_ORG_C
+						     ,	 BAS_YM                       
+						     ,   DCZ_SQNO                       
+						     ,   DCZMN_ENO                      
+						     ,   DCZ_DT                        
+						     ,   OVRS_DCZ_PRG_STSC  
+						     ,	 RTN_CNTN
+						     ,   DCZ_OBJR_ENO 
+						     ,   DCZ_RMK_C            
+						     ,   FIR_INP_DTM                   
+						     ,   FIR_INPMN_ENO                 
+						     ,   LSCHG_DTM                     
+						     ,   LS_WKR_ENO                    
+						     )                                 
+						        VALUES (                       
+						         TRIM(#grp_org_c#)       
+						     ,   TRIM(#bas_yy#||#bas_mm#)    
+						     ,   #dcz_sqno#                    
+						     ,   TRIM(#userid#)     
+						     ,   TO_CHAR(SYSDATE,'YYYYMMDD')      
+						     ,   #dcz_dc#
+						     ,	 ''
+						     ,   ''      
+						     ,   ''                    
+						     ,   SYSDATE                       
+						     ,   TRIM(#userid#)       
+						     ,   SYSDATE                       
+						     ,   TRIM(#userid#)       
+						        )                              
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			<unit id="unit99" name="DCZ_SQNO업데이트" type="S" mode="update" >
+				<sql id="sql1" name = "SQL1">
+					<data id="data1" name = "">
+						 UPDATE  TB_OR_CF_ADM      
+						   SET   DCZ_SQNO = #dcz_sqno#                                      
+						 WHERE   GRP_ORG_C       = #grp_org_c#                
+						 AND     BAS_YM       = #bas_ym#                               
+					</data>
+				</sql>
+				<result id="result" name="실행결과 확인값" attrname="count" type="count"/>
+			</unit>
+			</group>
+	</process> 
+</com_servlet>
